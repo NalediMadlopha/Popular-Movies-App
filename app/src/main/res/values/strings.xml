@@ -1,4 +1,36 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
-    <string name="action_settings">Settings</string>
+    <!-- General Strings -->
+    <string name="app_name" translatable="false">Popular Movies</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="text_load_movies_progress" translatable="false">Loading Movies</string>
+
+    <!-- Strings related to Errors -->
+    <string name="text_no_network_error" translatable="false">No Internet Connection</string>
+    <string name="text_no_movies_error" translatable="false">No Movies Found</string>
+    <string name="error_view_oops" translatable="false">Oops</string>
+    <string name="error_view_damn" translatable="false">Damn</string>
+    <string name="button_text_retry" translatable="false">RETRY</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="title_activity_settings" translatable="false">Settings</string>
+    <!-- Settings for sorting the order of the movies -->
+    <string name="pref_header_sort_order" translatable="false">Sort Order</string>
+
+    <string name="pref_title_order_by" translatable="false">Order by</string>
+    <string-array name="pref_order_by_titles" translatable="false">
+        <item>Most Popular</item>
+        <item>Top Rated</item>
+        <item>Favourites</item>
+    </string-array>
+    <string-array name="pref_order_by_values" translatable="false">
+        <item>Most Popular</item>
+        <item>Top Rated</item>
+        <item>Favourites</item>
+    </string-array>
+
+    <string name="sort_order_key" translatable="false">sort_order</string>
+    <string name="title_activity_details" translatable="false">Movie Details</string>
+
 </resources>
