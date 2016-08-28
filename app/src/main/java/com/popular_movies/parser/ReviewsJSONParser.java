@@ -1,4 +1,4 @@
-package com.popular_movies.app.parser;
+package com.popular_movies.parser;
 
 import android.support.annotation.Nullable;
 import android.util.Log;

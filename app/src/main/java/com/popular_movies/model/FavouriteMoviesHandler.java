@@ -1,4 +1,4 @@
-package com.popular_movies.app.model;
+package com.popular_movies.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;

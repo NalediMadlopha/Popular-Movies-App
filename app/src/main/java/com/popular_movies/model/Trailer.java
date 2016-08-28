@@ -1,4 +1,4 @@
-package com.popular_movies.app.model;
+package com.popular_movies.model;
 
 /**
  * Created by Naledi Madlopha on 2016/08/14.

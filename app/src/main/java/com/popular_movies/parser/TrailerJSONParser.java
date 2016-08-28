@@ -1,10 +1,10 @@
-package com.popular_movies.app.parser;
+package com.popular_movies.parser;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.popular_movies.app.GlobalConstant;
-import com.popular_movies.app.model.Trailer;
+import com.popular_movies.model.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;

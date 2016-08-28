@@ -1,4 +1,4 @@
-package com.popular_movies.app.model;
+package com.popular_movies.model;
 
 import com.popular_movies.app.Utils;
 
@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Naledi Madlopha on 2016/07/28.
  */
-public class _Movie implements Serializable {
+public class Movie implements Serializable {
 
     private static long serialVersionUID = 0L;
 
@@ -27,12 +27,12 @@ public class _Movie implements Serializable {
 
     protected int mPoster; // drawable reference id
 
-    public _Movie() {
+    public Movie() {
     }
 
-    public _Movie(String id, String posterPath, String backDropDate, String originalTitle,
-                  String title, String overall, String genre, String releaseDate,
-                  String popularity, String voteCount, String voteAverage) {
+    public Movie(String id, String posterPath, String backDropDate, String originalTitle,
+                 String title, String overall, String genre, String releaseDate,
+                 String popularity, String voteCount, String voteAverage) {
         this.mId = id;
         this.mPosterPath = posterPath;
         this.mBackDropDate = backDropDate;
@@ -46,7 +46,7 @@ public class _Movie implements Serializable {
         this.mVoteAverage = voteAverage;
     }
 
-    public _Movie(String title, String genre, String releaseDate) {
+    public Movie(String title, String genre, String releaseDate) {
         this.mTitle = title;
         this.mGenre = genre;
         this.mReleaseDate = releaseDate;
@@ -142,7 +142,7 @@ public class _Movie implements Serializable {
 
     @Override
     public String toString() {
-        return "_Movie{" +
+        return "Movie{" +
                 "mId='" + mId + '\'' +
                 ", mPosterPath='" + mPosterPath + '\'' +
                 ", mBackDropDate='" + mBackDropDate + '\'' +
