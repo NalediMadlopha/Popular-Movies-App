@@ -13,6 +13,22 @@
         android:theme="@style/AppTheme">
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/fragment_panel_a" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <include layout="@layout/fragment_panel_a"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <include layout="@layout/fragment_panel_b"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4" />
+    </LinearLayout>
+
+
 
 </android.support.design.widget.CoordinatorLayout>
