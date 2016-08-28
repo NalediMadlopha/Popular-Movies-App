@@ -6,7 +6,7 @@ import android.util.Log;
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.model.Genre;
 import com.popular_movies.model.TMDBHandler;
-import com.popular_movies.model._Movie;
+import com.popular_movies.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class MovieJSONParser {
 
     // TODO: Add a description
     @Nullable
-    public static List<_Movie> parseFeed(String content) {
+    public static List<Movie> parseFeed(String content) {
         mGenreIdList = new ArrayList<>();
 
         try {
@@ -38,10 +38,10 @@ public class MovieJSONParser {
             String genresJsonString = TMDBHandler.fetchMovieGenres();
             List<Genre> genres = GenreJSONParser.parseFeed(genresJsonString);
 
-            ArrayList<_Movie> movies = new ArrayList<>();
+            ArrayList<Movie> movies = new ArrayList<>();
 
             for (int i = 0; i < moviesJsonArray.length(); i++) {
-                _Movie movie = new _Movie();
+                Movie movie = new Movie();
                 JSONObject movieJson = moviesJsonArray.getJSONObject(i);
 
                 // Set the movie's Id
@@ -91,12 +91,12 @@ public class MovieJSONParser {
 
     // TODO: Add a description
     @Nullable
-    public static _Movie parseSingleFeed(String content) {
+    public static Movie parseSingleFeed(String content) {
         mGenreIdList = new ArrayList<>();
 
         try {
             JSONObject movieJson = new JSONObject(content);
-            _Movie movie = new _Movie();
+            Movie movie = new Movie();
 
             // Set the movie's Id
             movie.setId(movieJson.getString(GlobalConstant.sID));
