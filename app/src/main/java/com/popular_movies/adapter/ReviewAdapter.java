@@ -1,10 +1,13 @@
 package com.popular_movies.adapter;
 
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
+import com.popular_movies.app.R;
 import com.popular_movies.model.Review;
 
 import java.util.List;
@@ -49,16 +52,16 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
         // If this is a new View object we're getting, then inflate the layout.
         // If not, this view already has the layout inflated from a previous call to getView,
         // and we modify the View widgets as usual.
-//        if (convertView == null) {
-//            convertView = LayoutInflater.from(getContext()).inflate(
-//                    R.layout.review_item, parent, false);
-//        }
-//
-//        TextView reviewName = (TextView) convertView.findViewById(R.id.review_author);
-//        reviewName.setText(review.getAuthor());
-//
-//        TextView reviewMessage = (TextView) convertView.findViewById(R.id.review_content);
-//        reviewMessage.setText(review.getContent());
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(
+                    R.layout.review_item, parent, false);
+        }
+
+        TextView reviewName = (TextView) convertView.findViewById(R.id.review_author);
+        reviewName.setText(review.getAuthor());
+
+        TextView reviewMessage = (TextView) convertView.findViewById(R.id.review_content);
+        reviewMessage.setText(review.getContent());
 
         return convertView;
     }

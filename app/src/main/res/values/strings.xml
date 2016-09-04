@@ -8,6 +8,8 @@
     <!-- Strings related to Errors -->
     <string name="text_no_network_error" translatable="false">No Internet Connection</string>
     <string name="text_no_movies_error" translatable="false">No Movies Found</string>
+    <string name="text_no_movie_selected" translatable="false">Select a movie on the left panel.</string>
+    <string name="text_no_favourite_movies_error" translatable="false">No Favourite Movies Found</string>
     <string name="error_view_oops" translatable="false">Oops</string>
     <string name="error_view_damn" translatable="false">Damn</string>
     <string name="button_text_retry" translatable="false">RETRY</string>

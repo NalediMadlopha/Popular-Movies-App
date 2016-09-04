@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.popular_movies.app.GlobalConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class FavouriteMoviesHandler {
 
-    private List<String> sFavouriteMovieList;
+    private List<String> sFavouriteMovieList = new ArrayList<>();
     private SharedPreferences mPrefs;
     private Gson mGson = new Gson();
 
@@ -33,8 +34,6 @@ public class FavouriteMoviesHandler {
             // --- Check if the list in shared preferences is not null
             if (favouriteMovieListJson != null) {
                 sFavouriteMovieList = mGson.fromJson(favouriteMovieListJson, List.class);
-            } else {
-                return null; // Return null when the are no movie list in the shared preferences
             }
         }
         return sFavouriteMovieList;
@@ -42,7 +41,7 @@ public class FavouriteMoviesHandler {
 
     // Check if the movie has not already been added as a favourite
     public boolean isFavourite(String movieId) {
-        // Check if the movie ID is not contained in the movie list
+        // if the movie ID is contained in the movie list
         if (sFavouriteMovieList.contains(movieId)) {
             return true;
         } else {

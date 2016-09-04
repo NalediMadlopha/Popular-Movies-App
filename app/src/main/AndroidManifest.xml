@@ -27,7 +27,7 @@
                 android:value="com.popular_movies.app.MainActivity" />
         </activity>
         <activity
-            android:name=".MovieDetailsActivity"
+            android:name=".DetailsActivity"
             android:label="Movie Details"
             android:parentActivityName=".MainActivity">
             <meta-data

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/no_connection">
+
+    <ImageView
+        android:id="@+id/error_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/error_view_cloud"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="131dp" />
+
+    <TextView
+        android:id="@+id/error_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/error_view_damn"
+        android:textColor="@color/colorGrey"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/error_image"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/error_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorLightGrey"
+        android:text="@string/text_no_movies_error"
+        android:layout_below="@+id/error_title"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
