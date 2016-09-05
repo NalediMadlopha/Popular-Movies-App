@@ -1,7 +1,10 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.app;
 
 /**
- * Created by Naledi Madlopha on 2016/08/13.
+ * Provides static values to the entire application
  */
 public class GlobalConstant {
     public final static String sRESULTS = "results";
