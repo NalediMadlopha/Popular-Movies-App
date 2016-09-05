@@ -1,13 +1,9 @@
 package com.popular_movies.model;
 
-import java.io.Serializable;
-
 /**
  * Created by Naledi Madlopha on 2016/08/09.
  */
-public class Genre implements Serializable {
-
-    private static long serialVersionUID = 1L;
+public class Genre {
 
     private int id;
     private String name;

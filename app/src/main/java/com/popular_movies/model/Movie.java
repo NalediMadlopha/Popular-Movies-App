@@ -1,31 +1,28 @@
 package com.popular_movies.model;
 
-import com.popular_movies.app.Utils;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.io.Serializable;
+import com.popular_movies.app.Utils;
 
 /**
  * Created by Naledi Madlopha on 2016/07/28.
  */
-public class Movie implements Serializable {
-
-    private static long serialVersionUID = 0L;
+public class Movie implements Parcelable {
 
     private final String THE_MOVIE_DB_BASE_URL = "https://image.tmdb.org/t/p/w342";
 
-    private String mId;
-    private String mPosterPath;
-    private String mBackDropDate;
-    private String mOriginalTitle;
-    private String mTitle;
-    private String mOverall;
-    private String mGenre;
-    private String mReleaseDate;
-    private String mPopularity;
-    private String mVoteCount;
-    private String mVoteAverage;
-
-    protected int mPoster; // drawable reference id
+    private String id;
+    private String posterPath;
+    private String backDropDate;
+    private String originalTitle;
+    private String title;
+    private String overall;
+    private String genre;
+    private String releaseDate;
+    private String popularity;
+    private String voteCount;
+    private String voteAverage;
 
     public Movie() {
     }
@@ -33,127 +30,172 @@ public class Movie implements Serializable {
     public Movie(String id, String posterPath, String backDropDate, String originalTitle,
                  String title, String overall, String genre, String releaseDate,
                  String popularity, String voteCount, String voteAverage) {
-        this.mId = id;
-        this.mPosterPath = posterPath;
-        this.mBackDropDate = backDropDate;
-        this.mOriginalTitle = originalTitle;
-        this.mTitle = title;
-        this.mOverall = overall;
-        this.mGenre = genre;
-        this.mReleaseDate = releaseDate;
-        this.mPopularity = popularity;
-        this.mVoteCount = voteCount;
-        this.mVoteAverage = voteAverage;
+        this.id = id;
+        this.posterPath = posterPath;
+        this.backDropDate = backDropDate;
+        this.originalTitle = originalTitle;
+        this.title = title;
+        this.overall = overall;
+        this.genre = genre;
+        this.releaseDate = releaseDate;
+        this.popularity = popularity;
+        this.voteCount = voteCount;
+        this.voteAverage = voteAverage;
+    }
+
+    private Movie(Parcel in) {
+        id = in.readString();
+        posterPath = in.readString();
+        backDropDate = in.readString();
+        originalTitle = in.readString();
+        title = in.readString();
+        overall = in.readString();
+        genre = in.readString();
+        releaseDate = in.readString();
+        popularity = in.readString();
+        voteCount = in.readString();
+        voteAverage = in.readString();
     }
 
     public Movie(String title, String genre, String releaseDate) {
-        this.mTitle = title;
-        this.mGenre = genre;
-        this.mReleaseDate = releaseDate;
+        this.title = title;
+        this.genre = genre;
+        this.releaseDate = releaseDate;
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        this.mId = id;
+        this.id = id;
     }
 
     public String getPosterPath() {
-        return mPosterPath;
+        return posterPath;
     }
 
     public void setPosterPath(String posterPath) {
-        this.mPosterPath = THE_MOVIE_DB_BASE_URL + posterPath;
+        this.posterPath = THE_MOVIE_DB_BASE_URL + posterPath;
     }
 
     public String getBackDropDate() {
-        return mBackDropDate;
+        return backDropDate;
     }
 
     public void setBackDropDate(String backDropDate) {
-        this.mBackDropDate = THE_MOVIE_DB_BASE_URL + backDropDate;
+        this.backDropDate = THE_MOVIE_DB_BASE_URL + backDropDate;
     }
 
     public String getOriginalTitle() {
-        return mOriginalTitle;
+        return originalTitle;
     }
 
     public void setOriginalTitle(String originalTitle) {
-        this.mOriginalTitle = originalTitle;
+        this.originalTitle = originalTitle;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        this.mTitle = title;
+        this.title = title;
     }
 
     public String getOverall() {
-        return mOverall;
+        return overall;
     }
 
     public void setOverall(String overall) {
-        this.mOverall = overall;
+        this.overall = overall;
     }
 
     public String getGenre() {
-        return mGenre;
+        return genre;
     }
 
     public void setGenre(String genre) {
-        this.mGenre = genre;
+        this.genre = genre;
     }
 
     public String getReleaseDate() {
-        return mReleaseDate;
+        return releaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
-        this.mReleaseDate = Utils.convertDate(releaseDate);
+        this.releaseDate = Utils.convertDate(releaseDate);
     }
 
     public String getPopularity() {
-        return mPopularity;
+        return popularity;
     }
 
     public void setPopularity(String popularity) {
-        this.mPopularity = popularity;
+        this.popularity = popularity;
     }
 
     public String getVoteCount() {
-        return mVoteCount;
+        return voteCount;
     }
 
     public void setVoteCount(String voteCount) {
-        this.mVoteCount = voteCount;
+        this.voteCount = voteCount;
     }
 
     public String getVoteAverage() {
-        return mVoteAverage;
+        return voteAverage;
     }
 
     public void setVoteAverage(String voteAverage) {
-        this.mVoteAverage = voteAverage;
+        this.voteAverage = voteAverage;
     }
+
+    @Override
+    public int describeContents() { return 0; }
 
     @Override
     public String toString() {
         return "Movie{" +
-                "mId='" + mId + '\'' +
-                ", mPosterPath='" + mPosterPath + '\'' +
-                ", mBackDropDate='" + mBackDropDate + '\'' +
-                ", mOriginalTitle='" + mOriginalTitle + '\'' +
-                ", mTitle='" + mTitle + '\'' +
-                ", mOverall='" + mOverall + '\'' +
-                ", mGenre='" + mGenre + '\'' +
-                ", mReleaseDate='" + mReleaseDate + '\'' +
-                ", mPopularity='" + mPopularity + '\'' +
-                ", mVoteCount='" + mVoteCount + '\'' +
-                ", mVoteAverage='" + mVoteAverage + '\'' +
+                "id='" + id + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", backDropDate='" + backDropDate + '\'' +
+                ", originalTitle='" + originalTitle + '\'' +
+                ", title='" + title + '\'' +
+                ", overall='" + overall + '\'' +
+                ", genre='" + genre + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", popularity='" + popularity + '\'' +
+                ", voteCount='" + voteCount + '\'' +
+                ", voteAverage='" + voteAverage + '\'' +
                 '}';
     }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(posterPath);
+        parcel.writeString(backDropDate);
+        parcel.writeString(originalTitle);
+        parcel.writeString(title);
+        parcel.writeString(overall);
+        parcel.writeString(genre);
+        parcel.writeString(releaseDate);
+        parcel.writeString(popularity);
+        parcel.writeString(voteCount);
+        parcel.writeString(voteAverage);
+      }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+
+        @Override
+        public Movie[] newArray(int i) {
+            return new Movie[i];
+        }
+    };
 }

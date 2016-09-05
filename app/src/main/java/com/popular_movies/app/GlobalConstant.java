@@ -38,4 +38,5 @@ public class GlobalConstant {
     public final static String sYOUTUBE_VND = "vnd.youtube:";
     public final static String sYOUTUBE_URL = "http://www.youtube.com/watch?v=";
     public final static String sFAVOURITE_MOVIE_LIST = "FavouriteMovieList";
+    public static final String sDETAIL_FRAGMENT_TAG = "DETAIL_FRAGMENT_TAG";
 }

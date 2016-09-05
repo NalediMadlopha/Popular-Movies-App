@@ -27,7 +27,7 @@ public class MovieJSONParser {
 
     // TODO: Add a description
     @Nullable
-    public static List<Movie> parseFeed(String content) {
+    public static ArrayList<Movie> parseFeed(String content) {
         mGenreIdList = new ArrayList<>();
 
         try {
@@ -142,7 +142,6 @@ public class MovieJSONParser {
 
             return movie;
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
             return null;
         }
     }
@@ -151,7 +150,6 @@ public class MovieJSONParser {
     public static String getGenreNames(List<Integer> genreIdArray, List<Genre> genres) throws JSONException {
         String genreNames = "";
 
-        Log.v(LOG_TAG, genreIdArray.toString());
         // Loop through the movie's genres
         for (int i = 0; i < genreIdArray.size(); i++) {
             // Loop through all the genres

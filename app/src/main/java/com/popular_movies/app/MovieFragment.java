@@ -8,8 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,26 +28,26 @@ import java.util.List;
 /**
  * Created by Naledi Madlopha on 2016/07/28.
  */
-public class MainFragment extends Fragment {
+public class MovieFragment extends Fragment {
 
-    private static final String LOG_TAG = MainFragment.class.getSimpleName();
+    private static final String LOG_TAG = MovieFragment.class.getSimpleName();
+    private static final String MOVIE = "movie";
+    private static final String MOVIES = "movies";
 
     private MovieAdapter mMovieAdapter;
     private GridView mMovieGridView;
+    private ArrayList<Movie> mMovieList = new ArrayList<>();
     private ArrayList<FetchMovies> tasks = new ArrayList<>();
     private View mRootView;
     private LinearLayout mLoadMoviesProgressIndicator;
 
-    boolean mDualPane;
-    int mCurCheckPosition = 0;
-
-    public MainFragment() {
+    public MovieFragment() {
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(MOVIES, mMovieList);
         super.onSaveInstanceState(outState);
-        outState.putInt("curChoice", mCurCheckPosition);
     }
 
     @Nullable
@@ -59,26 +57,15 @@ public class MainFragment extends Fragment {
 
         // Check if there is internet connection
         if (isOnline()) {
-
             // Inflate the main fragment
             mRootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            // Initialize the progress bar
-            mLoadMoviesProgressIndicator =
-                    (LinearLayout) mRootView.findViewById(R.id.load_movies_progress_indicator);
-
-            // Get a reference to the grid view
-            mMovieGridView = (GridView) mRootView.findViewById(R.id.movie_grid);
-
-            // Set on item click listener
-            mMovieGridView.setOnItemClickListener(mMovieOnItemClickListener);
+            // Fetch movies from the API
+            new FetchMovies().execute();
         } else {
             // Inflate an error fragment if there is no network connection
             mRootView = inflater.inflate(R.layout.activity_error_no_network, container, false);
-
             // Initialize a retry button in case there is no network
             Button button_retry = (Button) mRootView.findViewById(R.id.button_retry);
-
             // Set the on click listener for the retry button
             button_retry.setOnClickListener(mButtonRetryOnClickListener);
         }
@@ -86,27 +73,6 @@ public class MainFragment extends Fragment {
         return mRootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        // Execute a background task, to fetch the movies from The Movie Database
-        new FetchMovies().execute();
-
-        // Check if there frame to embed the movie details fragment is there
-        View detailsFrame = getActivity().findViewById(R.id.details_container);
-        mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-
-        if (savedInstanceState != null) {
-            // Restore last state for checked position
-            mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
-        }
-
-        if (mDualPane) {
-            mMovieGridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
-            showDetails(mCurCheckPosition);
-        }
-    }
 
     final View.OnClickListener mButtonRetryOnClickListener = new View.OnClickListener() {
         @Override
@@ -119,47 +85,25 @@ public class MainFragment extends Fragment {
     final AdapterView.OnItemClickListener mMovieOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            showDetails(position);
+
+            if (mRootView.findViewById(R.id.movie_detail_container) != null) {
+                DetailFragment detailFragment = new DetailFragment();
+
+                // Supply index input as an argument.
+                Bundle args = new Bundle();
+                args.putParcelable(MOVIE, mMovieAdapter.getItem(position));
+                detailFragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, detailFragment, MOVIES)
+                        .commit();
+            } else {
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(MOVIE, mMovieAdapter.getItem(position));
+                startActivity(intent);
+            }
         }
     };
-
-    /**
-     * Helper function to show the details of a selected item, either by
-     * displaying a fragment in-place in the current UI, or starting a
-     * whole new activity in which it is displayed.
-     */
-    void showDetails(int index) {
-        mCurCheckPosition = index;
-
-        if (mDualPane) {
-            mMovieGridView.setItemChecked(index, true);
-
-            DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentById(R.id.details_container);
-
-            if (detailsFragment == null || detailsFragment.getShownIndex() != index) {
-                detailsFragment = DetailsFragment.newInstance(index);
-
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-
-                if (index == 0) {
-                    fragmentTransaction.replace(R.id.details_container, detailsFragment);
-                } else {
-                    fragmentTransaction.replace(R.id.details_container, detailsFragment);
-                }
-
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                fragmentTransaction.commit();
-            }
-
-            Log.v(LOG_TAG, "dual pane");
-        } else {
-            Movie movie = mMovieAdapter.getItem(index); // Get the clicked movie
-            Intent intent = new Intent(getActivity(), DetailsActivity.class)
-                    .putExtra("movie", movie); // Attach the clicked movie onto an intent
-            startActivity(intent); // Start the details activity
-        }
-
-    }
 
     protected boolean isOnline() {
 
@@ -179,6 +123,10 @@ public class MainFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            // Initialize the progress bar
+            mLoadMoviesProgressIndicator =
+                    (LinearLayout) mRootView.findViewById(R.id.load_movies_progress_indicator);
+
             // Check if there are any tasks pending
             // If so, display the progress indicator
             if (tasks.size() == 0) {
@@ -196,14 +144,14 @@ public class MainFragment extends Fragment {
 
             if (sortOrder != null) {
                 switch (sortOrder) {
-                    case "Most Popular": // In case the sort order is set to popular movies
+                    case "Most Popular": // In case the sort order is set to popular mMovieList
                         moviesJsonString = TMDBHandler.fetchPopularMovies();
                         break;
-                    case "Top Rated": // In case the sort order is set to top rated movies
+                    case "Top Rated": // In case the sort order is set to top rated mMovieList
                         moviesJsonString = TMDBHandler.fetchTopRatedMovies();
                         break;
-                    case "Favourites":  // In case the sort order is set to favourite movies
-                        // Instantiate the favourite movies handler
+                    case "Favourites":  // In case the sort order is set to favourite mMovieList
+                        // Instantiate the favourite mMovieList handler
                         FavouriteMoviesHandler favouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
                         List<String> favouriteMovies = favouriteMoviesHandler.getMovieList();
@@ -217,12 +165,12 @@ public class MainFragment extends Fragment {
                         return favouriteMovieList;
                 }
             } else {
-                // If the sort order has not been set, fetch most popular movies
+                // If the sort order has not been set, fetch most popular mMovieList
                 moviesJsonString = TMDBHandler.fetchPopularMovies();
             }
 
 
-            // Return a list of movies
+            // Return a list of mMovieList
             return MovieJSONParser.parseFeed(moviesJsonString);
         }
 
@@ -240,6 +188,11 @@ public class MainFragment extends Fragment {
             if (movies != null) {
                 // Initialize the movie adapter, passing the movie list
                 mMovieAdapter = new MovieAdapter(getActivity(), movies);
+
+                // Get a reference to the grid view
+                mMovieGridView = (GridView) mRootView.findViewById(R.id.movie_grid);
+                // Set on item click listener
+                mMovieGridView.setOnItemClickListener(mMovieOnItemClickListener);
                 // Set the grid view adapter
                 mMovieGridView.setAdapter(mMovieAdapter);
             }

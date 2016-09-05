@@ -1,3 +1,6 @@
+/*
+ * Copy (C) 2016 The Android Open Source Project
+ */
 package com.popular_movies.app;
 
 import android.content.Intent;
@@ -6,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * The starting point of the application
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -13,12 +19,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.main_container, new MainFragment())
-//                    .commit();
-//        }
-
+        // Check if the details container is not null
+        if (findViewById(R.id.movie_detail_container) != null) {
+            // Check the saved instance state and replace the movie detail contain
+            // with details fragment
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new DetailFragment(),
+                                GlobalConstant.sDETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
+        }
     }
 
     @Override
@@ -36,10 +47,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            // Start the settings activity
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

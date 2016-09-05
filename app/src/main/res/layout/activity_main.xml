@@ -1,11 +1,8 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_movies"
+    android:name="com.popular_movies.app.MovieFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <fragment class="com.popular_movies.app.MainFragment"
-        android:id="@+id/movie_item"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</FrameLayout>
+    android:layout_height="match_parent"
+    tools:context="com.popular_movies.app.MovieFragment"
+    tools:layout="@layout/fragment_main" />

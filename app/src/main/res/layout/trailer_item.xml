@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/trailer_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_action_play"/>
 

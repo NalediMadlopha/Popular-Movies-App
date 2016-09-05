@@ -36,41 +36,19 @@ import java.util.List;
 /**
  * Created by Naledi Madlopha on 2016/07/28.
  */
-public class DetailsFragment extends Fragment {
+public class DetailFragment extends Fragment {
 
-    private static final String LOG_TAG = DetailsFragment.class.getSimpleName();
+    protected static final String MOVIE = "movie";
 
-    protected Movie mMovie;
-    protected ListView mTrailersListView;
-    protected LinearLayout mReviewsLinearLayout;
-
-    protected TrailerAdapter mTrailerAdapter;
-    protected ReviewAdapter mReviewAdapter;
-
+    private Movie mMovie;
+    private ListView mTrailersListView;
+    private LinearLayout mReviewsLinearLayout;
+    private TrailerAdapter mTrailerAdapter;
+    private ReviewAdapter mReviewAdapter;
     private FavouriteMoviesHandler mFavouriteMoviesHandler;
-
     private ImageButton mFavouriteMovieIcon;
 
-    public DetailsFragment() {
-    }
-
-    /**
-     * Create a new instance of DetailsFragment, initialized to
-     * show the text at 'index'.
-     */
-    public static DetailsFragment newInstance(int index) {
-        DetailsFragment detailsFragment = new DetailsFragment();
-
-        // Supply index input as an argument.
-        Bundle args = new Bundle();
-        args.putInt("index", index);
-        detailsFragment.setArguments(args);
-
-        return detailsFragment;
-    }
-
-    public int getShownIndex() {
-        return getArguments().getInt("index", 0);
+    public DetailFragment() {
     }
 
     @Nullable
@@ -78,18 +56,14 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Get the intent from the activity
-        Intent intent = getActivity().getIntent();
-
         final View rootView;// = inflater.inflate(R.layout.fragment_details, null);
 
-        if (intent != null && intent.hasExtra("movie")) {
             rootView = inflater.inflate(R.layout.fragment_details, null);
 
-            // Get the movie which was passed as an extra in the intent
-            // Because the Movie class is serializable, the movie can be
-            // passed from one activity to another
-            mMovie = (Movie) intent.getSerializableExtra("movie");
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                mMovie = arguments.getParcelable(DetailFragment.MOVIE);
+            }
 
             // Set the poster of the movie
             ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
@@ -146,9 +120,7 @@ public class DetailsFragment extends Fragment {
 
             // Fetch the movie reviews using the asyncTask
             new FetchReviews().execute();
-        } else {
-            rootView = inflater.inflate(R.layout.activity_no_movie_selected, null);
-        }
+
         return rootView;
     }
     
