@@ -29,6 +29,7 @@ public class GlobalConstant {
     public final static String sMOVIE_GENRE_QUERY = "/genre/movie/list";
     public final static String sGENRE_LIST = "genres";
     public final static String sMOVIE = "movie";
+    public final static String sMOVIES = "movies";
     public final static String sNAME = "name";
     public final static String sISO_639_1 = "iso_639_1";
     public final static String sISO_3166_1 = "iso_3166_1";

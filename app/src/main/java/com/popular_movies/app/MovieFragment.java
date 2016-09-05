@@ -1,3 +1,6 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.app;
 
 import android.content.Context;
@@ -26,13 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Naledi Madlopha on 2016/07/28.
+ * Provides the movie fragment
  */
 public class MovieFragment extends Fragment {
 
-    private static final String LOG_TAG = MovieFragment.class.getSimpleName();
-    private static final String MOVIE = "movie";
-    private static final String MOVIES = "movies";
 
     private MovieAdapter mMovieAdapter;
     private GridView mMovieGridView;
@@ -46,7 +46,7 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(MOVIES, mMovieList);
+        outState.putParcelableArrayList(GlobalConstant.sMOVIES, mMovieList);
         super.onSaveInstanceState(outState);
     }
 
@@ -73,8 +73,11 @@ public class MovieFragment extends Fragment {
         return mRootView;
     }
 
-
-    final View.OnClickListener mButtonRetryOnClickListener = new View.OnClickListener() {
+    /**
+     * Initialize a retry button on click listener
+     * to refresh the the activity in case there is no internet connection
+     */
+    private final View.OnClickListener mButtonRetryOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             startActivity(new Intent(getActivity(), MainActivity.class));
@@ -82,29 +85,40 @@ public class MovieFragment extends Fragment {
         }
     };
 
-    final AdapterView.OnItemClickListener mMovieOnItemClickListener = new AdapterView.OnItemClickListener() {
+    /**
+     * Initialize an on item click listener
+     * If the screen displays a multipane layout, a movie details fragment is add
+     * and the movie details are displayed on the fragment.
+     * If the screen displays a single pane layout then a new activity is started
+     * displaying the movie details
+     */
+    private final AdapterView.OnItemClickListener mMovieOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
+            // Check if the movie detail container is displayed or not
             if (mRootView.findViewById(R.id.movie_detail_container) != null) {
                 DetailFragment detailFragment = new DetailFragment();
 
                 // Supply index input as an argument.
                 Bundle args = new Bundle();
-                args.putParcelable(MOVIE, mMovieAdapter.getItem(position));
+                args.putParcelable(GlobalConstant.sMOVIE, mMovieAdapter.getItem(position));
                 detailFragment.setArguments(args);
 
+                // Replace the movie details container framelayout with the details fragment
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, detailFragment, MOVIES)
+                        .replace(R.id.movie_detail_container, detailFragment, GlobalConstant.sMOVIES)
                         .commit();
             } else {
+                // Start the details activity and pass the movie to it
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(MOVIE, mMovieAdapter.getItem(position));
+                intent.putExtra(GlobalConstant.sMOVIE, mMovieAdapter.getItem(position));
                 startActivity(intent);
             }
         }
     };
 
+    /** Checks if there is internet connection */
     protected boolean isOnline() {
 
         ConnectivityManager connectivityManager =
@@ -114,12 +128,8 @@ public class MovieFragment extends Fragment {
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
+    /** Fetches the movies from the API */
     public class FetchMovies extends AsyncTask<Void, Void, List<Movie>> {
-        /*
-         * The LOG_TAG stores the name of the class, it is used for
-         * debugging purposes.
-         */
-        private final String LOG_TAG = FetchMovies.class.getSimpleName();
 
         @Override
         protected void onPreExecute() {
@@ -140,6 +150,7 @@ public class MovieFragment extends Fragment {
         @Override
         protected List<Movie> doInBackground(Void... voids) {
             String moviesJsonString = null;
+            // Gets the sort order preference
             String sortOrder = Utils.getSortOrderPref(getActivity());
 
             if (sortOrder != null) {
@@ -154,11 +165,14 @@ public class MovieFragment extends Fragment {
                         // Instantiate the favourite mMovieList handler
                         FavouriteMoviesHandler favouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
+                        // Gets the movies json list
                         List<String> favouriteMovies = favouriteMoviesHandler.getMovieList();
                         List<Movie> favouriteMovieList = new ArrayList<>();
 
+                        // Gets the movie objects from the movies json string
                         for (int i = 0; i < favouriteMovies.size(); i++) {
-                            moviesJsonString = TMDBHandler.fetchFavouriteMovies(favouriteMovies.get(i));
+                            moviesJsonString = TMDBHandler.
+                                    fetchFavouriteMovies(favouriteMovies.get(i));
                             Movie movie = MovieJSONParser.parseSingleFeed(moviesJsonString);
                             favouriteMovieList.add(movie);
                         }
@@ -168,7 +182,6 @@ public class MovieFragment extends Fragment {
                 // If the sort order has not been set, fetch most popular mMovieList
                 moviesJsonString = TMDBHandler.fetchPopularMovies();
             }
-
 
             // Return a list of mMovieList
             return MovieJSONParser.parseFeed(moviesJsonString);
