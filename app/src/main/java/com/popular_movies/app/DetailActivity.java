@@ -1,11 +1,15 @@
+/*
+ * Copy (C) 2016 The Android Open Source Project
+ */
 package com.popular_movies.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+/**
+ * Provides the details activity
+ */
 public class DetailActivity extends AppCompatActivity {
-
-    private static final String MOVIE = "movie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,15 +17,17 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-
             Bundle arguments = new Bundle();
-            arguments.putParcelable(DetailFragment.MOVIE, getIntent().getParcelableExtra(MOVIE));
+            // Get the parcelable movie and put it in a bundle
+            arguments.putParcelable(GlobalConstant.sMOVIE,
+                    getIntent().getParcelableExtra(GlobalConstant.sMOVIE));
 
+            // Create a new details fragment
             DetailFragment detailFragment = new DetailFragment();
+            // Set the fragment arguments
             detailFragment.setArguments(arguments);
 
+            // Add the fragment to the movie details container (Framelayout)
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, detailFragment)
                     .commit();

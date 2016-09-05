@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * The starting point of the application
+ * Provides the main activity
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +54,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }
