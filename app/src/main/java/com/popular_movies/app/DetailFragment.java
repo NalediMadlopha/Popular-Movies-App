@@ -1,3 +1,6 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.app;
 
 import android.content.ActivityNotFoundException;
@@ -34,11 +37,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by Naledi Madlopha on 2016/07/28.
+ * Provides the details fragment
  */
 public class DetailFragment extends Fragment {
-
-    protected static final String MOVIE = "movie";
 
     private Movie mMovie;
     private ListView mTrailersListView;
@@ -56,116 +57,133 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView;// = inflater.inflate(R.layout.fragment_details, null);
+        // Inflate the details fragment
+        final View rootView = inflater.inflate(R.layout.fragment_details, null);
 
-            rootView = inflater.inflate(R.layout.fragment_details, null);
+        // Get the arguments
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            // Get the parcelable movie argument
+            mMovie = arguments.getParcelable(GlobalConstant.sMOVIE);
+        }
 
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                mMovie = arguments.getParcelable(DetailFragment.MOVIE);
-            }
+        // Set the poster of the movie
+        ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
+        Picasso.with(getActivity()).load(mMovie.getBackDropDate()).into(movie_poster);
 
-            // Set the poster of the movie
-            ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
-            Picasso.with(getActivity()).load(mMovie.getBackDropDate()).into(movie_poster);
+        // Set the favourite movie icon
+        mFavouriteMovieIcon = (ImageButton) rootView.findViewById(R.id.details_favourite_movie);
 
-            // Set the favourite movie icon
-            mFavouriteMovieIcon = (ImageButton) rootView.findViewById(R.id.details_favourite_movie);
-
-            // Instantiate the favourite movies handler
-            mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
-
-            // Check if the movie is already in the favourite movie list
-            if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
-                // Set the favourite icon tint to red
-                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
-            }
-
-            // Set favourite button on click listener
-            mFavouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
-
-            // Set the title of the movie
-            TextView movie_title = (TextView) rootView.findViewById(R.id.details_movie_title);
-            movie_title.setText(mMovie.getOriginalTitle());
-
-            // Set the genre(s) of the movie
-            TextView movie_genres = (TextView) rootView.findViewById(R.id.details_movie_genres);
-            movie_genres.setText(mMovie.getGenre());
-
-            // Set the release date of the movie
-            TextView movie_release_date = (TextView) rootView.findViewById(R.id.details_movie_release_date);
-            movie_release_date.setText(mMovie.getReleaseDate());
-
-            // Set the plot synopsis of the movie
-            TextView plot_synopsis = (TextView) rootView.findViewById(R.id.details_movie_plot_synopsis);
-            plot_synopsis.setText(mMovie.getOverall());
-
-            // Find the trailer list view
-            mTrailersListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
-
-            mTrailersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Trailer trailer = (Trailer) mTrailerAdapter.getItem(position);
-                    // Open the movie trailer video
-                    watchTrailer(trailer.getKey());
-                }
-            });
-
-            // Find the review linear layout
-            mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
-
-            // Fetch the movie trailers using the asyncTask
-            new FetchTrailers().execute();
-
-            // Fetch the movie reviews using the asyncTask
-            new FetchReviews().execute();
-
-        return rootView;
-    }
-    
-    public Button.OnClickListener favouriteMovieButtonOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+        // Instantiate the favourite movies handler
+        mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
         // Check if the movie is already in the favourite movie list
         if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
-
-            // Remove the movie from the favourite movie list
-            mFavouriteMoviesHandler.removeMovie(mMovie.getId());
-
-            // Set the favourite icon tint to grey
-            mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
-                    .getColor(R.color.colorGrey)));
-
-            // Notify the user with a toast
-            Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
-        } else {
-
-            // Add the movie to the favourite movie list
-            mFavouriteMoviesHandler.addMovie(mMovie.getId());
-
             // Set the favourite icon tint to red
             mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
-
-            // Notify the user with a toast
-            Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
         }
+
+        // Set favourite button on click listener
+        mFavouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
+
+        // Set the title of the movie
+        TextView movie_title = (TextView) rootView.findViewById(R.id.details_movie_title);
+        movie_title.setText(mMovie.getOriginalTitle());
+
+        // Set the genre(s) of the movie
+        TextView movie_genres = (TextView) rootView.findViewById(R.id.details_movie_genres);
+        movie_genres.setText(mMovie.getGenre());
+
+        // Set the release date of the movie
+        TextView movie_release_date = (TextView) rootView.findViewById(R.id.details_movie_release_date);
+        movie_release_date.setText(mMovie.getReleaseDate());
+
+        // Set the plot synopsis of the movie
+        TextView plot_synopsis = (TextView) rootView.findViewById(R.id.details_movie_plot_synopsis);
+        plot_synopsis.setText(mMovie.getOverall());
+
+        // Find the trailer list view
+        mTrailersListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
+
+        // Set the trailer on item click listener
+        mTrailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
+
+        // Find the review linear layout
+        mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
+
+        // Fetch the movie trailers using the asyncTask
+        new FetchTrailers().execute();
+
+        // Fetch the movie reviews using the asyncTask
+        new FetchReviews().execute();
+
+        return rootView;
+    }
+
+    /**
+     * Create the trailer on item click lister
+     * Open the trailer video on YouTube
+     */
+    private final AdapterView.OnItemClickListener mTrailerOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+            // Get the trailer from the trailer adapter
+            Trailer trailer = (Trailer) mTrailerAdapter.getItem(position);
+
+            // Open the movie trailer video
+            watchTrailer(trailer.getKey());
         }
     };
 
+    /** Create the favourite movie button on click lister */
+    private final Button.OnClickListener favouriteMovieButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            // Check if the movie is already in the favourite movie list
+            if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
+
+                // Remove the movie from the favourite movie list
+                mFavouriteMoviesHandler.removeMovie(mMovie.getId());
+
+                // Set the favourite icon tint to grey
+                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
+                        .getColor(R.color.colorGrey)));
+
+                // Notify the user with a toast
+                Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
+            } else {
+
+                // Add the movie to the favourite movie list
+                mFavouriteMoviesHandler.addMovie(mMovie.getId());
+
+                // Set the favourite icon tint to red
+                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+
+                // Notify the user with a toast
+                Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
+    /** Open the trailer video on YouTube */
     public void watchTrailer(String trailerKey) {
+        Intent intent = null;
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
+            intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(GlobalConstant.sYOUTUBE_VND + trailerKey));
-            startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
+            intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(GlobalConstant.sYOUTUBE_URL + trailerKey));
+        } finally {
+            // Start the activity that will open the YouTube app
+            // or the YouTube website
             startActivity(intent);
         }
     }
 
+    /** Provides a background task that fetches the movie's reviews */
     public class FetchReviews extends AsyncTask<Void, Void, List<Review>> {
 
         @Override
@@ -200,6 +218,7 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    /** Provides a background task that fetches the movie's trailers */
     public class FetchTrailers extends AsyncTask<Void, Void, List<Trailer>> {
 
         @Override

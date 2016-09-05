@@ -1,5 +1,5 @@
 /*
- * Copy (C) 2016 The Android Open Source Project
+ * Copy (C) 2016 Popular Movies Udacity Project 1
  */
 package com.popular_movies.app;
 
