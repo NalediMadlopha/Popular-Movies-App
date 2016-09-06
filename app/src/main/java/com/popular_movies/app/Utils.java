@@ -20,7 +20,12 @@ public class Utils {
 
     private final static String LOG_TAG = Utils.class.getSimpleName();
 
-    // TODO: Add method description
+    /**
+     * Converts the date format from "y-MM-dd" to "dd MMM y"
+     *
+     * @param strDate a string date
+     * @return converted format date string
+     */
     public static String convertDate(String strDate) {
         String convertedDate = null;
 
@@ -45,7 +50,12 @@ public class Utils {
         }
     }
 
-    // TODO: Add method description
+    /**
+     * Gets the sort order preference
+     *
+     * @param context which the method is called from
+     * @return string of the sort order value
+     */
     public static String getSortOrderPref(Context context) {
         String sortOrder = null;
 
@@ -59,11 +69,10 @@ public class Utils {
 
     /**
      * Sets ListView height dynamically based on the height of the items.
-     *
+     * This code was taken from the internet. SOURCE: http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121
      * @param listView to be resized
      * @return true if the listView is successfully resized, false otherwise
      */
-    // TODO: Add source (http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121)
     public static boolean setListViewHeightBasedOnItems(ListView listView) {
 
         ListAdapter listAdapter = listView.getAdapter();
