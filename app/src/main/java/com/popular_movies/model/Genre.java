@@ -14,11 +14,6 @@ public class Genre {
     public Genre() {
     }
 
-    public Genre(int id, String name) {
-        this.mId = id;
-        this.mName = name;
-    }
-
     public int getId() {
         return mId;
     }

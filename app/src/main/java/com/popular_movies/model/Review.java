@@ -1,7 +1,10 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.model;
 
 /**
- * Created by Naledi Madlopha on 2016/08/14.
+ * Provides a review object template
  */
 public class Review {
 
@@ -10,12 +13,6 @@ public class Review {
     private String mContent;
 
     public Review() {
-    }
-
-    public Review(String id, String reviewer, String content) {
-        this.mId = id;
-        this.mAuthor = reviewer;
-        this.mContent = content;
     }
 
     public String getId() {

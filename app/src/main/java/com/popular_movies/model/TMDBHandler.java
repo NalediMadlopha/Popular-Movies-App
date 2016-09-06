@@ -1,7 +1,9 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.model;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.popular_movies.app.GlobalConstant;
 
@@ -14,13 +16,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by Naledi Madlopha on 2016/08/13.
+ * Handles the API calls
  */
 public class TMDBHandler {
 
-    private final static String LOG_TAG = TMDBHandler.class.getSimpleName();
-
-        public static String fetchPopularMovies() {
+    /**
+     * Fetches popular movies
+     *
+     * @return json object of a list of popular movies
+     */
+    public static String fetchPopularMovies() {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.MOVIE_POPULAR)
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
@@ -31,7 +36,11 @@ public class TMDBHandler {
         return popularMoviesJson;
     }
 
-    // TODO: Add method description
+    /**
+     * Fetches top rated movies
+     *
+     * @return json object of a list of top rated movies
+     */
     public static String fetchTopRatedMovies() {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.MOVIE_TOP_RATED)
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
@@ -43,7 +52,12 @@ public class TMDBHandler {
         return topRatedMoviesJson;
     }
 
-    // TODO: Add method description
+    /**
+     * Fetches the user's favourite movies
+     *
+     * @param movieId is the unique movie id
+     * @return json object of a list of the user's favourite movies
+     */
     public static String fetchFavouriteMovies(String movieId) {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.SINGlE_MOVIE_QUERY + movieId)
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
@@ -55,7 +69,11 @@ public class TMDBHandler {
         return moviesJson;
     }
 
-    // TODO: Add method description
+    /**
+     * Fetches all the movie genres
+     *
+     * @return json object of a list of movie genres
+     */
     public static String fetchMovieGenres() {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.GENRE_MOVIE_LIST)
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
@@ -67,7 +85,12 @@ public class TMDBHandler {
         return movieGenresJson;
     }
 
-    // TODO: Add method description
+    /**
+     * Fetches the movie's trailers
+     *
+     * @param movieId is the unique movie id
+     * @return json object of a list of movie genres
+     */
     public static String fetchMovieTrailers(int movieId) {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/videos")
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
@@ -79,7 +102,12 @@ public class TMDBHandler {
         return movieTrailersJson;
     }
 
-    // TODO: Add method description
+    /**
+     * Fetches the movie's reviews
+     *
+     * @param movieId is the unique movie id
+     * @return json object of a list of movie reviews
+     */
     public static String fetchMovieReviews(int movieId) {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/reviews")
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
@@ -91,7 +119,12 @@ public class TMDBHandler {
         return movieReviewsJson;
     }
 
-    // TODO: Add method description
+    /**
+     * Makes a call to the API
+     *
+     * @param builtUri the API url
+     * @return json string of the result
+     */
     private static String request(Uri builtUri) {
         /*
          * These two variables need to be declared outside the try/catch
@@ -99,6 +132,7 @@ public class TMDBHandler {
          */
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
+        String jsonString = null;
 
         try {
             URL url = new URL(builtUri.toString());
@@ -126,15 +160,11 @@ public class TMDBHandler {
             if (buffer.length() == 0) {
                 return null;
             }
-            String jsonString = buffer.toString(); // JSON string from the buffer
-
-            return jsonString;
+            jsonString = buffer.toString(); // JSON string from the buffer
         }catch (MalformedURLException e) {
-            Log.e(LOG_TAG, e.getMessage());
-            return null;
+            e.getMessage();
         }  catch (IOException e) {
-            Log.e(LOG_TAG, e.getMessage());
-            return null;
+            e.getMessage();
         } finally {
             // Check if the connection exists
             if (urlConnection != null) {
@@ -146,9 +176,11 @@ public class TMDBHandler {
                 try {
                     reader.close(); // Close the reader
                 } catch (final IOException e) {
-                    Log.e(LOG_TAG, e.getMessage());
+                    e.getMessage();
                 }
             }
+
+            return jsonString;
         }
     }
 }
