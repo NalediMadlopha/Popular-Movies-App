@@ -32,7 +32,7 @@ public class MovieJSONParser {
 
         try {
             JSONObject moviesJson = new JSONObject(content);
-            JSONArray moviesJsonArray = moviesJson.getJSONArray(GlobalConstant.sRESULTS);
+            JSONArray moviesJsonArray = moviesJson.getJSONArray(GlobalConstant.RESULTS);
 
             // Fetch the movie genres from themoviedb.org API
             String genresJsonString = TMDBHandler.fetchMovieGenres();
@@ -45,17 +45,17 @@ public class MovieJSONParser {
                 JSONObject movieJson = moviesJsonArray.getJSONObject(i);
 
                 // Set the movie's Id
-                movie.setId(movieJson.getString(GlobalConstant.sID));
+                movie.setId(movieJson.getString(GlobalConstant.ID));
                 // Set the movie's poster
-                movie.setPosterPath(movieJson.getString(GlobalConstant.sPOSTER_PATH));
+                movie.setPosterPath(movieJson.getString(GlobalConstant.POSTER_PATH));
                 // Set the movie's original title
-                movie.setOriginalTitle(movieJson.getString(GlobalConstant.sORIGINAL_TITLE));
+                movie.setOriginalTitle(movieJson.getString(GlobalConstant.ORIGINAL_TITLE));
                 // Set the movie's title
-                movie.setTitle(movieJson.getString(GlobalConstant.sTITLE));
+                movie.setTitle(movieJson.getString(GlobalConstant.TITLE));
                 // Set the movie's overall description
-                movie.setOverall(movieJson.getString(GlobalConstant.sOVERALL));
+                movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
 
-                JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.sGENRE_IDS);
+                JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRE_IDS);
 
                 // Loop through the movie's genre array
                 for (int ii = 0; ii < genreArray.length(); ii++) {
@@ -69,15 +69,15 @@ public class MovieJSONParser {
                 // Set the movie's genre
                 movie.setGenre(genreNames);
                 // Set the movie's release date
-                movie.setReleaseDate(movieJson.getString(GlobalConstant.sRELEASE_DATE));
+                movie.setReleaseDate(movieJson.getString(GlobalConstant.RELEASE_DATE));
                 // Set the movie's backdrop path
-                movie.setBackDropDate(movieJson.getString(GlobalConstant.sBACKDROP_PATH));
+                movie.setBackDropDate(movieJson.getString(GlobalConstant.BACKDROP_PATH));
                 // Set the movie's popularity
-                movie.setPopularity(movieJson.getString(GlobalConstant.sPOPULARITY));
+                movie.setPopularity(movieJson.getString(GlobalConstant.POPULARITY));
                 // Set the movie's vote count
-                movie.setVoteCount(movieJson.getString(GlobalConstant.sVOTE_COUNT));
+                movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
                 // Set the movie's vote average
-                movie.setVoteAverage(movieJson.getString(GlobalConstant.sVOTE_AVERAGE));
+                movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
 
                 // Add the movie object to an array of movies
                 movies.add(movie);
@@ -99,22 +99,22 @@ public class MovieJSONParser {
             Movie movie = new Movie();
 
             // Set the movie's Id
-            movie.setId(movieJson.getString(GlobalConstant.sID));
+            movie.setId(movieJson.getString(GlobalConstant.ID));
             // Set the movie's poster
-            movie.setPosterPath(movieJson.getString(GlobalConstant.sPOSTER_PATH));
+            movie.setPosterPath(movieJson.getString(GlobalConstant.POSTER_PATH));
             // Set the movie's original title
-            movie.setOriginalTitle(movieJson.getString(GlobalConstant.sORIGINAL_TITLE));
+            movie.setOriginalTitle(movieJson.getString(GlobalConstant.ORIGINAL_TITLE));
             // Set the movie's title
-            movie.setTitle(movieJson.getString(GlobalConstant.sTITLE));
+            movie.setTitle(movieJson.getString(GlobalConstant.TITLE));
             // Set the movie's overall description
-            movie.setOverall(movieJson.getString(GlobalConstant.sOVERALL));
+            movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
 
             // Fetch the movie genres from themoviedb.org API
             String genresJsonString = TMDBHandler.fetchMovieGenres();
             // List of all genres
             List<Genre> genres = GenreJSONParser.parseFeed(genresJsonString);
             // Get the genres
-            JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.sGENRES);
+            JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRES);
 
 
             // Loop through the movie's genre array
@@ -130,15 +130,15 @@ public class MovieJSONParser {
             // Set the movie's genre
             movie.setGenre(genreNames);
             // Set the movie's release date
-            movie.setReleaseDate(movieJson.getString(GlobalConstant.sRELEASE_DATE));
+            movie.setReleaseDate(movieJson.getString(GlobalConstant.RELEASE_DATE));
             // Set the movie's backdrop path
-            movie.setBackDropDate(movieJson.getString(GlobalConstant.sBACKDROP_PATH));
+            movie.setBackDropDate(movieJson.getString(GlobalConstant.BACKDROP_PATH));
             // Set the movie's popularity
-            movie.setPopularity(movieJson.getString(GlobalConstant.sPOPULARITY));
+            movie.setPopularity(movieJson.getString(GlobalConstant.POPULARITY));
             // Set the movie's vote count
-            movie.setVoteCount(movieJson.getString(GlobalConstant.sVOTE_COUNT));
+            movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
             // Set the movie's vote average
-            movie.setVoteAverage(movieJson.getString(GlobalConstant.sVOTE_AVERAGE));
+            movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
 
             return movie;
         } catch (JSONException e) {

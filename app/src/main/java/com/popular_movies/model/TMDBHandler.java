@@ -21,8 +21,8 @@ public class TMDBHandler {
     private final static String LOG_TAG = TMDBHandler.class.getSimpleName();
 
         public static String fetchPopularMovies() {
-        Uri builtUri = Uri.parse(GlobalConstant.sBASE_URL + GlobalConstant.sPOPULAR_MOVIES_QUERY)
-                .buildUpon().appendQueryParameter(GlobalConstant.sAPI_KEY_PARAM, GlobalConstant.sAPI_KEY)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.MOVIE_POPULAR)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request popular movies
@@ -33,8 +33,8 @@ public class TMDBHandler {
 
     // TODO: Add method description
     public static String fetchTopRatedMovies() {
-        Uri builtUri = Uri.parse(GlobalConstant.sBASE_URL + GlobalConstant.sTOP_RATED_MOVIES_QUERY)
-                .buildUpon().appendQueryParameter(GlobalConstant.sAPI_KEY_PARAM, GlobalConstant.sAPI_KEY)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.MOVIE_TOP_RATED)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request top rated movies
@@ -45,8 +45,8 @@ public class TMDBHandler {
 
     // TODO: Add method description
     public static String fetchFavouriteMovies(String movieId) {
-        Uri builtUri = Uri.parse(GlobalConstant.sBASE_URL + GlobalConstant.sSINGE_MOVIE_QUERY + movieId)
-                .buildUpon().appendQueryParameter(GlobalConstant.sAPI_KEY_PARAM, GlobalConstant.sAPI_KEY)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.SINGlE_MOVIE_QUERY + movieId)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request a specific movie
@@ -57,8 +57,8 @@ public class TMDBHandler {
 
     // TODO: Add method description
     public static String fetchMovieGenres() {
-        Uri builtUri = Uri.parse(GlobalConstant.sBASE_URL + GlobalConstant.sMOVIE_GENRE_QUERY)
-                .buildUpon().appendQueryParameter(GlobalConstant.sAPI_KEY_PARAM, GlobalConstant.sAPI_KEY)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.GENRE_MOVIE_LIST)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request movie genres
@@ -69,8 +69,8 @@ public class TMDBHandler {
 
     // TODO: Add method description
     public static String fetchMovieTrailers(int movieId) {
-        Uri builtUri = Uri.parse(GlobalConstant.sBASE_URL + "/movie/" + movieId + "/videos")
-                .buildUpon().appendQueryParameter(GlobalConstant.sAPI_KEY_PARAM, GlobalConstant.sAPI_KEY)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/videos")
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request movie trailers of the specified movie
@@ -81,8 +81,8 @@ public class TMDBHandler {
 
     // TODO: Add method description
     public static String fetchMovieReviews(int movieId) {
-        Uri builtUri = Uri.parse(GlobalConstant.sBASE_URL + "/movie/" + movieId + "/reviews")
-                .buildUpon().appendQueryParameter(GlobalConstant.sAPI_KEY_PARAM, GlobalConstant.sAPI_KEY)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/reviews")
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request movie reviews of the specified movie

@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, new DetailFragment(),
-                                GlobalConstant.sDETAIL_FRAGMENT_TAG)
+                                GlobalConstant.DETAIL_FRAGMENT_TAG)
                         .commit();
             }
         }

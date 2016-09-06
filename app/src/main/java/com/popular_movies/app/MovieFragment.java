@@ -46,7 +46,7 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(GlobalConstant.sMOVIES, mMovieList);
+        outState.putParcelableArrayList(GlobalConstant.MOVIES, mMovieList);
         super.onSaveInstanceState(outState);
     }
 
@@ -102,17 +102,17 @@ public class MovieFragment extends Fragment {
 
                 // Supply index input as an argument.
                 Bundle args = new Bundle();
-                args.putParcelable(GlobalConstant.sMOVIE, mMovieAdapter.getItem(position));
+                args.putParcelable(GlobalConstant.MOVIE, mMovieAdapter.getItem(position));
                 detailFragment.setArguments(args);
 
                 // Replace the movie details container framelayout with the details fragment
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, detailFragment, GlobalConstant.sMOVIES)
+                        .replace(R.id.movie_detail_container, detailFragment, GlobalConstant.MOVIES)
                         .commit();
             } else {
                 // Start the details activity and pass the movie to it
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(GlobalConstant.sMOVIE, mMovieAdapter.getItem(position));
+                intent.putExtra(GlobalConstant.MOVIE, mMovieAdapter.getItem(position));
                 startActivity(intent);
             }
         }

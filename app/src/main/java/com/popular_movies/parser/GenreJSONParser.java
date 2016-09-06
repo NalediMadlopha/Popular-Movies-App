@@ -26,7 +26,7 @@ public class GenreJSONParser {
 
         try {
             JSONObject genresJson = new JSONObject(content);
-            JSONArray genresJsonArray = genresJson.getJSONArray(GlobalConstant.sGENRE_LIST);
+            JSONArray genresJsonArray = genresJson.getJSONArray(GlobalConstant.GENRES);
 
             ArrayList<Genre> genres = new ArrayList<>();
 
@@ -34,8 +34,8 @@ public class GenreJSONParser {
                 JSONObject genreObject = (JSONObject) genresJsonArray.get(i);
 
                 Genre genre = new Genre();
-                genre.setId(genreObject.getInt(GlobalConstant.sID));
-                genre.setName(genreObject.getString(GlobalConstant.sNAME));
+                genre.setId(genreObject.getInt(GlobalConstant.ID));
+                genre.setName(genreObject.getString(GlobalConstant.NAME));
 
                 genres.add(genre);
             }

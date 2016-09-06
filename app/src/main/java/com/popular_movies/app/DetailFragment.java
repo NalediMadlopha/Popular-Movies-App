@@ -64,7 +64,7 @@ public class DetailFragment extends Fragment {
         Bundle arguments = getArguments();
         if (arguments != null) {
             // Get the parcelable movie argument
-            mMovie = arguments.getParcelable(GlobalConstant.sMOVIE);
+            mMovie = arguments.getParcelable(GlobalConstant.MOVIE);
         }
 
         // Set the poster of the movie
@@ -128,11 +128,11 @@ public class DetailFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-            // Get the trailer from the trailer adapter
-            Trailer trailer = (Trailer) mTrailerAdapter.getItem(position);
+        // Get the trailer from the trailer adapter
+        Trailer trailer = (Trailer) mTrailerAdapter.getItem(position);
 
-            // Open the movie trailer video
-            watchTrailer(trailer.getKey());
+        // Open the movie trailer video
+        watchTrailer(trailer.getKey());
         }
     };
 
@@ -141,29 +141,29 @@ public class DetailFragment extends Fragment {
         @Override
         public void onClick(View view) {
 
-            // Check if the movie is already in the favourite movie list
-            if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
+        // Check if the movie is already in the favourite movie list
+        if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
 
-                // Remove the movie from the favourite movie list
-                mFavouriteMoviesHandler.removeMovie(mMovie.getId());
+            // Remove the movie from the favourite movie list
+            mFavouriteMoviesHandler.removeMovie(mMovie.getId());
 
-                // Set the favourite icon tint to grey
-                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
-                        .getColor(R.color.colorGrey)));
+            // Set the favourite icon tint to grey
+            mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
+                    .getColor(R.color.colorGrey)));
 
-                // Notify the user with a toast
-                Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
-            } else {
+            // Notify the user with a toast
+            Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
+        } else {
 
-                // Add the movie to the favourite movie list
-                mFavouriteMoviesHandler.addMovie(mMovie.getId());
+            // Add the movie to the favourite movie list
+            mFavouriteMoviesHandler.addMovie(mMovie.getId());
 
-                // Set the favourite icon tint to red
-                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+            // Set the favourite icon tint to red
+            mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
 
-                // Notify the user with a toast
-                Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
-            }
+            // Notify the user with a toast
+            Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
+        }
         }
     };
 
@@ -172,10 +172,10 @@ public class DetailFragment extends Fragment {
         Intent intent = null;
         try {
             intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(GlobalConstant.sYOUTUBE_VND + trailerKey));
+                    Uri.parse(GlobalConstant.VND_YOUTUBE + trailerKey));
         } catch (ActivityNotFoundException e) {
             intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(GlobalConstant.sYOUTUBE_URL + trailerKey));
+                    Uri.parse(GlobalConstant.HTTP_WWW_YOUTUBE_COM_WATCH_V + trailerKey));
         } finally {
             // Start the activity that will open the YouTube app
             // or the YouTube website

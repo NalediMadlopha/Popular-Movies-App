@@ -28,8 +28,8 @@ public class FavouriteMoviesHandler {
     // TODO: Add method description
     public List<String> getMovieList() {
         // -- Check if the movie list is contained in the shared preferences
-        if (mPrefs.contains(GlobalConstant.sFAVOURITE_MOVIE_LIST)) {
-            String favouriteMovieListJson = mPrefs.getString(GlobalConstant.sFAVOURITE_MOVIE_LIST, "");
+        if (mPrefs.contains(GlobalConstant.FAVOURITE_MOVIE_LIST)) {
+            String favouriteMovieListJson = mPrefs.getString(GlobalConstant.FAVOURITE_MOVIE_LIST, "");
 
             // --- Check if the list in shared preferences is not null
             if (favouriteMovieListJson != null) {
@@ -55,7 +55,7 @@ public class FavouriteMoviesHandler {
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String favouriteMovieListJson = mGson.toJson(sFavouriteMovieList);
-        prefsEditor.putString(GlobalConstant.sFAVOURITE_MOVIE_LIST, favouriteMovieListJson);
+        prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
         prefsEditor.commit();
     }
 
@@ -65,7 +65,7 @@ public class FavouriteMoviesHandler {
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String favouriteMovieListJson = mGson.toJson(sFavouriteMovieList);
-        prefsEditor.putString(GlobalConstant.sFAVOURITE_MOVIE_LIST, favouriteMovieListJson);
+        prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
         prefsEditor.commit();
     }
 }

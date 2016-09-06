@@ -19,8 +19,8 @@ public class DetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             // Get the parcelable movie and put it in a bundle
-            arguments.putParcelable(GlobalConstant.sMOVIE,
-                    getIntent().getParcelableExtra(GlobalConstant.sMOVIE));
+            arguments.putParcelable(GlobalConstant.MOVIE,
+                    getIntent().getParcelableExtra(GlobalConstant.MOVIE));
 
             // Create a new details fragment
             DetailFragment detailFragment = new DetailFragment();

@@ -26,7 +26,7 @@ public class TrailerJSONParser {
 
         try {
             JSONObject trailersJson = new JSONObject(content);
-            JSONArray trailersJsonArray = trailersJson.getJSONArray(GlobalConstant.sRESULTS);
+            JSONArray trailersJsonArray = trailersJson.getJSONArray(GlobalConstant.RESULTS);
 
             ArrayList<Trailer> trailers = new ArrayList<>();
 
@@ -35,21 +35,21 @@ public class TrailerJSONParser {
                 JSONObject trailerJson = trailersJsonArray.getJSONObject(i);
 
                 // Set the trailer's Id
-                trailer.setId(trailerJson.getString(GlobalConstant.sID));
+                trailer.setId(trailerJson.getString(GlobalConstant.ID));
                 // Set the trailers's iso_639_1
-                trailer.setIso_639_1(trailerJson.getString(GlobalConstant.sISO_639_1));
+                trailer.setIso_639_1(trailerJson.getString(GlobalConstant.ISO_639_1));
                 // Set the trailers's iso_3166_1
-                trailer.setIso_3166_1(trailerJson.getString(GlobalConstant.sISO_3166_1));
+                trailer.setIso_3166_1(trailerJson.getString(GlobalConstant.ISO_3166_1));
                 // Set the trailers's key
-                trailer.setKey(trailerJson.getString(GlobalConstant.sKEY));
+                trailer.setKey(trailerJson.getString(GlobalConstant.KEY));
                 // Set the trailers's name
-                trailer.setName(trailerJson.getString(GlobalConstant.sNAME));
+                trailer.setName(trailerJson.getString(GlobalConstant.NAME));
                 // Set the trailers's site
-                trailer.setSite(trailerJson.getString(GlobalConstant.sSITE));
+                trailer.setSite(trailerJson.getString(GlobalConstant.SITE));
                 // Set the trailers's size
-                trailer.setSize(trailerJson.getString(GlobalConstant.sSIZE));
+                trailer.setSize(trailerJson.getString(GlobalConstant.SIZE));
                 // Set the trailers's type
-                trailer.setType(trailerJson.getString(GlobalConstant.sTYPE));
+                trailer.setType(trailerJson.getString(GlobalConstant.TYPE));
 
                 // Add the trailer object to an array of trailers
                 trailers.add(trailer);

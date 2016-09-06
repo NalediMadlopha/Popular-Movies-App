@@ -26,7 +26,7 @@ public class ReviewsJSONParser {
 
         try {
             JSONObject reviewsJson = new JSONObject(content);
-            JSONArray reviewsJsonArray = reviewsJson.getJSONArray(GlobalConstant.sRESULTS);
+            JSONArray reviewsJsonArray = reviewsJson.getJSONArray(GlobalConstant.RESULTS);
 
             ArrayList<Review> reviews = new ArrayList<>();
 
@@ -37,13 +37,13 @@ public class ReviewsJSONParser {
                 JSONObject reviewJson = reviewsJsonArray.getJSONObject(i);
 
                 // Set the review Id
-                review.setId(reviewJson.getString(GlobalConstant.sID));
+                review.setId(reviewJson.getString(GlobalConstant.ID));
 
                 // Set the author
-                review.setAuthor(reviewJson.getString(GlobalConstant.sAUTHOR));
+                review.setAuthor(reviewJson.getString(GlobalConstant.AUTHOR));
 
                 // Set the review content
-                review.setReviewMessage(reviewJson.getString(GlobalConstant.sCONTENT));
+                review.setReviewMessage(reviewJson.getString(GlobalConstant.CONTENT));
 
                 // Add the review object to an array of trailers
                 reviews.add(review);
