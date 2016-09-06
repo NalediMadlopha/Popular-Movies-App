@@ -1,3 +1,6 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.model;
 
 import android.content.Context;
@@ -11,21 +14,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Naledi Madlopha on 2016/08/18.
+ * Provides a favourite movies handler
  */
 public class FavouriteMoviesHandler {
 
-    private List<String> sFavouriteMovieList = new ArrayList<>();
+    private List<String> mFavouriteMovieList = new ArrayList<>();
     private SharedPreferences mPrefs;
     private Gson mGson = new Gson();
 
-    // TODO: Add method description
+    /**
+     * Constructor, gets the default shared preferences and gets the movie list
+     *
+     * @param context which the method is called from
+     */
     public FavouriteMoviesHandler(Context context) {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        sFavouriteMovieList = getMovieList();
+        mFavouriteMovieList = getMovieList();
     }
 
-    // TODO: Add method description
+    /**
+     * Gets a list of movie json objects
+     *
+     * @return list of movie json objects
+     */
     public List<String> getMovieList() {
         // -- Check if the movie list is contained in the shared preferences
         if (mPrefs.contains(GlobalConstant.FAVOURITE_MOVIE_LIST)) {
@@ -33,16 +44,16 @@ public class FavouriteMoviesHandler {
 
             // --- Check if the list in shared preferences is not null
             if (favouriteMovieListJson != null) {
-                sFavouriteMovieList = mGson.fromJson(favouriteMovieListJson, List.class);
+                mFavouriteMovieList = mGson.fromJson(favouriteMovieListJson, List.class);
             }
         }
-        return sFavouriteMovieList;
+        return mFavouriteMovieList;
     }
 
     // Check if the movie has not already been added as a favourite
     public boolean isFavourite(String movieId) {
         // if the movie ID is contained in the movie list
-        if (sFavouriteMovieList.contains(movieId)) {
+        if (mFavouriteMovieList.contains(movieId)) {
             return true;
         } else {
             return false;
@@ -51,20 +62,20 @@ public class FavouriteMoviesHandler {
 
     // Add the movie to the favourite movie list
     public void addMovie(String movieId) {
-        sFavouriteMovieList.add(movieId);
+        mFavouriteMovieList.add(movieId);
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        String favouriteMovieListJson = mGson.toJson(sFavouriteMovieList);
+        String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
         prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
         prefsEditor.commit();
     }
 
     // Remove the movie to the favourite movie list
     public void removeMovie(String movieId) {
-        sFavouriteMovieList.remove(movieId);
+        mFavouriteMovieList.remove(movieId);
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        String favouriteMovieListJson = mGson.toJson(sFavouriteMovieList);
+        String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
         prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
         prefsEditor.commit();
     }

@@ -1,42 +1,45 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.model;
 
 /**
- * Created by Naledi Madlopha on 2016/08/09.
+ * Provides a genre object template
  */
 public class Genre {
 
-    private int id;
-    private String name;
+    private int mId;
+    private String mName;
 
     public Genre() {
     }
 
     public Genre(int id, String name) {
-        this.id = id;
-        this.name = name;
+        this.mId = id;
+        this.mName = name;
     }
 
     public int getId() {
-        return id;
+        return mId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.mId = id;
     }
 
-    public String getName() {
-        return name;
+    public String getmName() {
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setmName(String name) {
+        this.mName = name;
     }
 
     @Override
     public String toString() {
         return "Genre{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "mId=" + mId +
+                ", mName='" + mName + '\'' +
                 '}';
     }
 }

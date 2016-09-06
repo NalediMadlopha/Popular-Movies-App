@@ -160,7 +160,7 @@ public class MovieJSONParser {
                 // Check the genre Id match
                 if (genreId == genre.getId()) {
                     // Build a genre list, separated by commas
-                    genreNames += genre.getName() + ", ";
+                    genreNames += genre.getmName() + ", ";
                     break;
                 }
             }

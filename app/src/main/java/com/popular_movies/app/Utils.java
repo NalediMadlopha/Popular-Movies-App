@@ -3,7 +3,6 @@ package com.popular_movies.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -17,8 +16,6 @@ import java.util.Date;
  * Created by Naledi Madlopha on 2016/08/02.
  */
 public class Utils {
-
-    private final static String LOG_TAG = Utils.class.getSimpleName();
 
     /**
      * Converts the date format from "y-MM-dd" to "dd MMM y"
@@ -43,7 +40,6 @@ public class Utils {
             convertedDate = newFormat.format(date);
         } catch (ParseException e) {
             convertedDate = "No date was found";
-            Log.e(LOG_TAG, e.getMessage());
         } finally {
             // Return the converted date
             return convertedDate;

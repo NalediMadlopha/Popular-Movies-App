@@ -1,22 +1,22 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style mName="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item mName="colorPrimary">@color/colorPrimary</item>
+        <item mName="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="CustomWindowTitleText" parent="android:TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
+    <style mName="CustomWindowTitleText" parent="android:TextAppearance">
+        <item mName="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style mName="AppTheme.NoActionBar">
+        <item mName="windowActionBar">false</item>
+        <item mName="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style mName="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style mName="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

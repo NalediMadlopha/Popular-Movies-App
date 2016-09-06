@@ -121,10 +121,12 @@ public class MovieFragment extends Fragment {
     /** Checks if there is internet connection */
     protected boolean isOnline() {
 
+        // Initialize the connectivity manager
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
+        // Check if the network is connected or connecting
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 

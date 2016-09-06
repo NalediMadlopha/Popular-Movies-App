@@ -35,7 +35,7 @@ public class GenreJSONParser {
 
                 Genre genre = new Genre();
                 genre.setId(genreObject.getInt(GlobalConstant.ID));
-                genre.setName(genreObject.getString(GlobalConstant.NAME));
+                genre.setmName(genreObject.getString(GlobalConstant.NAME));
 
                 genres.add(genre);
             }
