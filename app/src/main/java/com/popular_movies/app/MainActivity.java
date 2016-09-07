@@ -6,6 +6,7 @@ package com.popular_movies.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,6 +19,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Get the action bar from the support library
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        // Resize the action bar title
+        actionBar.setTitle(Html.fromHtml("<small>Popular Movies</small>"));
+
+        // Gets the sort order preference
+        String sortOrder = Utils.getSortOrderPref(this);
+
+        if (sortOrder != null) {
+            // Set the sub title based on the sort order preference
+            switch (sortOrder) {
+                case "Most Popular": // In case the sort order is set to popular mMovieList
+                    actionBar.setSubtitle(Html.fromHtml("<small>Most Popular</small>"));
+                    break;
+                case "Top Rated": // In case the sort order is set to top rated mMovieList
+                    actionBar.setSubtitle(Html.fromHtml("<small>Top Rated</small>"));
+                    break;
+                case "Favourites":  // In case the sort order is set to favourite mMovieList
+                    actionBar.setSubtitle(Html.fromHtml("<small>Favourites</small>"));
+                    break;
+            }
+        }
 
         // Check if the details container is not null
         if (findViewById(R.id.movie_detail_container) != null) {
