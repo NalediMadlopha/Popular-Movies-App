@@ -1,12 +1,14 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.parser;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.model.Genre;
-import com.popular_movies.model.TMDBHandler;
 import com.popular_movies.model.Movie;
+import com.popular_movies.model.TMDBHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,29 +18,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Naledi Madlopha on 2016/08/09.
+ * Provides a list of movie objects by parsing a json string
  */
 public class MovieJSONParser {
 
     private static final String LOG_TAG = MovieJSONParser.class.getSimpleName();
 
     // Store the genre Ids
-    private static List<Integer> mGenreIdList;
+    private static List<Integer> sGenreIdList;
 
-    // TODO: Add a description
+    /**
+     * Parse the feed of a json string to a movie object
+     *
+     * @param content is a json object string
+     * @return movie object
+     */
     @Nullable
     public static ArrayList<Movie> parseFeed(String content) {
-        mGenreIdList = new ArrayList<>();
+
+        ArrayList<Movie> movies = new ArrayList<>();
+        sGenreIdList = new ArrayList<>();
 
         try {
+            // Get a json object from the json string content
             JSONObject moviesJson = new JSONObject(content);
+            // Get a json array of movies
             JSONArray moviesJsonArray = moviesJson.getJSONArray(GlobalConstant.RESULTS);
 
             // Fetch the movie genres from themoviedb.org API
             String genresJsonString = TMDBHandler.fetchMovieGenres();
             List<Genre> genres = GenreJSONParser.parseFeed(genresJsonString);
-
-            ArrayList<Movie> movies = new ArrayList<>();
 
             for (int i = 0; i < moviesJsonArray.length(); i++) {
                 Movie movie = new Movie();
@@ -60,11 +69,11 @@ public class MovieJSONParser {
                 // Loop through the movie's genre array
                 for (int ii = 0; ii < genreArray.length(); ii++) {
                     // Get the id attribute and add it to the genre id list
-                    mGenreIdList.add(genreArray.getInt(ii));
+                    sGenreIdList.add(genreArray.getInt(ii));
                 }
 
                 // Get the genre names
-                String genreNames = getGenreNames(mGenreIdList, genres);
+                String genreNames = getGenreNames(sGenreIdList, genres);
 
                 // Set the movie's genre
                 movie.setGenre(genreNames);
@@ -82,21 +91,26 @@ public class MovieJSONParser {
                 // Add the movie object to an array of movies
                 movies.add(movie);
             }
-            return movies;
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
-            return null;
+            e.getMessage();
+        } finally {
+            return movies;
         }
     }
 
-    // TODO: Add a description
+    /**
+     * Parse a single feed of a json string to movie objects
+     *
+     * @param content is a json object string
+     * @return a movie object
+     */
     @Nullable
     public static Movie parseSingleFeed(String content) {
-        mGenreIdList = new ArrayList<>();
+        Movie movie = new Movie();
+        sGenreIdList = new ArrayList<>();
 
         try {
             JSONObject movieJson = new JSONObject(content);
-            Movie movie = new Movie();
 
             // Set the movie's Id
             movie.setId(movieJson.getString(GlobalConstant.ID));
@@ -116,16 +130,15 @@ public class MovieJSONParser {
             // Get the genres
             JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRES);
 
-
             // Loop through the movie's genre array
             for (int i = 0; i < genreArray.length(); i++) {
                 // Get each genre json object
                 JSONObject genreJsonObject = genreArray.getJSONObject(i);
                 // Get the id attribute and add it to the genre id list
-                mGenreIdList.add(genreJsonObject.getInt("id"));
+                sGenreIdList.add(genreJsonObject.getInt("id"));
             }
             // Get the genre names
-            String genreNames = getGenreNames(mGenreIdList, genres);
+            String genreNames = getGenreNames(sGenreIdList, genres);
 
             // Set the movie's genre
             movie.setGenre(genreNames);
@@ -139,14 +152,20 @@ public class MovieJSONParser {
             movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
             // Set the movie's vote average
             movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
-
-            return movie;
         } catch (JSONException e) {
-            return null;
+            e.getMessage();
+        } finally {
+            return movie;
         }
     }
 
-    // TODO: Add method description
+    /**
+     * Converts a list of genre ids to a list of genre names
+     *
+     * @param genreIdArray an array of genre id
+     * @param genres a list of genre objects
+     * @return a movie object
+     */
     public static String getGenreNames(List<Integer> genreIdArray, List<Genre> genres) throws JSONException {
         String genreNames = "";
 
@@ -172,7 +191,7 @@ public class MovieJSONParser {
             genreNames = genreNames.substring(0, (genreNames.length() - 2));
 
             // Clear the stored genre ids
-            mGenreIdList.clear();
+            sGenreIdList.clear();
         } else {
             // Set this when the movie is not categorized
             genreNames = "No genre listed";
