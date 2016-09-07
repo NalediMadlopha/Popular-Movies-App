@@ -1,7 +1,9 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.parser;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.model.Genre;
@@ -14,36 +16,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by root on 2016/08/09.
+ * Provides a list of genre objects by parsing a json string
  */
 public class GenreJSONParser {
 
-    private static final String LOG_TAG = GenreJSONParser.class.getSimpleName();
-
-    // TODO: Add a description
+    /**
+     * Parse the feed of a json string to genre objects
+     *
+     * @param content is a json object string
+     * @return list of genre objects
+     */
     @Nullable
     public static List<Genre> parseFeed(String content) {
 
+        ArrayList<Genre> genres = new ArrayList<>();
+
         try {
+            // Get a json object from the json string content
             JSONObject genresJson = new JSONObject(content);
+            // Get a json array of genres
             JSONArray genresJsonArray = genresJson.getJSONArray(GlobalConstant.GENRES);
 
-            ArrayList<Genre> genres = new ArrayList<>();
-
             for (int i = 0; i < genresJsonArray.length(); i++) {
+                // Get a single genre json object
                 JSONObject genreObject = (JSONObject) genresJsonArray.get(i);
 
+                // Build a genre object
                 Genre genre = new Genre();
                 genre.setId(genreObject.getInt(GlobalConstant.ID));
                 genre.setmName(genreObject.getString(GlobalConstant.NAME));
 
+                // Add the built genre to a genre array list
                 genres.add(genre);
             }
-
-            return genres;
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
-            return null;
+            e.getMessage();
+        } finally {
+            return genres;
         }
     }
 }
