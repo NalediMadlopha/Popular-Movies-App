@@ -14,6 +14,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.text.Html;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -104,6 +105,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+            // Resize the action bar title
+            actionBar.setTitle(Html.fromHtml("<small>Settings</small>"));
         }
     }
 

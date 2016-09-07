@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Loading Movies"
+            android:text="@string/loading_movies"
             android:id="@+id/load_movies_progress_text"
             android:layout_centerInParent="true" />
 

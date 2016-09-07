@@ -35,4 +35,18 @@
     <string name="sort_order_key" translatable="false">sort_order</string>
     <string name="title_activity_details" translatable="false">Movie Details</string>
 
+    <string name="loading_movies" translatable="false">Loading Movies</string>
+    <string name="movie_title" translatable="false">Title</string>
+    <string name="movie_genre" translatable="false">Genre</string>
+    <string name="movie_release_date" translatable="false">Release Date</string>
+    <string name="movie_votes_average" translatable="false">0.00</string>
+    <string name="movie_synopsis_heading" translatable="false">Synopsis</string>
+    <string name="trailer_heading" translatable="false">Trailers</string>
+    <string name="trailer_name" translatable="false">Trailer Name</string>
+    <string name="reviews_heading" translatable="false">Reviews</string>
+    <string name="review_author" translatable="false">Review Author</string>
+    <string name="review_content" translatable="false">Review Content</string>
+
+    <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+
 </resources>
