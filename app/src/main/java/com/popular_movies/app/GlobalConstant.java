@@ -20,7 +20,8 @@ public class GlobalConstant {
     public final static String POPULARITY = "popularity";
     public final static String VOTE_COUNT = "vote_count";
     public final static String VOTE_AVERAGE = "vote_average";
-    public final static String C5CA40DED62975B80638B7357FD69E9 = "9c5ca40ded62975b80638b7357fd69e9";
+    // Replace the value of this variable with an API KEY
+    public final static String C5CA40DED62975B80638B7357FD69E9 = "API KEY";
     public final static String HTTPS_API_THEMOVIEDB_ORG_3 = "https://api.themoviedb.org/3";
     public final static String API_KEY = "api_key";
     public final static String SINGlE_MOVIE_QUERY = "/movie/";
