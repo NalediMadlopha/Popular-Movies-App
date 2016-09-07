@@ -1,38 +1,38 @@
 <resources>
     <!-- General Strings -->
-    <string mName="app_name" translatable="false">Popular Movies</string>
-    <string mName="hello_world" translatable="false">Hello world!</string>
-    <string mName="action_settings" translatable="false">Settings</string>
-    <string mName="text_load_movies_progress" translatable="false">Loading Movies</string>
+    <string name="app_name" translatable="false">Popular Movies</string>
+    <string name="hello_world" translatable="false">Hello world!</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="text_load_movies_progress" translatable="false">Loading Movies</string>
 
     <!-- Strings related to Errors -->
-    <string mName="text_no_network_error" translatable="false">No Internet Connection</string>
-    <string mName="text_no_movies_error" translatable="false">No Movies Found</string>
-    <string mName="text_no_movie_selected" translatable="false">Select a movie on the left panel.</string>
-    <string mName="text_no_favourite_movies_error" translatable="false">No Favourite Movies Found</string>
-    <string mName="error_view_oops" translatable="false">Oops</string>
-    <string mName="error_view_damn" translatable="false">Damn</string>
-    <string mName="button_text_retry" translatable="false">RETRY</string>
+    <string name="text_no_network_error" translatable="false">No Internet Connection</string>
+    <string name="text_no_movies_error" translatable="false">No Movies Found</string>
+    <string name="text_no_movie_selected" translatable="false">Select a movie on the left panel.</string>
+    <string name="text_no_favourite_movies_error" translatable="false">No Favourite Movies Found</string>
+    <string name="error_view_oops" translatable="false">Oops</string>
+    <string name="error_view_damn" translatable="false">Damn</string>
+    <string name="button_text_retry" translatable="false">RETRY</string>
 
     <!-- Strings related to Settings -->
 
-    <string mName="title_activity_settings" translatable="false">Settings</string>
+    <string name="title_activity_settings" translatable="false">Settings</string>
     <!-- Settings for sorting the order of the movies -->
-    <string mName="pref_header_sort_order" translatable="false">Sort Order</string>
+    <string name="pref_header_sort_order" translatable="false">Sort Order</string>
 
-    <string mName="pref_title_order_by" translatable="false">Order by</string>
-    <string-array mName="pref_order_by_titles" translatable="false">
+    <string name="pref_title_order_by" translatable="false">Order by</string>
+    <string-array name="pref_order_by_titles" translatable="false">
         <item>Most Popular</item>
         <item>Top Rated</item>
         <item>Favourites</item>
     </string-array>
-    <string-array mName="pref_order_by_values" translatable="false">
+    <string-array name="pref_order_by_values" translatable="false">
         <item>Most Popular</item>
         <item>Top Rated</item>
         <item>Favourites</item>
     </string-array>
 
-    <string mName="sort_order_key" translatable="false">sort_order</string>
-    <string mName="title_activity_details" translatable="false">Movie Details</string>
+    <string name="sort_order_key" translatable="false">sort_order</string>
+    <string name="title_activity_details" translatable="false">Movie Details</string>
 
 </resources>

@@ -1,11 +1,11 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen mName="activity_horizontal_margin">16dp</dimen>
-    <dimen mName="activity_vertical_margin">16dp</dimen>
-    <dimen mName="fab_margin">16dp</dimen>
-    <dimen mName="card_margin">4dp</dimen>
-    <dimen mName="text_padding">4dp</dimen>
-    <dimen mName="cardview_margin_top">8dp</dimen>
-    <dimen mName="starred_margin">16dp</dimen>
-    <dimen mName="counter_value_margin">6dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="card_margin">4dp</dimen>
+    <dimen name="text_padding">4dp</dimen>
+    <dimen name="cardview_margin_top">8dp</dimen>
+    <dimen name="starred_margin">16dp</dimen>
+    <dimen name="counter_value_margin">6dp</dimen>
 </resources>

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.popular_movies.app">
 
-    <uses-permission android:mName="android.permission.INTERNET" />
-    <uses-permission android:mName="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,27 +11,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:mName=".MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:mName="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:mName="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:mName=".SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity">
             <meta-data
-                android:mName="android.support.PARENT_ACTIVITY"
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.popular_movies.app.MainActivity" />
         </activity>
         <activity
-            android:mName=".DetailActivity"
+            android:name=".DetailActivity"
             android:label="Movie Details"
             android:parentActivityName=".MainActivity">
             <meta-data
-                android:mName="android.support.PARENT_ACTIVITY"
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.popular_movies.app.MainActivity" />
         </activity>
     </application>

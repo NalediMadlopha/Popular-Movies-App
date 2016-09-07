@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/fragment_forecast"
-        android:mName="com.popular_movies.app.MovieFragment"
+        android:name="com.popular_movies.app.MovieFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

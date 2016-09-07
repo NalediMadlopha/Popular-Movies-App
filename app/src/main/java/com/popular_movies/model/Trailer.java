@@ -1,7 +1,10 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.model;
 
 /**
- * Created by Naledi Madlopha on 2016/08/14.
+ * Provides a trailer object template
  */
 public class Trailer {
     
