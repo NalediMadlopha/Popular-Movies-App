@@ -30,7 +30,7 @@ import com.popular_movies.model.Movie;
 import com.popular_movies.model.Review;
 import com.popular_movies.model.TMDBHandler;
 import com.popular_movies.model.Trailer;
-import com.popular_movies.parser.ReviewsJSONParser;
+import com.popular_movies.parser.ReviewJSONParser;
 import com.popular_movies.parser.TrailerJSONParser;
 import com.squareup.picasso.Picasso;
 
@@ -71,6 +71,9 @@ public class DetailFragment extends Fragment {
         ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
         Picasso.with(getActivity()).load(mMovie.getBackDropDate()).into(movie_poster);
 
+        ImageView vote_rating = (ImageView) rootView.findViewById(R.id.ic_votes_rating_average);
+        vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
+
         // Set the favourite movie icon
         mFavouriteMovieIcon = (ImageButton) rootView.findViewById(R.id.details_favourite_movie);
 
@@ -97,6 +100,10 @@ public class DetailFragment extends Fragment {
         // Set the release date of the movie
         TextView movie_release_date = (TextView) rootView.findViewById(R.id.details_movie_release_date);
         movie_release_date.setText(mMovie.getReleaseDate());
+
+        // Set the votes average
+        TextView votes_average = (TextView) rootView.findViewById(R.id.details_average_votes);
+        votes_average.setText(mMovie.getVoteAverage());
 
         // Set the plot synopsis of the movie
         TextView plot_synopsis = (TextView) rootView.findViewById(R.id.details_movie_plot_synopsis);
@@ -195,7 +202,7 @@ public class DetailFragment extends Fragment {
 
             // Parses the review JSON string
             // Returns a list of reviews
-            return ReviewsJSONParser.parseFeed(reviewsJsonString);
+            return ReviewJSONParser.parseFeed(reviewsJsonString);
         }
 
         @Override

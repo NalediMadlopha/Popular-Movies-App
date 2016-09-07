@@ -1,7 +1,6 @@
 package com.popular_movies.parser;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.model.Trailer;
@@ -20,15 +19,22 @@ public class TrailerJSONParser {
 
     private static final String LOG_TAG = TrailerJSONParser.class.getSimpleName();
 
-    // TODO: Add a description
+    /**
+     * Parse the feed of a json string to a list of trailer objects
+     *
+     * @param content is a json object string
+     * @return list of trailer objects
+     */
     @Nullable
     public static List<Trailer> parseFeed(String content) {
 
-        try {
-            JSONObject trailersJson = new JSONObject(content);
-            JSONArray trailersJsonArray = trailersJson.getJSONArray(GlobalConstant.RESULTS);
+        ArrayList<Trailer> trailers = new ArrayList<>();
 
-            ArrayList<Trailer> trailers = new ArrayList<>();
+        try {
+            // Get a json object from the json string content
+            JSONObject trailersJson = new JSONObject(content);
+            // Get a json array of movies
+            JSONArray trailersJsonArray = trailersJson.getJSONArray(GlobalConstant.RESULTS);
 
             for (int i = 0; i < trailersJsonArray.length(); i++) {
                 Trailer trailer = new Trailer();
@@ -54,10 +60,10 @@ public class TrailerJSONParser {
                 // Add the trailer object to an array of trailers
                 trailers.add(trailer);
             }
-            return trailers;
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
-            return null;
+            e.getMessage();
+        } finally {
+            return trailers;
         }
     }
 }

@@ -18,9 +18,7 @@ import java.util.List;
 /**
  * Provides a list of movie review objects by parsing a json string
  */
-public class ReviewsJSONParser {
-
-    private static final String LOG_TAG = ReviewsJSONParser.class.getSimpleName();
+public class ReviewJSONParser {
 
     /**
      * Parse the feed of a json string to a list of review objects
@@ -30,7 +28,7 @@ public class ReviewsJSONParser {
      */
     @Nullable
     public static List<Review> parseFeed(String content) {
-        
+
         ArrayList<Review> reviews = new ArrayList<>();
 
         try {

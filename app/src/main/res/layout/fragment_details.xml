@@ -37,47 +37,92 @@
                         android:src="@drawable/ic_action_play"
                         android:layout_gravity="center" />
 
-                    <TextView
-                        android:id="@+id/details_movie_title"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="3dp"
-                        android:paddingRight="3dp"
-                        android:textColor="@color/colorWhite"
-                        android:background="#99000000"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:text="Title"
-                        android:layout_above="@+id/details_movie_genres"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
-
-                    <TextView
-                        android:id="@+id/details_movie_genres"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="3dp"
-                        android:paddingRight="3dp"
-                        android:textColor="@color/colorWhite"
-                        android:background="#99000000"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Genre"
-                        android:layout_above="@+id/details_movie_release_date"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"/>
-
-                    <TextView
-                        android:id="@+id/details_movie_release_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="3dp"
-                        android:paddingRight="3dp"
-                        android:textColor="@color/colorWhite"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignBottom="@+id/details_movie_poster"
                         android:background="@color/colorTintedBlack"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Date"
-                        android:layout_alignBottom="@+id/details_movie_poster"/>
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/details_movie_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="3dp"
+                            android:paddingRight="3dp"
+                            android:textColor="@color/colorWhite"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                            android:text="Title"
+                            android:layout_above="@+id/details_movie_genres"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true" />
 
+                        <TextView
+                            android:id="@+id/details_movie_genres"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="3dp"
+                            android:paddingRight="3dp"
+                            android:textColor="@color/colorWhite"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="Genre"
+                            android:layout_above="@+id/details_movie_release_date"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/details_movie_release_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="3dp"
+                                android:paddingRight="3dp"
+                                android:layout_weight="10"
+                                android:textColor="@color/colorWhite"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:text="Date"/>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/details_average_votes"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:paddingLeft="3dp"
+                                    android:paddingRight="3dp"
+                                    android:textColor="@color/colorWhite"
+                                    android:textAppearance="?android:attr/textAppearanceSmall"
+                                    android:text="7.20"/>
+
+                                <ImageView
+                                    android:id="@+id/ic_votes_rating_average"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_action_important"
+                                    android:layout_weight="2" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
