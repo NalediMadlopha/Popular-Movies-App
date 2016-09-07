@@ -22,8 +22,6 @@ import java.util.List;
  */
 public class MovieJSONParser {
 
-    private static final String LOG_TAG = MovieJSONParser.class.getSimpleName();
-
     // Store the genre Ids
     private static List<Integer> sGenreIdList;
 
