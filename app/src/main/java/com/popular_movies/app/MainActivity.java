@@ -10,8 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 /**
  * Provides the main activity
@@ -22,43 +20,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Check if there is Internet connection
-        if (Utility.isOnline(this)) {
-            setContentView(R.layout.activity_main);
-            setupActionBar();
+        setContentView(R.layout.activity_main);
+        setupActionBar();
 
-            // Check if the details container is not null
-            if (findViewById(R.id.movie_detail_container) != null) {
-                // Check the saved instance state and replace the movie detail contain
-                // with details fragment
-                if (savedInstanceState == null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.movie_detail_container, new DetailFragment(),
-                                    GlobalConstant.DETAIL_FRAGMENT_TAG)
-                            .commit();
-                }
+        // Check if the details container is not null
+        if (findViewById(R.id.movie_detail_container) != null) {
+            // Check the saved instance state and replace the movie detail contain
+            // with details fragment
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new DetailFragment(),
+                                GlobalConstant.DETAIL_FRAGMENT_TAG)
+                        .commit();
             }
-        } else {
-            // Set an error layout
-            setContentView(R.layout.activity_error_no_network);
-
-            // Initialize a retry button
-            Button retryButton = (Button) findViewById(R.id.button_retry);
-            retryButton.setOnClickListener(mButtonRetryOnClickListener);
         }
+
     }
-
-    /**
-     * Initialize a retry button on click listener
-     * to refresh the the activity in case there is no internet connection
-     */
-    private final View.OnClickListener mButtonRetryOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(MainActivity.this, MainActivity.class));
-            MainActivity.this.finish();
-        }
-    };
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.

@@ -7,13 +7,13 @@ import java.util.List;
  */
 public class MovieResponseList {
 
-    private List<Movie_> movieResponseList;
+    private List<Movie> movieResponseList;
 
-    public List<Movie_> getMovieResponseList() {
+    public List<Movie> getMovieResponseList() {
         return movieResponseList;
     }
 
-    public void setMovieResponseList(List<Movie_> movieResponseList) {
+    public void setMovieResponseList(List<Movie> movieResponseList) {
         this.movieResponseList = movieResponseList;
     }
 }

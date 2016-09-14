@@ -15,121 +15,121 @@ public class Movie implements Parcelable {
 
     private final static String sHTTPS_IMAGE_TMDB_ORG_T_P_W342 = "https://image.tmdb.org/t/p/w342";
 
-    private String mId;
-    private String mPosterPath;
-    private String mBackDropDate;
-    private String mOriginalTitle;
-    private String mTitle;
-    private String mOverall;
-    private String mGenre;
-    private String mReleaseDate;
-    private String mPopularity;
-    private String mVoteCount;
-    private String mVoteAverage;
+    private String id;
+    private String posterPath;
+    private String backDropDate;
+    private String originalTitle;
+    private String title;
+    private String overall;
+    private String genre;
+    private String releaseDate;
+    private String popularity;
+    private String voteCount;
+    private String voteAverage;
 
     public Movie() {
     }
 
     private Movie(Parcel in) {
-        mId = in.readString();
-        mPosterPath = in.readString();
-        mBackDropDate = in.readString();
-        mOriginalTitle = in.readString();
-        mTitle = in.readString();
-        mOverall = in.readString();
-        mGenre = in.readString();
-        mReleaseDate = in.readString();
-        mPopularity = in.readString();
-        mVoteCount = in.readString();
-        mVoteAverage = in.readString();
+        id = in.readString();
+        posterPath = in.readString();
+        backDropDate = in.readString();
+        originalTitle = in.readString();
+        title = in.readString();
+        overall = in.readString();
+        genre = in.readString();
+        releaseDate = in.readString();
+        popularity = in.readString();
+        voteCount = in.readString();
+        voteAverage = in.readString();
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        this.mId = id;
+        this.id = id;
     }
 
     public String getPosterPath() {
-        return mPosterPath;
+        return posterPath;
     }
 
     public void setPosterPath(String posterPath) {
-        this.mPosterPath = sHTTPS_IMAGE_TMDB_ORG_T_P_W342 + posterPath;
+        this.posterPath = sHTTPS_IMAGE_TMDB_ORG_T_P_W342 + posterPath;
     }
 
     public String getBackDropDate() {
-        return mBackDropDate;
+        return backDropDate;
     }
 
     public void setBackDropDate(String backDropDate) {
-        this.mBackDropDate = sHTTPS_IMAGE_TMDB_ORG_T_P_W342 + backDropDate;
+        this.backDropDate = sHTTPS_IMAGE_TMDB_ORG_T_P_W342 + backDropDate;
     }
 
     public String getOriginalTitle() {
-        return mOriginalTitle;
+        return originalTitle;
     }
 
     public void setOriginalTitle(String originalTitle) {
-        this.mOriginalTitle = originalTitle;
+        this.originalTitle = originalTitle;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        this.mTitle = title;
+        this.title = title;
     }
 
     public String getOverall() {
-        return mOverall;
+        return overall;
     }
 
     public void setOverall(String overall) {
-        this.mOverall = overall;
+        this.overall = overall;
     }
 
     public String getGenre() {
-        return mGenre;
+        return genre;
     }
 
     public void setGenre(String genre) {
-        this.mGenre = genre;
+        this.genre = genre;
     }
 
     public String getReleaseDate() {
-        return mReleaseDate;
+        return releaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
-        this.mReleaseDate = Utility.convertDate(releaseDate);
+        this.releaseDate = Utility.convertDate(releaseDate);
     }
 
     public String getPopularity() {
-        return mPopularity;
+        return popularity;
     }
 
     public void setPopularity(String popularity) {
-        this.mPopularity = popularity;
+        this.popularity = popularity;
     }
 
     public String getVoteCount() {
-        return mVoteCount;
+        return voteCount;
     }
 
     public void setVoteCount(String voteCount) {
-        this.mVoteCount = voteCount;
+        this.voteCount = voteCount;
     }
 
     public String getVoteAverage() {
-        return mVoteAverage;
+        return voteAverage;
     }
 
     public void setVoteAverage(String voteAverage) {
-        this.mVoteAverage = voteAverage;
+        this.voteAverage = voteAverage;
     }
 
     @Override
@@ -138,36 +138,36 @@ public class Movie implements Parcelable {
     @Override
     public String toString() {
         return "Movie{" +
-                "mId='" + mId + '\'' +
-                ", posterPath='" + mPosterPath + '\'' +
-                ", backDropDate='" + mBackDropDate + '\'' +
-                ", originalTitle='" + mOriginalTitle + '\'' +
-                ", mTitle='" + mTitle + '\'' +
-                ", mOverall='" + mOverall + '\'' +
-                ", genre='" + mGenre + '\'' +
-                ", releaseDate='" + mReleaseDate + '\'' +
-                ", popularity='" + mPopularity + '\'' +
-                ", voteCount='" + mVoteCount + '\'' +
-                ", voteAverage='" + mVoteAverage + '\'' +
+                "mId='" + id + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", backDropDate='" + backDropDate + '\'' +
+                ", originalTitle='" + originalTitle + '\'' +
+                ", mTitle='" + title + '\'' +
+                ", mOverall='" + overall + '\'' +
+                ", genre='" + genre + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", popularity='" + popularity + '\'' +
+                ", voteCount='" + voteCount + '\'' +
+                ", voteAverage='" + voteAverage + '\'' +
                 '}';
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mId);
-        parcel.writeString(mPosterPath);
-        parcel.writeString(mBackDropDate);
-        parcel.writeString(mOriginalTitle);
-        parcel.writeString(mTitle);
-        parcel.writeString(mOverall);
-        parcel.writeString(mGenre);
-        parcel.writeString(mReleaseDate);
-        parcel.writeString(mPopularity);
-        parcel.writeString(mVoteCount);
-        parcel.writeString(mVoteAverage);
+        parcel.writeString(id);
+        parcel.writeString(posterPath);
+        parcel.writeString(backDropDate);
+        parcel.writeString(originalTitle);
+        parcel.writeString(title);
+        parcel.writeString(overall);
+        parcel.writeString(genre);
+        parcel.writeString(releaseDate);
+        parcel.writeString(popularity);
+        parcel.writeString(voteCount);
+        parcel.writeString(voteAverage);
       }
 
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
 
         @Override
         public Movie createFromParcel(Parcel parcel) {

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.popular_movies.adapter.MovieAdapter;
+import com.popular_movies.database.DatabaseHelper;
 import com.popular_movies.model.Movie;
 import com.popular_movies.parser.MovieJSONParser;
 
@@ -36,7 +36,42 @@ public class MovieFragment extends Fragment {
     private static ArrayList<Movie> mMovies = new ArrayList<>();
     private View mRootView;
 
+
+
     public MovieFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Check if there is network connection
+        if (Utility.isOnline(getActivity())) {
+            StringRequest movieRequest = new StringRequest(com.android.volley.Request.Method.GET,
+                    GlobalConstant.POPULAR_MOVIES_QUERY, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    // Parse the response to a movie objects array list
+                    mMovies = MovieJSONParser.parseFeed(response);
+
+                    // Initialize a new database helper
+                    DatabaseHelper databaseHelper = new DatabaseHelper(getActivity(), null, null, 1);
+
+                    // Add the movies fetched
+                    for (int i = 0; i < mMovies.size(); i++) {
+                        databaseHelper.addMovie("Most Popular", mMovies.get(i));
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            Volley.newRequestQueue(getActivity()).add(movieRequest);
+        }
+
     }
 
     @Override
@@ -52,6 +87,11 @@ public class MovieFragment extends Fragment {
 
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        // Get a reference to the grid view
+        mMovieGridView = (GridView) mRootView.findViewById(R.id.movie_grid);
+        // Set on item click listener
+        mMovieGridView.setOnItemClickListener(mMovieOnItemClickListener);
+
         return mRootView;
     }
 
@@ -59,23 +99,41 @@ public class MovieFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        // Initialize a new database helper
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity(), null, null, 1);
 
+        mMovies = databaseHelper.getMovies("Most Popular");
+
+        updateDisplay(mMovies);
+
+//        StringRequest stringRequest = null;
+//
+//        stringRequest = request(GlobalConstant.POPULAR_MOVIES_QUERY);
 
 //        if (mSortOrderOnStart.equals(Utility.getSortOrderPref(getActivity())) && !mMovies.isEmpty()) {
 //            updateDisplay(mMovies);
 //        } else {
-            StringRequest stringRequest = null;
-
-            switch (Utility.getSortOrderPref(getActivity())) {
-                case "Most Popular":
-                    stringRequest = request(GlobalConstant.POPULAR_MOVIES_QUERY);
-                    Volley.newRequestQueue(getActivity()).add(stringRequest);
-                    break;
-                case "Top Rated":
-                    stringRequest = request(GlobalConstant.TOP_RATED_MOVIES_QUERY);
-                    Volley.newRequestQueue(getActivity()).add(stringRequest);
-                    break;
-                case "Favourites":
+//            StringRequest stringRequest = null;
+//
+//        stringRequest = request(GlobalConstant.POPULAR_MOVIES_QUERY);
+//        Volley.newRequestQueue(getActivity()).add(stringRequest);
+//            switch (Utility.getSortOrderPref(getActivity())) {
+//                case "Most Popular":
+//                    stringRequest = request(GlobalConstant.POPULAR_MOVIES_QUERY);
+//                    Volley.newRequestQueue(getActivity()).add(stringRequest);
+//                    break;
+//                case "Top Rated":
+//                    stringRequest = request(GlobalConstant.TOP_RATED_MOVIES_QUERY);
+//                    Volley.newRequestQueue(getActivity()).add(stringRequest);
+//                    break;
+//                case "Favourites":
+//                    // Instantiate the favourite mMovieList handler
+//                    FavouriteMoviesHandler favouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
+//
+//                    mMovies = favouriteMoviesHandler.getMovieList();
+//
+//                    Log.e("FAVOURITE", mMovies.toString());
+//                    updateDisplay(mMovies);
 //                    GlobalConstant.SINGLE_MOVIE_QUERY_ + "271110?"
 //                            + GlobalConstant.API_KEY + "=" + GlobalConstant.C5CA40DED62975B80638B7357FD69E9
                     // Instantiate the favourite mMovieList handler
@@ -93,8 +151,8 @@ public class MovieFragment extends Fragment {
 //                        favouriteMovieList.add(movie);
 //                    }
 //                    return favouriteMovieList;
-                    break;
-            }
+//                    break;
+//            }
 //        }
     }
 
@@ -104,7 +162,18 @@ public class MovieFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 mMovies = MovieJSONParser.parseFeed(response);
-                Log.e("REQUEST", response.toString());
+                DatabaseHelper databaseHelper = new DatabaseHelper(getActivity(), null, null, 1);
+
+                for (int i = 0; i < mMovies.size(); i++) {
+                    databaseHelper.addMovie("Most Popular", mMovies.get(i));
+                }
+
+                mMovies.clear();
+                Movie _movie = databaseHelper.getMovie("Most Popular", "1");
+
+                mMovies.add(_movie);
+
+//                Log.e("REQUEST", response.toString());
                 updateDisplay(mMovies);
             }
         }, new Response.ErrorListener() {
@@ -118,10 +187,6 @@ public class MovieFragment extends Fragment {
     }
 
     public void updateDisplay(ArrayList<Movie> movies) {
-        // Get a reference to the grid view
-        mMovieGridView = (GridView) mRootView.findViewById(R.id.movie_grid);
-        // Set on item click listener
-        mMovieGridView.setOnItemClickListener(mMovieOnItemClickListener);
 
         // Initialize the movie adapter, passing the movie list
         mMovieAdapter = new MovieAdapter(getActivity(), movies);

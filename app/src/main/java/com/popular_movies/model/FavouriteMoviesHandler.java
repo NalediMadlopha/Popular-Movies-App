@@ -6,7 +6,6 @@ package com.popular_movies.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.popular_movies.app.GlobalConstant;
@@ -66,7 +65,6 @@ public class FavouriteMoviesHandler {
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
-        Log.e("Prefs", favouriteMovieListJson);
         prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
         prefsEditor.commit();
     }
@@ -77,7 +75,6 @@ public class FavouriteMoviesHandler {
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
-        Log.e("Prefs", favouriteMovieListJson);
         prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
         prefsEditor.commit();
     }
