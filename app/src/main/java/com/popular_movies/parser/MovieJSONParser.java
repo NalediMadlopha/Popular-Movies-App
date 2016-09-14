@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
-import com.popular_movies.model.TMDBHandler;
+import com.popular_movies.model.Request;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +44,7 @@ public class MovieJSONParser {
             JSONArray moviesJsonArray = moviesJson.getJSONArray(GlobalConstant.RESULTS);
 
             // Fetch the movie genres from themoviedb.org API
-            String genresJsonString = TMDBHandler.fetchMovieGenres();
+            String genresJsonString = Request.fetchMovieGenres();
             List<Genre> genres = GenreJSONParser.parseFeed(genresJsonString);
 
             for (int i = 0; i < moviesJsonArray.length(); i++) {
@@ -122,7 +122,7 @@ public class MovieJSONParser {
             movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
 
             // Fetch the movie genres from themoviedb.org API
-            String genresJsonString = TMDBHandler.fetchMovieGenres();
+            String genresJsonString = Request.fetchMovieGenres();
             // List of all genres
             List<Genre> genres = GenreJSONParser.parseFeed(genresJsonString);
             // Get the genres

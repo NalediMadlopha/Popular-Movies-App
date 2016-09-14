@@ -6,7 +6,7 @@ package com.popular_movies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.popular_movies.app.Utils;
+import com.popular_movies.app.Utility;
 
 /**
  * Provides a movie object template
@@ -105,7 +105,7 @@ public class Movie implements Parcelable {
     }
 
     public void setReleaseDate(String releaseDate) {
-        this.mReleaseDate = Utils.convertDate(releaseDate);
+        this.mReleaseDate = Utility.convertDate(releaseDate);
     }
 
     public String getPopularity() {

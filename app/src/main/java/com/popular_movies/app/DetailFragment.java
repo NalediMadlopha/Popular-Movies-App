@@ -28,7 +28,7 @@ import com.popular_movies.adapter.TrailerAdapter;
 import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.Review;
-import com.popular_movies.model.TMDBHandler;
+import com.popular_movies.model.Request;
 import com.popular_movies.model.Trailer;
 import com.popular_movies.parser.ReviewJSONParser;
 import com.popular_movies.parser.TrailerJSONParser;
@@ -81,7 +81,7 @@ public class DetailFragment extends Fragment {
         mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
         // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
+        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
             // Set the favourite icon tint to red
             mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
         }
@@ -149,10 +149,10 @@ public class DetailFragment extends Fragment {
         public void onClick(View view) {
 
         // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie.getId())) {
+        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
 
             // Remove the movie from the favourite movie list
-            mFavouriteMoviesHandler.removeMovie(mMovie.getId());
+            mFavouriteMoviesHandler.removeMovie(mMovie);
 
             // Set the favourite icon tint to grey
             mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
@@ -163,7 +163,7 @@ public class DetailFragment extends Fragment {
         } else {
 
             // Add the movie to the favourite movie list
-            mFavouriteMoviesHandler.addMovie(mMovie.getId());
+            mFavouriteMoviesHandler.addMovie(mMovie);
 
             // Set the favourite icon tint to red
             mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
@@ -198,7 +198,7 @@ public class DetailFragment extends Fragment {
             // Convert movie id from string to integer
             int movieId = Integer.parseInt(mMovie.getId());
             // Fetch the movie reviews from the API
-            String reviewsJsonString = TMDBHandler.fetchMovieReviews(movieId);
+            String reviewsJsonString = Request.fetchMovieReviews(movieId);
 
             // Parses the review JSON string
             // Returns a list of reviews
@@ -235,7 +235,7 @@ public class DetailFragment extends Fragment {
             int movieId = Integer.parseInt(mMovie.getId());
 
             // Fetch the movie trailers from the API
-            String trailerJsonString = TMDBHandler.fetchMovieTrailers(movieId);
+            String trailerJsonString = Request.fetchMovieTrailers(movieId);
 
             // Parses the trailer JSON string
             // Returns a list of trailers
@@ -255,7 +255,7 @@ public class DetailFragment extends Fragment {
                 mTrailersListView.setAdapter(mTrailerAdapter);
 
                 // Modify the height of the list view
-                Utils.setListViewHeightBasedOnItems(mTrailersListView);
+                Utility.setListViewHeightBasedOnItems(mTrailersListView);
             }
             super.onPostExecute(trailers);
         }

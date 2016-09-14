@@ -14,11 +14,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Handles the API calls
  */
-public class TMDBHandler {
+public class Request {
+
+    private Movie mMovie;
+    private static ArrayList<Movie> mMovies = new ArrayList<>();
+    private ArrayList<Trailer> mTrailers = new ArrayList<>();
+    private ArrayList<Review> mReviews = new ArrayList<>();
 
     /**
      * Fetches popular movies
@@ -59,7 +65,7 @@ public class TMDBHandler {
      * @return json object of a list of the user's favourite movies
      */
     public static String fetchFavouriteMovies(String movieId) {
-        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.SINGlE_MOVIE_QUERY + movieId)
+        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.SINGLE_MOVIE_QUERY + movieId)
                 .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 

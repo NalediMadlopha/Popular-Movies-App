@@ -2,6 +2,8 @@ package com.popular_movies.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,19 @@ import java.util.Date;
 /**
  * Created by Naledi Madlopha on 2016/08/02.
  */
-public class Utils {
+public class Utility {
+
+    /** Checks if there is internet connection */
+    public static boolean isOnline(Context context) {
+
+        // Initialize the connectivity manager
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        // Check if the network is connected or connecting
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
 
     /**
      * Converts the date format from "y-MM-dd" to "dd MMM y"
@@ -61,6 +75,22 @@ public class Utils {
         }
 
         return sortOrder;
+    }
+
+    public static String requestQuery(Context context) {
+        String requestQuery = null;
+        String sortOrder = getSortOrderPref(context);
+
+        switch (sortOrder) {
+                case "Most Popular": // In case the sort order is set to popular mMovieList
+                    requestQuery = GlobalConstant.POPULAR_MOVIES_QUERY;
+                    break;
+                case "Top Rated": // In case the sort order is set to top rated mMovieList
+                    requestQuery = GlobalConstant.TOP_RATED_MOVIES_QUERY;
+                    break;
+        }
+
+        return requestQuery;
     }
 
     /**
