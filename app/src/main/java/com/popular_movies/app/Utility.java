@@ -53,7 +53,7 @@ public class Utility {
             // Format the date using the new format
             convertedDate = newFormat.format(date);
         } catch (ParseException e) {
-            convertedDate = "No date was found";
+            convertedDate = strDate;
         } finally {
             // Return the converted date
             return convertedDate;

@@ -216,6 +216,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return movies;
     }
 
+    public boolean clearTable(String movieCategory) {
+        boolean result = false;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        switch (movieCategory) {
+            case "Most Popular":
+                db.execSQL("delete from "+ TABLE_POPULAR_MOVIE);
+                result = true;
+                break;
+            case "Top Rated":
+                db.execSQL("delete from "+ TABLE_TOP_RATED_MOVIE);
+                result = true;
+                break;
+            case "Favourite":
+                db.execSQL("delete from "+ TABLE_FAVOURITE_MOVIE);
+                result = true;
+                break;
+        }
+
+        return result;
+    }
+
     public boolean removeFavouriteMovie(int movieId) {
         boolean result = false;
 
