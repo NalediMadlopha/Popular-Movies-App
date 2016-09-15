@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.popular_movies.model.Movie;
 
@@ -16,12 +17,13 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "popularMovieDB.db";
+    private static final String DATABASE_NAME = "POPULAR_MOVIES.db";
     private static final String TABLE_POPULAR_MOVIE = "popular_movie";
     private static final String TABLE_TOP_RATED_MOVIE = "top_rated_movie";
     private static final String TABLE_FAVOURITE_MOVIE = "favourite_movie";
 
     public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_MOVIE_ID = "movie_id";
     public static final String COLUMN_POSTER_PATH = "poster_path";
     public static final String COLUMN_BACKDROP_DATE = "backdrop_date";
     public static final String COLUMN_ORIGINAL_TITLE = "original_title";
@@ -38,10 +40,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(SQLiteDatabase db) {
+
         String CREATE_POPULAR_MOVIE_TABLE = "CREATE TABLE " +
                 TABLE_POPULAR_MOVIE + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
+                + COLUMN_MOVIE_ID + " TEXT, "
                 + COLUMN_POSTER_PATH + " TEXT, "
                 + COLUMN_BACKDROP_DATE + " TEXT, "
                 + COLUMN_ORIGINAL_TITLE + " TEXT, "
@@ -52,11 +56,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_POPULARITY + " TEXT, "
                 + COLUMN_VOTE_COUNT + " TEXT, "
                 + COLUMN_VOTE_AVERAGE + " TEXT" + ")";
-        sqLiteDatabase.execSQL(CREATE_POPULAR_MOVIE_TABLE);
+        db.execSQL(CREATE_POPULAR_MOVIE_TABLE);
 
         String CREATE_TOP_RATED_MOVIE_TABLE = "CREATE TABLE " +
                 TABLE_TOP_RATED_MOVIE + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
+                + COLUMN_MOVIE_ID + " TEXT, "
                 + COLUMN_POSTER_PATH + " TEXT, "
                 + COLUMN_BACKDROP_DATE + " TEXT, "
                 + COLUMN_ORIGINAL_TITLE + " TEXT, "
@@ -67,11 +72,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_POPULARITY + " TEXT, "
                 + COLUMN_VOTE_COUNT + " TEXT, "
                 + COLUMN_VOTE_AVERAGE + " TEXT" + ")";
-        sqLiteDatabase.execSQL(CREATE_TOP_RATED_MOVIE_TABLE);
+        db.execSQL(CREATE_TOP_RATED_MOVIE_TABLE);
 
         String CREATE_FAVOURITE_MOVIE_TABLE = "CREATE TABLE " +
                 TABLE_FAVOURITE_MOVIE + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
+                + COLUMN_MOVIE_ID + " TEXT, "
                 + COLUMN_POSTER_PATH + " TEXT, "
                 + COLUMN_BACKDROP_DATE + " TEXT, "
                 + COLUMN_ORIGINAL_TITLE + " TEXT, "
@@ -82,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_POPULARITY + " TEXT, "
                 + COLUMN_VOTE_COUNT + " TEXT, "
                 + COLUMN_VOTE_AVERAGE + " TEXT" + ")";
-        sqLiteDatabase.execSQL(CREATE_FAVOURITE_MOVIE_TABLE);
+        db.execSQL(CREATE_FAVOURITE_MOVIE_TABLE);
     }
 
     @Override
@@ -98,6 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
 
+        values.put(COLUMN_MOVIE_ID, movie.getId());
         values.put(COLUMN_POSTER_PATH, movie.getPosterPath());
         values.put(COLUMN_BACKDROP_DATE, movie.getBackDropDate());
         values.put(COLUMN_ORIGINAL_TITLE, movie.getOriginalTitle());
@@ -108,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_POPULARITY, movie.getPopularity());
         values.put(COLUMN_VOTE_COUNT, movie.getVoteCount());
         values.put(COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
-
+        Log.e("VALUES", values.toString());
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         switch (movieCategory) {
@@ -131,13 +138,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         switch (movieCategory) {
             case "Most Popular":
-                query = "Select * FROM " + TABLE_POPULAR_MOVIE + " WHERE " + COLUMN_ID + " =  \"" + movieId + "\"";
+                query = "Select * FROM " + TABLE_POPULAR_MOVIE + " WHERE " + COLUMN_MOVIE_ID + " =  \"" + movieId + "\"";
                 break;
             case "Top Rated":
-                query = "Select * FROM " + TABLE_TOP_RATED_MOVIE + " WHERE " + COLUMN_ID + " =  \"" + movieId + "\"";
+                query = "Select * FROM " + TABLE_TOP_RATED_MOVIE + " WHERE " + COLUMN_MOVIE_ID + " =  \"" + movieId + "\"";
                 break;
             case "Favourite":
-                query = "Select * FROM " + TABLE_FAVOURITE_MOVIE + " WHERE " + COLUMN_ID + " =  \"" + movieId + "\"";
+                query = "Select * FROM " + TABLE_FAVOURITE_MOVIE + " WHERE " + COLUMN_MOVIE_ID + " =  \"" + movieId + "\"";
                 break;
         }
 
@@ -149,17 +156,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             cursor.moveToFirst();
-            movie.setId(cursor.getString(0));
-            movie.setPosterPath(cursor.getString(1));
-            movie.setBackDropDate(cursor.getString(2));
-            movie.setOriginalTitle(cursor.getString(3));
-            movie.setTitle(cursor.getString(4));
-            movie.setOverall(cursor.getString(5));
-            movie.setGenre(cursor.getString(6));
-            movie.setReleaseDate(cursor.getString(7));
-            movie.setPopularity(cursor.getString(8));
-            movie.setVoteCount(cursor.getString(9));
-            movie.setVoteAverage(cursor.getString(10));
+            movie.setId(cursor.getString(1));
+            movie.setPosterPath(cursor.getString(2));
+            movie.setBackDropDate(cursor.getString(3));
+            movie.setOriginalTitle(cursor.getString(4));
+            movie.setTitle(cursor.getString(5));
+            movie.setOverall(cursor.getString(6));
+            movie.setGenre(cursor.getString(7));
+            movie.setReleaseDate(cursor.getString(8));
+            movie.setPopularity(cursor.getString(9));
+            movie.setVoteCount(cursor.getString(10));
+            movie.setVoteAverage(cursor.getString(11));
             cursor.close();
         } else {
             movie = null;
@@ -192,17 +199,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Movie movie = new Movie();
 
-                movie.setId(cursor.getString(0));
-                movie.setPosterPath(cursor.getString(1));
-                movie.setBackDropDate(cursor.getString(2));
-                movie.setOriginalTitle(cursor.getString(3));
-                movie.setTitle(cursor.getString(4));
-                movie.setOverall(cursor.getString(5));
-                movie.setGenre(cursor.getString(6));
-                movie.setReleaseDate(cursor.getString(7));
-                movie.setPopularity(cursor.getString(8));
-                movie.setVoteCount(cursor.getString(9));
-                movie.setVoteAverage(cursor.getString(10));
+                movie.setId(cursor.getString(1));
+                movie.setPosterPath(cursor.getString(2));
+                movie.setBackDropDate(cursor.getString(3));
+                movie.setOriginalTitle(cursor.getString(4));
+                movie.setTitle(cursor.getString(5));
+                movie.setOverall(cursor.getString(6));
+                movie.setGenre(cursor.getString(7));
+                movie.setReleaseDate(cursor.getString(8));
+                movie.setPopularity(cursor.getString(9));
+                movie.setVoteCount(cursor.getString(10));
+                movie.setVoteAverage(cursor.getString(11));
 
                 movies.add(movie);
             } while (cursor.moveToNext());

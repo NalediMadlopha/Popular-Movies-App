@@ -4,7 +4,6 @@
 package com.popular_movies.app;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,10 +30,9 @@ import java.util.ArrayList;
  */
 public class MovieFragment extends Fragment {
 
-    private String mSortOrderOnStart = new String();
     private MovieAdapter mMovieAdapter;
     private GridView mMovieGridView;
-    private static ArrayList<Movie> mMovies = new ArrayList<>();
+    public static ArrayList<Movie> mMovies = new ArrayList<>();
     private View mRootView;
 
     public MovieFragment() {
@@ -55,9 +53,6 @@ public class MovieFragment extends Fragment {
 
                     // Initialize a new database helper
                     DatabaseHelper databaseHelper = new DatabaseHelper(getActivity(), null, null, 1);
-
-                    SQLiteDatabase db = databaseHelper.getWritableDatabase();
-                    databaseHelper.onUpgrade(db, 1, 2);
 
                     // Add the movies fetched
                     for (int i = 0; i < mMovies.size(); i++) {
@@ -103,7 +98,7 @@ public class MovieFragment extends Fragment {
         // Initialize a new database helper
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity(), null, null, 1);
         mMovies = databaseHelper.getMovies("Most Popular");
-
+//        Log.e("MOVIES_STRING2", mMovies.toString());
         updateDisplay(mMovies);
     }
 

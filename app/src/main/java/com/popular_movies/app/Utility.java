@@ -2,6 +2,8 @@ package com.popular_movies.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,22 +80,6 @@ public class Utility {
         return sortOrder;
     }
 
-    public static String requestQuery(Context context) {
-        String requestQuery = null;
-        String sortOrder = getSortOrderPref(context);
-
-        switch (sortOrder) {
-                case "Most Popular": // In case the sort order is set to popular mMovieList
-                    requestQuery = GlobalConstant.POPULAR_MOVIES_QUERY;
-                    break;
-                case "Top Rated": // In case the sort order is set to top rated mMovieList
-                    requestQuery = GlobalConstant.TOP_RATED_MOVIES_QUERY;
-                    break;
-        }
-
-        return requestQuery;
-    }
-
     /**
      * Sets ListView height dynamically based on the height of the items.
      * This code was taken from the internet. SOURCE: http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121
@@ -129,6 +116,27 @@ public class Utility {
         } else {
             return false;
         }
+    }
 
+    /**
+     * Convert from bitmap to byte array.
+     * This code was taken from the internet. SOURCE: http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121
+     * @param bitmap image to convert
+     * @return byte[] array of the image bytes
+     */
+    public static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    /**
+     * Convert from byte array to bitmap.
+     * This code was taken from the internet. SOURCE: http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121
+     * @param image image byte array to convert
+     * @return bitmap image decoded from the byte array
+     */
+    public static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }
