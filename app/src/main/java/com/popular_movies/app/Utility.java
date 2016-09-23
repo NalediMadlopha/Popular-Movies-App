@@ -12,9 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.popular_movies.model.Genre;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -75,9 +82,85 @@ public class Utility {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (sharedPrefs.contains("sort_order")) {
             sortOrder = sharedPrefs.getString("sort_order", "");
+        } else {
+            SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
+            prefsEditor.putString("sort_order", "Most Popular");
+            prefsEditor.commit();
+
+            sortOrder = sharedPrefs.getString("sort_order", "");
         }
 
         return sortOrder;
+    }
+
+    /**
+     * Gets the genre preference
+     *
+     * @param context which the method is called from
+     * @return ArrayList of genre objects
+     */
+    public static ArrayList<Genre> getGenrePref(Context context) {
+        ArrayList<Genre> genreArrayList = new ArrayList<>();
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPrefs.contains(GlobalConstant.GENRES)) {
+            String genreListJson = sharedPrefs.getString(GlobalConstant.GENRES, "");
+
+            try {
+                JSONArray jsonArray = new JSONArray(genreListJson);
+                Gson gson = new Gson();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Genre genre = gson.fromJson(jsonArray.getJSONObject(i).toString(), Genre.class);
+                    genreArrayList.add(genre);
+                }
+            } catch (JSONException e) {
+                e.getMessage();
+            }
+        }
+        return genreArrayList;
+    }
+
+    /**
+     * Converts a list of genre ids to a list of genre names
+     *
+     * @param genreJSONAarry an array of genre id
+     * @return a string list of genre names
+     */
+    public static String getGenreNames(Context context, String genreJSONAarry) throws JSONException {
+        String genreNames = "";
+
+        ArrayList<Genre> genreArrayList = getGenrePref(context);
+        JSONArray jsonArray = new JSONArray(genreJSONAarry);
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String jsonArrayGenreId = jsonArray.getString(i);
+
+                for (int ii = 0; ii < genreArrayList.size(); ii++) {
+                    String arrayListGenreId = genreArrayList.get(ii).getId();
+
+                    if (jsonArrayGenreId.equals(arrayListGenreId)) {
+                        // Build a genre list, separated by commas
+                        genreNames += genreArrayList.get(ii).getName() + ", ";
+                        break;
+                    }
+                }
+            }
+
+            // Check if the length of the genre name is greater than 0
+            if (genreNames.length() > 0) {
+                // Remove the last comma from the list of genre names
+                genreNames = genreNames.substring(0, (genreNames.length() - 2));
+            } else {
+                // Set this when the movie is not categorized
+                genreNames = "No genre listed";
+            }
+        } catch (JSONException e) {
+            e.getMessage();
+        } finally {
+            return genreNames;
+        }
     }
 
     /**

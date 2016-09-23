@@ -69,7 +69,7 @@ public class DetailFragment extends Fragment {
 
         // Set the poster of the movie
         ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
-        Picasso.with(getActivity()).load(mMovie.getBackDropDate()).into(movie_poster);
+        Picasso.with(getActivity()).load(mMovie.getBackDroPath()).into(movie_poster);
 
         ImageView vote_rating = (ImageView) rootView.findViewById(R.id.ic_votes_rating_average);
         vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
@@ -95,7 +95,7 @@ public class DetailFragment extends Fragment {
 
         // Set the genre(s) of the movie
         TextView movie_genres = (TextView) rootView.findViewById(R.id.details_movie_genres);
-        movie_genres.setText(mMovie.getGenre());
+        movie_genres.setText(mMovie.getGenre().toString());
 
         // Set the release date of the movie
         TextView movie_release_date = (TextView) rootView.findViewById(R.id.details_movie_release_date);

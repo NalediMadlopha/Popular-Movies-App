@@ -29,7 +29,7 @@
     <string-array name="pref_order_by_values" translatable="false">
         <item>Most Popular</item>
         <item>Top Rated</item>
-        <item>Favourites</item>
+        <item>Favourite</item>
     </string-array>
 
     <string name="sort_order_key" translatable="false">sort_order</string>

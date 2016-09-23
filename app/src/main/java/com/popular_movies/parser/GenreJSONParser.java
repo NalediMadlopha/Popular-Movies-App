@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides a list of genre objects by parsing a json string
@@ -27,7 +26,7 @@ public class GenreJSONParser {
      * @return list of genre objects
      */
     @Nullable
-    public static List<Genre> parseFeed(String content) {
+    public static ArrayList<Genre> parseFeed(String content) {
 
         ArrayList<Genre> genres = new ArrayList<>();
 
@@ -43,8 +42,8 @@ public class GenreJSONParser {
 
                 // Build a genre object
                 Genre genre = new Genre();
-                genre.setId(genreObject.getInt(GlobalConstant.ID));
-                genre.setmName(genreObject.getString(GlobalConstant.NAME));
+                genre.setId(genreObject.getString(GlobalConstant.ID));
+                genre.setName(genreObject.getString(GlobalConstant.NAME));
 
                 // Add the built genre to a genre array list
                 genres.add(genre);

@@ -3,6 +3,7 @@ package com.popular_movies.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.GridView;
 import android.widget.Toast;
 
 /**

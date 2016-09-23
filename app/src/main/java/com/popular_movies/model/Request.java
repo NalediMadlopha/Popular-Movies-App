@@ -3,9 +3,11 @@
  */
 package com.popular_movies.model;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.popular_movies.app.GlobalConstant;
+import com.popular_movies.database.MovieDbHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,26 +23,58 @@ import java.util.ArrayList;
  */
 public class Request {
 
-    private Movie mMovie;
-    private static ArrayList<Movie> mMovies = new ArrayList<>();
+    public static ArrayList<Movie> mMovies;
+    private ArrayList<Genre> mGenres = new ArrayList<>();
     private ArrayList<Trailer> mTrailers = new ArrayList<>();
     private ArrayList<Review> mReviews = new ArrayList<>();
+    private Context mContext;
+    private MovieDbHelper mMovieDbHelper;
+
+    public Request() {
+
+//        if (mMovieDbHelper == null) {
+//            mMovieDbHelper = new MovieDbHelper(context);
+//        }
+    }
 
     /**
      * Fetches popular movies
      *
      * @return json object of a list of popular movies
      */
-    public static String fetchPopularMovies() {
-        Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.MOVIE_POPULAR)
-                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
-                .build();
+    public void databaseSync(String movieCategory) {
 
-        // Request popular movies
-        String popularMoviesJson = request(builtUri);
-
-        return popularMoviesJson;
+//       String query = (movieCategory.equals(GlobalConstant.MOST_POPULAR))
+//               ? GlobalConstant.QUERY_POPULAR_MOVIES : GlobalConstant.QUERY_TOP_RATED_MOVIES;
+//
+//       StringRequest request = new StringRequest(com.android.volley.Request.Method.GET,
+//               query, new Response.Listener<String>() {
+//
+//            @Override
+//            public void onResponse(String response) {
+//                // Parse the response to a movie objects array list
+//                ArrayList<Movie> movies = MovieJSONParser.parseFeed(response);
+//
+//                for (int i = 0; i < movies.size(); i++) {
+//                    mMovieDbHelper.putMovie(movies.get(i), "");
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.getMessage();
+//            }
+//        });
+//        Volley.newRequestQueue(mContext).add(request);
     }
+
+    /**
+     * Fetches most popular movies
+     * @return an array list of most popular movies
+     */
+//    public ArrayList<Movie> mostPopularMovies() {
+//        return mMovieDbHelper.getMovies(GlobalConstant.MOST_POPULAR);
+//    }
 
     /**
      * Fetches top rated movies
@@ -49,7 +83,7 @@ public class Request {
      */
     public static String fetchTopRatedMovies() {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.MOVIE_TOP_RATED)
-                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY_PARAMETER, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request top rated movies
@@ -66,7 +100,7 @@ public class Request {
      */
     public static String fetchFavouriteMovies(String movieId) {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.SINGLE_MOVIE_QUERY + movieId)
-                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY_PARAMETER, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request a specific movie
@@ -82,7 +116,7 @@ public class Request {
      */
     public static String fetchMovieGenres() {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + GlobalConstant.GENRE_MOVIE_LIST)
-                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY_PARAMETER, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request movie genres
@@ -99,7 +133,7 @@ public class Request {
      */
     public static String fetchMovieTrailers(int movieId) {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/videos")
-                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY_PARAMETER, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request movie trailers of the specified movie
@@ -116,7 +150,7 @@ public class Request {
      */
     public static String fetchMovieReviews(int movieId) {
         Uri builtUri = Uri.parse(GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/reviews")
-                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
+                .buildUpon().appendQueryParameter(GlobalConstant.API_KEY_PARAMETER, GlobalConstant.C5CA40DED62975B80638B7357FD69E9)
                 .build();
 
         // Request movie reviews of the specified movie

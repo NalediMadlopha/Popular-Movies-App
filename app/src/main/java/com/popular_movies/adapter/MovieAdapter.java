@@ -15,7 +15,7 @@ import com.popular_movies.app.R;
 import com.popular_movies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Naledi Madlopha on 2016/07/28.
@@ -31,7 +31,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
      * @param context        The current context. Used to inflate the layout file.
      * @param movies A List of Movie objects to display in a list
      */
-    public MovieAdapter(Activity context, List<Movie> movies) {
+    public MovieAdapter(Activity context, ArrayList<Movie> movies) {
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter for two TextViews and an ImageView, the adapter is not
@@ -49,9 +49,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
      * @return The View for the position in the AdapterView.
      */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // Gets the Movie object from the ArrayAdapter at the appropriate position
-        Movie movie = getItem(position);
+        final Movie movie = getItem(position);
 
         // Adapters recycle views to AdapterViews.
         // If this is a new View object we're getting, then inflate the layout.
@@ -69,7 +69,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         title.setText(movie.getTitle());
 
         TextView genre = (TextView) convertView.findViewById(R.id.movie_genre);
-        genre.setText(movie.getGenre());
+        genre.setText(movie.getGenre().toString());
 
         TextView releaseDate = (TextView) convertView.findViewById(R.id.release_date);
         releaseDate.setText(movie.getReleaseDate());

@@ -8,25 +8,25 @@ package com.popular_movies.model;
  */
 public class Genre {
 
-    private int mId;
+    private String mId;
     private String mName;
 
     public Genre() {
     }
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.mId = id;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String name) {
+    public void setName(String name) {
         this.mName = name;
     }
 
