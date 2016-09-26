@@ -41,6 +41,10 @@ public class GlobalConstant {
     public final static String QUERY_GENRE = HTTPS_API_THEMOVIEDB_ORG_3 +
             GlobalConstant.GENRE_MOVIE_LIST + API_KEY_PARAMETER;
 
+    public final static String QUERY_TRAILERS = HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/";
+
+//    GlobalConstant.HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/" + movieId + "/videos"
+
     public final static String MOVIE_TOP_RATED = "/movie/top_rated";
     public final static String GENRE_MOVIE_LIST = "/genre/movie/list";
     public final static String MOVIE = "movie";

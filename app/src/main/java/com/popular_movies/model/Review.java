@@ -9,6 +9,7 @@ package com.popular_movies.model;
 public class Review {
 
     private String mId;
+    private String mMovieId;
     private String mAuthor;
     private String mContent;
 
@@ -21,6 +22,14 @@ public class Review {
 
     public void setId(String id) {
         this.mId = id;
+    }
+
+    public String getMovieId() {
+        return mMovieId;
+    }
+
+    public void setMovieId(String mMovieId) {
+        this.mMovieId = mMovieId;
     }
 
     public String getAuthor() {
@@ -43,7 +52,8 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "id=" + mId + '\'' +
-                "author='" + mAuthor + '\'' +
+                ", movie id=" + mMovieId + '\'' +
+                ", author='" + mAuthor + '\'' +
                 ", content='" + mContent + '\'' +
                 '}';
     }

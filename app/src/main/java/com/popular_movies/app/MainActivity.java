@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,10 +24,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.popular_movies.database.MovieDataSource;
+import com.popular_movies.database.TrailerDataSource;
 import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
+import com.popular_movies.model.Trailer;
 import com.popular_movies.parser.GenreJSONParser;
 import com.popular_movies.parser.MovieJSONParser;
+import com.popular_movies.parser.TrailerJSONParser;
 
 import org.json.JSONException;
 
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mPrefs;
     private MovieDataSource mMovieDataSource;
+    private TrailerDataSource mTrailerDataSource;
     private ProgressDialog mLoadMoviesProgressDialog;
 
     @Override
@@ -46,9 +51,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Check if the details container is not null
+        if (findViewById(R.id.movie_detail_container) != null) {
+            // Check the saved instance state and replace the movie detail contain
+            // with details fragment
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new DetailFragment(),
+                                GlobalConstant.DETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         // Initialize the shared preference object
         mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-
 
         // Check if the genre names have ever been persisted before.
         // If so then the app is not being ran for the first time
@@ -58,20 +79,19 @@ public class MainActivity extends AppCompatActivity {
                 // Set the action bar
                 setupActionBar();
 
-                mLoadMoviesProgressDialog = ProgressDialog.show(MainActivity.this, "Loading", "Loading movies...", true);
                 mMovieDataSource = new MovieDataSource(MainActivity.this);
-                mMovieDataSource.open();
-                mLoadMoviesProgressDialog.dismiss();
+                mTrailerDataSource = new TrailerDataSource(MainActivity.this);
 
-                // Persist genre names from the API
-                new PersistGenreNames().execute();
+                mMovieDataSource.open();
+                mTrailerDataSource.open();
 
                 // Syncs the most popular movies with the local SQLite database
                 new SyncDatabase().execute(GlobalConstant.MOST_POPULAR);
                 // Syncs the top rated movies with the local SQLite database
                 new SyncDatabase().execute(GlobalConstant.TOP_RATED);
 
-
+                // Persist genre names from the API
+                new PersistGenreNames().execute();
             } else {
                 // Set the view layout
                 setContentView(R.layout.activity_error_no_network);
@@ -84,18 +104,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Set the action bar
             setupActionBar();
-        }
-
-        // Check if the details container is not null
-        if (findViewById(R.id.movie_detail_container) != null) {
-            // Check the saved instance state and replace the movie detail contain
-            // with details fragment
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, new DetailFragment(),
-                                GlobalConstant.DETAIL_FRAGMENT_TAG)
-                        .commit();
-            }
         }
     }
 
@@ -183,11 +191,6 @@ public class MainActivity extends AppCompatActivity {
     class SyncDatabase extends AsyncTask<String, Void, Void> {
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
         protected Void doInBackground(String[] params) {
 
             // Check the query to request
@@ -203,25 +206,27 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     // Parse the response to a movie objects array list
-                    ArrayList<Movie> movies = MovieJSONParser.parseFeed(response);
+                    ArrayList<Movie> movieArrayList = MovieJSONParser.parseFeed(response);
 
                     try {
-                        for (int i = 0; i < movies.size(); i++) {
+                        for (int i = 0; i < movieArrayList.size(); i++) {
 
                             // Get the names of the movie genres
-                            String genreNames = Utility.getGenreNames(MainActivity.this, movies.get(i).getGenre());
+                            String genreNames = Utility.getGenreNames(MainActivity.this, movieArrayList.get(i).getGenre());
                             // Change the names of the movie genres
-                            movies.get(i).setGenre(genreNames);
+                            movieArrayList.get(i).setGenre(genreNames);
                             // Set the movie category
-                            movies.get(i).setCategory(movieCategory);
+                            movieArrayList.get(i).setCategory(movieCategory);
                         }
                     } catch (JSONException e) {
                         e.getMessage();
                     }
 
-                    if (movies != null) {
-                        for (int i = 0; i < movies.size(); i++) {
-                            mMovieDataSource.addMovie(movies.get(i));
+                    if (movieArrayList != null) {
+                        for (int i = 0; i < movieArrayList.size(); i++) {
+                            mMovieDataSource.addMovie(movieArrayList.get(i));
+
+                            new SynceTrailer().execute(movieArrayList.get(i).getId());
                         }
                     }
                 }
@@ -236,11 +241,42 @@ public class MainActivity extends AppCompatActivity {
 
             return null;
         }
+    }
+
+    class SynceTrailer extends AsyncTask<String, Void, Void> {
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected Void doInBackground(final String[] params) {
 
+            final String query = GlobalConstant.QUERY_TRAILERS + params[0] + "/videos"
+                    + GlobalConstant.API_KEY_PARAMETER;
+
+            // Initialize the request
+            StringRequest request = new StringRequest(com.android.volley.Request.Method.GET,
+                    query, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    // Parse the response to a movie objects array list
+                    ArrayList<Trailer> trailerArrayList = TrailerJSONParser.parseFeed(response);
+
+                    if (trailerArrayList != null) {
+                        for (int i = 0; i < trailerArrayList.size(); i++) {
+                            // Add the trailer to the local SQLite database
+                            mTrailerDataSource.addTrailer(trailerArrayList.get(i));
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.getMessage();
+                }
+            });
+            // Add the request to a volley request queue
+            Volley.newRequestQueue(MainActivity.this).add(request);
+
+            return null;
         }
     }
 }

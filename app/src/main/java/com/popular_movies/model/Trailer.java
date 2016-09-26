@@ -9,6 +9,7 @@ package com.popular_movies.model;
 public class Trailer {
     
     private String mId;
+    private String mMovieId;
     private String mIso_639_1;
     private String mIso_3166_1;
     private String mKey;
@@ -37,6 +38,14 @@ public class Trailer {
 
     public void setId(String id) {
         this.mId = id;
+    }
+
+    public String getMovieId() {
+        return mMovieId;
+    }
+
+    public void setMovieId(String mMovieId) {
+        this.mMovieId = mMovieId;
     }
 
     public String getIso_639_1() {
@@ -99,6 +108,7 @@ public class Trailer {
     public String toString() {
         return "Trailer{" +
                 "id='" + mId + '\'' +
+                ", movie_id='" + mMovieId + '\'' +
                 ", iso_639_1='" + mIso_639_1 + '\'' +
                 ", iso_3166_1='" + mIso_3166_1 + '\'' +
                 ", key='" + mKey + '\'' +
