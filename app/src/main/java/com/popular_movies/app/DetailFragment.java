@@ -25,15 +25,16 @@ import android.widget.Toast;
 
 import com.popular_movies.adapter.ReviewAdapter;
 import com.popular_movies.adapter.TrailerAdapter;
+import com.popular_movies.database.TrailerDataSource;
 import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.Request;
 import com.popular_movies.model.Review;
 import com.popular_movies.model.Trailer;
 import com.popular_movies.parser.ReviewJSONParser;
-import com.popular_movies.parser.TrailerJSONParser;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +43,7 @@ import java.util.List;
 public class DetailFragment extends Fragment {
 
     private Movie mMovie;
+    private TrailerDataSource mTrailerDataSource;
     private ListView mTrailersListView;
     private LinearLayout mReviewsLinearLayout;
     private TrailerAdapter mTrailerAdapter;
@@ -119,7 +121,7 @@ public class DetailFragment extends Fragment {
         mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
 
         // Fetch the movie trailers using the asyncTask
-        new FetchTrailers().execute();
+        new FetchTrailers().execute(mMovie.getId());
 
         // Fetch the movie reviews using the asyncTask
         new FetchReviews().execute();
@@ -226,34 +228,37 @@ public class DetailFragment extends Fragment {
     }
 
     /** Provides a background task that fetches the movie's trailers */
-    public class FetchTrailers extends AsyncTask<Void, Void, List<Trailer>> {
+    public class FetchTrailers extends AsyncTask<String, Void, ArrayList<Trailer>> {
 
         @Override
-        protected List<Trailer> doInBackground(Void... voids) {
+        protected ArrayList<Trailer> doInBackground(String[] params) {
 
             // Convert movie id from string to integer
             int movieId = Integer.parseInt(mMovie.getId());
 
-            // Fetch the movie trailers from the API
-            String trailerJsonString = Request.fetchMovieTrailers(movieId);
+            // Initialize the trailer data source
+            mTrailerDataSource = new TrailerDataSource(getActivity());
+            // Open the connection to the data source
+            mTrailerDataSource.open();
 
-            // Parses the trailer JSON string
+            // Get the movie id as a parameter
+            String selection[] = { params[0] };
+            // Get all the trailers
+            ArrayList<Trailer> trailerArrayList = mTrailerDataSource.getAllTrailers("movie_id=?", selection);
             // Returns a list of trailers
-            return TrailerJSONParser.parseFeed(trailerJsonString);
+            return trailerArrayList;
         }
 
         @Override
-        protected void onPostExecute(List<Trailer> trailers) {
+        protected void onPostExecute(ArrayList<Trailer> trailers) {
 
             // Check if there are trailers
             if (trailers != null) {
 
                 // Initialize the trailer adapter, passing the trailers list
                 mTrailerAdapter = new TrailerAdapter(getActivity(), trailers);
-
                 // Set the list view adapter
                 mTrailersListView.setAdapter(mTrailerAdapter);
-
                 // Modify the height of the list view
                 Utility.setListViewHeightBasedOnItems(mTrailersListView);
             }
