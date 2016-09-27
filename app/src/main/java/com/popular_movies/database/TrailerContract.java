@@ -18,7 +18,7 @@ public final class TrailerContract {
         public static final String _ID = "_id";
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_ISO_639_1 = "iso_639_1";
-        public static final String COLUMN_ISO_3166_1= "iso_3166_1";
+        public static final String COLUMN_ISO_3166_1 = "iso_3166_1";
         public static final String COLUMN_KEY = "key";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_SITE = "site";

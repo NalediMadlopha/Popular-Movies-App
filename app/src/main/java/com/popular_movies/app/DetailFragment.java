@@ -219,7 +219,6 @@ public class DetailFragment extends Fragment {
                 for (int i = 0; i < mReviewAdapter.getCount(); i++) {
                     // Get the view of the item
                     View view = mReviewAdapter.getView(i, null, mReviewsLinearLayout);
-                    // Add the view to the review linear layout
                     mReviewsLinearLayout.addView(view);
                 }
             }
