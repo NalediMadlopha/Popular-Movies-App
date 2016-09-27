@@ -31,7 +31,7 @@ import com.popular_movies.model.Movie;
 import com.popular_movies.model.Request;
 import com.popular_movies.model.Review;
 import com.popular_movies.model.Trailer;
-import com.popular_movies.parser.ReviewJSONParser;
+import com.popular_movies.parser.JSONParserReview;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Provides the details fragment
  */
-public class DetailFragment extends Fragment {
+public class FragmentDetail extends Fragment {
 
     private Movie mMovie;
     private DataSourceTrailer mDataSourceTrailer;
@@ -51,7 +51,7 @@ public class DetailFragment extends Fragment {
     private FavouriteMoviesHandler mFavouriteMoviesHandler;
     private ImageButton mFavouriteMovieIcon;
 
-    public DetailFragment() {
+    public FragmentDetail() {
     }
 
     @Nullable
@@ -204,7 +204,7 @@ public class DetailFragment extends Fragment {
 
             // Parses the review JSON string
             // Returns a list of reviews
-            return ReviewJSONParser.parseFeed(reviewsJsonString);
+            return JSONParserReview.parseFeed(reviewsJsonString);
         }
 
         @Override

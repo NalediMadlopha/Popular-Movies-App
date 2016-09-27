@@ -23,7 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.popular_movies.adapter.MovieAdapter;
 import com.popular_movies.database.DataSourceMovie;
 import com.popular_movies.model.Movie;
-import com.popular_movies.parser.MovieJSONParser;
+import com.popular_movies.parser.JSONParserMovie;
 
 import org.json.JSONException;
 
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 /**
  * Provides the movie fragment
  */
-public class MovieFragment extends Fragment {
+public class FragmentMovie extends Fragment {
     private DataSourceMovie mDataSource;
 
     private ArrayList<Movie> mMovies;
@@ -41,7 +41,7 @@ public class MovieFragment extends Fragment {
     private View mRootView;
     private ProgressDialog mLoadMoviesProgressDialog;
 
-    public MovieFragment() {
+    public FragmentMovie() {
     }
 
     @Override
@@ -134,20 +134,20 @@ public class MovieFragment extends Fragment {
 
             // Check if the movie detail container is displayed or not
             if (mRootView.findViewById(R.id.movie_detail_container) != null) {
-                DetailFragment detailFragment = new DetailFragment();
+                FragmentDetail fragmentDetail = new FragmentDetail();
 
                 // Supply index input as an argument.
                 Bundle args = new Bundle();
                 args.putParcelable(GlobalConstant.MOVIE, mMovieAdapter.getItem(position));
-                detailFragment.setArguments(args);
+                fragmentDetail.setArguments(args);
 
                 // Replace the movie details container framelayout with the details fragment
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, detailFragment, GlobalConstant.MOVIES)
+                        .replace(R.id.movie_detail_container, fragmentDetail, GlobalConstant.MOVIES)
                         .commit();
             } else {
                 // Start the details activity and pass the movie to it
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                Intent intent = new Intent(getActivity(), ActivityDetail.class);
                 intent.putExtra(GlobalConstant.MOVIE, mMovieAdapter.getItem(position));
                 startActivity(intent);
             }
@@ -176,7 +176,7 @@ public class MovieFragment extends Fragment {
                 @Override
                 public void onResponse(String response) {
                     // Parse the response to a movie objects array list
-                    ArrayList<Movie> movies = MovieJSONParser.parseFeed(response);
+                    ArrayList<Movie> movies = JSONParserMovie.parseFeed(response);
 
                     try {
                         for (int i = 0; i < movies.size(); i++) {

@@ -14,9 +14,9 @@ import java.util.ArrayList;
 /**
  * Created by Naledi Madlopha on 2016/08/09.
  */
-public class TrailerJSONParser {
+public class JSONParserTrailer {
 
-    private static final String LOG_TAG = TrailerJSONParser.class.getSimpleName();
+    private static final String LOG_TAG = JSONParserTrailer.class.getSimpleName();
 
     /**
      * Parse the feed of a json string to a list of trailer objects

@@ -3,7 +3,7 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.popular_movies.app.SettingsActivity$SortOrderPreferenceFragment"
+        android:fragment="com.popular_movies.app.ActivitySettings$SortOrderPreferenceFragment"
         android:icon="@drawable/ic_action_sort"
         android:title="@string/pref_header_sort_order" />
 

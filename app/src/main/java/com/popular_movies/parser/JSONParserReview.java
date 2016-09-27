@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Provides a list of movie review objects by parsing a json string
  */
-public class ReviewJSONParser {
+public class JSONParserReview {
 
     /**
      * Parse the feed of a json string to a list of review objects

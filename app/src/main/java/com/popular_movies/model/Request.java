@@ -53,7 +53,7 @@ public class Request {
 //            @Override
 //            public void onResponse(String response) {
 //                // Parse the response to a movie objects array list
-//                ArrayList<Movie> movies = MovieJSONParser.parseFeed(response);
+//                ArrayList<Movie> movies = JSONParserMovie.parseFeed(response);
 //
 //                for (int i = 0; i < movies.size(); i++) {
 //                    mMovieDbHelper.putMovie(movies.get(i), "");

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Provides a list of movie objects by parsing a json string
  */
-public class MovieJSONParser {
+public class JSONParserMovie {
 
     /**
      * Parse the feed of a json string to a movie object

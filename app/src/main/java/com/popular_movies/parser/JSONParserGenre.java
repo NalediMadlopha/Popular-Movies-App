@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Provides a list of genre objects by parsing a json string
  */
-public class GenreJSONParser {
+public class JSONParserGenre {
 
     /**
      * Parse the feed of a json string to genre objects

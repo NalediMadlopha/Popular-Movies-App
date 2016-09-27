@@ -11,7 +11,7 @@ import android.text.Html;
 /**
  * Provides the details activity
  */
-public class DetailActivity extends AppCompatActivity {
+public class ActivityDetail extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +26,13 @@ public class DetailActivity extends AppCompatActivity {
                     getIntent().getParcelableExtra(GlobalConstant.MOVIE));
 
             // Create a new details fragment
-            DetailFragment detailFragment = new DetailFragment();
+            FragmentDetail fragmentDetail = new FragmentDetail();
             // Set the fragment arguments
-            detailFragment.setArguments(arguments);
+            fragmentDetail.setArguments(arguments);
 
             // Add the fragment to the movie details container (Framelayout)
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, detailFragment)
+                    .add(R.id.movie_detail_container, fragmentDetail)
                     .commit();
         }
     }

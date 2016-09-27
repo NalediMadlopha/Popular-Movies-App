@@ -5,11 +5,11 @@
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
-    tools:context="com.popular_movies.app.MainActivity">
+    tools:context=".ActivityMain">
 
     <fragment
         android:id="@+id/fragment_forecast"
-        android:name="com.popular_movies.app.MovieFragment"
+        android:name="com.popular_movies.app.FragmentMovie"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

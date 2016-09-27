@@ -27,9 +27,9 @@ import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.Trailer;
-import com.popular_movies.parser.GenreJSONParser;
-import com.popular_movies.parser.MovieJSONParser;
-import com.popular_movies.parser.TrailerJSONParser;
+import com.popular_movies.parser.JSONParserGenre;
+import com.popular_movies.parser.JSONParserMovie;
+import com.popular_movies.parser.JSONParserTrailer;
 
 import org.json.JSONException;
 
@@ -38,7 +38,7 @@ import java.util.ArrayList;
 /**
  * Provides the main activity
  */
-public class MainActivity extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
 
     private SharedPreferences mPrefs;
     private DataSourceMovie mDataSourceMovie;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             // with details fragment
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.movie_detail_container, new DetailFragment(),
+                        .replace(R.id.movie_detail_container, new FragmentDetail(),
                                 GlobalConstant.DETAIL_FRAGMENT_TAG)
                         .commit();
             }
@@ -68,18 +68,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         // Initialize the shared preference object
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(ActivityMain.this);
 
         // Check if the genre names have ever been persisted before.
         // If so then the app is not being ran for the first time
         // therefore there are movies stored in the database.
         if (!mPrefs.contains(GlobalConstant.GENRES)) {
-            if (Utility.isOnline(MainActivity.this)) {
+            if (Utility.isOnline(ActivityMain.this)) {
                 // Set the action bar
                 setupActionBar();
 
-                mDataSourceMovie = new DataSourceMovie(MainActivity.this);
-                mDataSourceTrailer = new DataSourceTrailer(MainActivity.this);
+                mDataSourceMovie = new DataSourceMovie(ActivityMain.this);
+                mDataSourceTrailer = new DataSourceTrailer(ActivityMain.this);
 
                 mDataSourceMovie.open();
                 mDataSourceTrailer.open();
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener mButtonRetryOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(MainActivity.this, MainActivity.class));
-            MainActivity.this.finish();
+            startActivity(new Intent(ActivityMain.this, ActivityMain.class));
+            ActivityMain.this.finish();
         }
     };
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             // Start the settings activity
-            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            startActivity(new Intent(ActivityMain.this, ActivitySettings.class));
             return true;
         }
 
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     // Parse the response to a movie objects array list
-                    ArrayList<Genre> genres = GenreJSONParser.parseFeed(response);
+                    ArrayList<Genre> genres = JSONParserGenre.parseFeed(response);
                     Gson gson = new Gson();
 
                     /**
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                     error.getMessage();
                 }
             });
-            Volley.newRequestQueue(MainActivity.this).add(request);
+            Volley.newRequestQueue(ActivityMain.this).add(request);
 
             return null;
         }
@@ -205,13 +205,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     // Parse the response to a movie objects array list
-                    ArrayList<Movie> movieArrayList = MovieJSONParser.parseFeed(response);
+                    ArrayList<Movie> movieArrayList = JSONParserMovie.parseFeed(response);
 
                     try {
                         for (int i = 0; i < movieArrayList.size(); i++) {
 
                             // Get the names of the movie genres
-                            String genreNames = Utility.getGenreNames(MainActivity.this, movieArrayList.get(i).getGenre());
+                            String genreNames = Utility.getGenreNames(ActivityMain.this, movieArrayList.get(i).getGenre());
                             // Change the names of the movie genres
                             movieArrayList.get(i).setGenre(genreNames);
                             // Set the movie category
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             // Add the request to a volley request queue
-            Volley.newRequestQueue(MainActivity.this).add(request);
+            Volley.newRequestQueue(ActivityMain.this).add(request);
 
             return null;
         }
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     // Parse the response to a movie objects array list
-                    ArrayList<Trailer> trailerArrayList = TrailerJSONParser.parseFeed(response);
+                    ArrayList<Trailer> trailerArrayList = JSONParserTrailer.parseFeed(response);
 
                     if (trailerArrayList != null) {
                         for (int i = 0; i < trailerArrayList.size(); i++) {
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             // Add the request to a volley request queue
-            Volley.newRequestQueue(MainActivity.this).add(request);
+            Volley.newRequestQueue(ActivityMain.this).add(request);
 
             return null;
         }
