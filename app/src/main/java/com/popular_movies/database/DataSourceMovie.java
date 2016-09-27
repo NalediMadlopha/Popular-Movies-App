@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.popular_movies.database.MovieContract.MovieEntry;
+import com.popular_movies.database.ContractMovie.MovieEntry;
 import com.popular_movies.model.Movie;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by root on 2016/09/21.
  */
-public class MovieDataSource {
+public class DataSourceMovie {
 
     private SQLiteDatabase db;
     private MovieDbHelper movieDbHelper;
@@ -34,7 +34,7 @@ public class MovieDataSource {
             MovieEntry.COLUMN_MOVIE_CATEGORY
     };
 
-    public MovieDataSource(Context context) {
+    public DataSourceMovie(Context context) {
         movieDbHelper = new MovieDbHelper(context);
     }
 
@@ -100,37 +100,37 @@ public class MovieDataSource {
         Movie movie = new Movie();
 
         movie.setId(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_MOVIE_ID))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_MOVIE_ID))
         );
         movie.setPosterPath(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_POSTER_PATH))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_POSTER_PATH))
         );
         movie.setBackDropPath(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_BACKDROP_PATH))
         );
         movie.setOriginalTitle(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_ORIGINAL_TITLE))
         );
         movie.setTitle(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_TITLE))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_TITLE))
         );
         movie.setOverall(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_OVERALL))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_OVERALL))
         );
         movie.setGenre(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_GENRE))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_GENRE))
         );
         movie.setReleaseDate(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_RELEASE_DATE))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_RELEASE_DATE))
         );
         movie.setPopularity(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_POPULARITY))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_POPULARITY))
         );
         movie.setVoteCount(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_VOTE_COUNT))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_VOTE_COUNT))
         );
         movie.setVoteAverage(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE))
+                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_VOTE_AVERAGE))
         );
         movie.setCategory(cursor.getString(
                 cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_CATEGORY))

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.popular_movies.database.MovieContract.MovieEntry;
-import com.popular_movies.database.TrailerContract.TrailerEntry
+import com.popular_movies.database.ContractMovie.MovieEntry;
+import com.popular_movies.database.ContractTrailer.TrailerEntry
         ;
 
 /**

@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.popular_movies.database.ReviewContract.ReviewEntry;
+import com.popular_movies.database.ContractReview.ReviewEntry;
 import com.popular_movies.model.Review;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by root on 2016/09/21.
  */
-public class ReviewDataSource {
+public class DataSourceReview {
 
     private SQLiteDatabase db;
     private MovieDbHelper movieDbHelper;
@@ -25,7 +25,7 @@ public class ReviewDataSource {
         ReviewEntry.COLUMN_CONTENT
     };
 
-    public ReviewDataSource(Context context) {
+    public DataSourceReview(Context context) {
         movieDbHelper = new MovieDbHelper(context);
     }
 

@@ -21,7 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.popular_movies.adapter.MovieAdapter;
-import com.popular_movies.database.MovieDataSource;
+import com.popular_movies.database.DataSourceMovie;
 import com.popular_movies.model.Movie;
 import com.popular_movies.parser.MovieJSONParser;
 
@@ -33,7 +33,7 @@ import java.util.ArrayList;
  * Provides the movie fragment
  */
 public class MovieFragment extends Fragment {
-    private MovieDataSource mDataSource;
+    private DataSourceMovie mDataSource;
 
     private ArrayList<Movie> mMovies;
     private MovieAdapter mMovieAdapter;
@@ -72,7 +72,7 @@ public class MovieFragment extends Fragment {
     public void onStart() {
         super.onStart();
 //        getActivity().deleteDatabase("PopularMovie.db");
-        mDataSource = new MovieDataSource(getActivity());
+        mDataSource = new DataSourceMovie(getActivity());
         mDataSource.open();
 
         // Check if there is network connection

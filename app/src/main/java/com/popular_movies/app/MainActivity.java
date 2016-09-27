@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +22,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.popular_movies.database.MovieDataSource;
-import com.popular_movies.database.TrailerDataSource;
+import com.popular_movies.database.DataSourceMovie;
+import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.Trailer;
@@ -42,8 +41,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences mPrefs;
-    private MovieDataSource mMovieDataSource;
-    private TrailerDataSource mTrailerDataSource;
+    private DataSourceMovie mDataSourceMovie;
+    private DataSourceTrailer mDataSourceTrailer;
     private ProgressDialog mLoadMoviesProgressDialog;
 
     @Override
@@ -79,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 // Set the action bar
                 setupActionBar();
 
-                mMovieDataSource = new MovieDataSource(MainActivity.this);
-                mTrailerDataSource = new TrailerDataSource(MainActivity.this);
+                mDataSourceMovie = new DataSourceMovie(MainActivity.this);
+                mDataSourceTrailer = new DataSourceTrailer(MainActivity.this);
 
-                mMovieDataSource.open();
-                mTrailerDataSource.open();
+                mDataSourceMovie.open();
+                mDataSourceTrailer.open();
 
                 // Syncs the most popular movies with the local SQLite database
                 new SyncDatabase().execute(GlobalConstant.MOST_POPULAR);
@@ -224,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (movieArrayList != null) {
                         for (int i = 0; i < movieArrayList.size(); i++) {
-                            mMovieDataSource.addMovie(movieArrayList.get(i));
+                            mDataSourceMovie.addMovie(movieArrayList.get(i));
 
                             new SynceTrailer().execute(movieArrayList.get(i).getId());
                         }
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                     if (trailerArrayList != null) {
                         for (int i = 0; i < trailerArrayList.size(); i++) {
                             // Add the trailer to the local SQLite database
-                            mTrailerDataSource.addTrailer(trailerArrayList.get(i));
+                            mDataSourceTrailer.addTrailer(trailerArrayList.get(i));
                         }
                     }
                 }

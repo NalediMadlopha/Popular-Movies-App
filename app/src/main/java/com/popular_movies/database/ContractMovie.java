@@ -5,12 +5,12 @@ import android.provider.BaseColumns;
 /**
  * Created by root on 2016/09/19.
  */
-public final class MovieContract {
+public final class ContractMovie {
     /*
      * To prevent someone from accidentally instantiating the contract class,
      * make the constructor private
      */
-    private MovieContract() {}
+    private ContractMovie() {}
 
     /* Inner class that defines the table contents */
     public static class MovieEntry implements BaseColumns {

@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.popular_movies.adapter.ReviewAdapter;
 import com.popular_movies.adapter.TrailerAdapter;
-import com.popular_movies.database.TrailerDataSource;
+import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.Request;
@@ -43,7 +43,7 @@ import java.util.List;
 public class DetailFragment extends Fragment {
 
     private Movie mMovie;
-    private TrailerDataSource mTrailerDataSource;
+    private DataSourceTrailer mDataSourceTrailer;
     private ListView mTrailersListView;
     private LinearLayout mReviewsLinearLayout;
     private TrailerAdapter mTrailerAdapter;
@@ -236,14 +236,14 @@ public class DetailFragment extends Fragment {
             int movieId = Integer.parseInt(mMovie.getId());
 
             // Initialize the trailer data source
-            mTrailerDataSource = new TrailerDataSource(getActivity());
+            mDataSourceTrailer = new DataSourceTrailer(getActivity());
             // Open the connection to the data source
-            mTrailerDataSource.open();
+            mDataSourceTrailer.open();
 
             // Get the movie id as a parameter
             String selection[] = { params[0] };
             // Get all the trailers
-            ArrayList<Trailer> trailerArrayList = mTrailerDataSource.getTrailers("movie_id=?", selection);
+            ArrayList<Trailer> trailerArrayList = mDataSourceTrailer.getTrailers("movie_id=?", selection);
             // Returns a list of trailers
             return trailerArrayList;
         }

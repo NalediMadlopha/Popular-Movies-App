@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.popular_movies.database.TrailerContract.TrailerEntry;
+import com.popular_movies.database.ContractTrailer.TrailerEntry;
 import com.popular_movies.model.Trailer;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by root on 2016/09/21.
  */
-public class TrailerDataSource {
+public class DataSourceTrailer {
 
     private SQLiteDatabase db;
     private MovieDbHelper movieDbHelper;
@@ -30,7 +30,7 @@ public class TrailerDataSource {
         TrailerEntry.COLUMN_TYPE
     };
 
-    public TrailerDataSource(Context context) {
+    public DataSourceTrailer(Context context) {
         movieDbHelper = new MovieDbHelper(context);
     }
 
