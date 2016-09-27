@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides a list of movie review objects by parsing a json string
@@ -27,7 +26,7 @@ public class JSONParserReview {
      * @return list of review objects
      */
     @Nullable
-    public static List<Review> parseFeed(String content) {
+    public static ArrayList<Review> parseFeed(String content) {
 
         ArrayList<Review> reviews = new ArrayList<>();
 

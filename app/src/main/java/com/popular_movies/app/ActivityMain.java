@@ -23,12 +23,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.popular_movies.database.DataSourceMovie;
+import com.popular_movies.database.DataSourceReview;
 import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
+import com.popular_movies.model.Review;
 import com.popular_movies.model.Trailer;
 import com.popular_movies.parser.JSONParserGenre;
 import com.popular_movies.parser.JSONParserMovie;
+import com.popular_movies.parser.JSONParserReview;
 import com.popular_movies.parser.JSONParserTrailer;
 
 import org.json.JSONException;
@@ -43,6 +46,7 @@ public class ActivityMain extends AppCompatActivity {
     private SharedPreferences mPrefs;
     private DataSourceMovie mDataSourceMovie;
     private DataSourceTrailer mDataSourceTrailer;
+    private DataSourceReview mDataSourceReview;
     private ProgressDialog mLoadMoviesProgressDialog;
 
     @Override
@@ -80,17 +84,19 @@ public class ActivityMain extends AppCompatActivity {
 
                 mDataSourceMovie = new DataSourceMovie(ActivityMain.this);
                 mDataSourceTrailer = new DataSourceTrailer(ActivityMain.this);
+                mDataSourceReview = new DataSourceReview(ActivityMain.this);
 
                 mDataSourceMovie.open();
                 mDataSourceTrailer.open();
-
-                // Syncs the most popular movies with the local SQLite database
-                new SyncDatabase().execute(GlobalConstant.MOST_POPULAR);
-                // Syncs the top rated movies with the local SQLite database
-                new SyncDatabase().execute(GlobalConstant.TOP_RATED);
+                mDataSourceReview.open();
 
                 // Persist genre names from the API
                 new PersistGenreNames().execute();
+
+                // Syncs the most popular movies with the local SQLite database
+                new SyncMovies().execute(GlobalConstant.MOST_POPULAR);
+                // Syncs the top rated movies with the local SQLite database
+                new SyncMovies().execute(GlobalConstant.TOP_RATED);
             } else {
                 // Set the view layout
                 setContentView(R.layout.activity_error_no_network);
@@ -187,7 +193,7 @@ public class ActivityMain extends AppCompatActivity {
         }
     }
 
-    class SyncDatabase extends AsyncTask<String, Void, Void> {
+    class SyncMovies extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String[] params) {
@@ -225,7 +231,8 @@ public class ActivityMain extends AppCompatActivity {
                         for (int i = 0; i < movieArrayList.size(); i++) {
                             mDataSourceMovie.addMovie(movieArrayList.get(i));
 
-                            new SynceTrailer().execute(movieArrayList.get(i).getId());
+                            new SyncTrailers().execute(movieArrayList.get(i).getId());
+                            new SyncReviews().execute(movieArrayList.get(i).getId());
                         }
                     }
                 }
@@ -242,12 +249,12 @@ public class ActivityMain extends AppCompatActivity {
         }
     }
 
-    class SynceTrailer extends AsyncTask<String, Void, Void> {
+    class SyncTrailers extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(final String[] params) {
 
-            final String query = GlobalConstant.QUERY_TRAILERS + params[0] + "/videos"
+            final String query = GlobalConstant.BASE_QUERY_URL + params[0] + "/videos"
                     + GlobalConstant.API_KEY_PARAMETER;
 
             // Initialize the request
@@ -256,13 +263,52 @@ public class ActivityMain extends AppCompatActivity {
 
                 @Override
                 public void onResponse(String response) {
-                    // Parse the response to a movie objects array list
+                    // Parse the response to a trailer object array list
                     ArrayList<Trailer> trailerArrayList = JSONParserTrailer.parseFeed(response);
 
                     if (trailerArrayList != null) {
                         for (int i = 0; i < trailerArrayList.size(); i++) {
                             // Add the trailer to the local SQLite database
                             mDataSourceTrailer.addTrailer(trailerArrayList.get(i));
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.getMessage();
+                }
+            });
+            // Add the request to a volley request queue
+            Volley.newRequestQueue(ActivityMain.this).add(request);
+
+            return null;
+        }
+    }
+
+    class SyncReviews extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+
+            final String query = GlobalConstant.BASE_QUERY_URL + params[0] + "/reviews"
+                    + GlobalConstant.API_KEY_PARAMETER;
+
+            // Initialize the request
+            StringRequest request = new StringRequest(com.android.volley.Request.Method.GET,
+                    query, new Response.Listener<String>() {
+
+                @Override
+                public void onResponse(String response) {
+                    // Parse the response to a review object array list
+                    ArrayList<Review> reviewArrayList = JSONParserReview.parseFeed(response);
+                    if (reviewArrayList != null) {
+                        for (int i = 0; i < reviewArrayList.size(); i++) {
+                            // Set the review's movie id
+                            reviewArrayList.get(i).setMovieId(params[0]);
+
+                            // Add the review to the local SQLite database
+                            mDataSourceReview.addReview(reviewArrayList.get(i));
                         }
                     }
                 }

@@ -5,8 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.popular_movies.database.ContractMovie.MovieEntry;
-import com.popular_movies.database.ContractTrailer.TrailerEntry
-        ;
+import com.popular_movies.database.ContractTrailer.TrailerEntry;
+import com.popular_movies.database.ContractReview.ReviewEntry;
+
+;
 
 /**
  * Created by root on 2016/09/14.
@@ -46,6 +48,13 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                     TrailerEntry.COLUMN_SIZE + TEXT_TYPE + COMM_SEP +
                     TrailerEntry.COLUMN_TYPE + TEXT_TYPE + " )";
 
+    private static final String SQL_CREATE_REVIEW_TABLE =
+            "CREATE TABLE " + ReviewEntry.TABLE_NAME + " (" +
+                    ReviewEntry._ID + " INTEGER PRIMARY KEY, " +
+                    ReviewEntry.COLUMN_MOVIE_ID + TEXT_TYPE + COMM_SEP +
+                    ReviewEntry.COLUMN_AUTHOR + TEXT_TYPE + COMM_SEP +
+                    ReviewEntry.COLUMN_CONTENT + TEXT_TYPE + " )";
+
     private static final String SQL_DELETE_MOVIE_TABLE =
             "DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME;
 
@@ -60,6 +69,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
         db.execSQL(SQL_CREATE_TRAILER_TABLE);
+        db.execSQL(SQL_CREATE_REVIEW_TABLE);
     }
 
     @Override
@@ -69,6 +79,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_MOVIE_TABLE);
         db.execSQL(SQL_DELETE_TRAILER_TABLE);
+        db.execSQL(SQL_CREATE_REVIEW_TABLE);
         onCreate(db);
     }
 

@@ -50,6 +50,9 @@ public class FragmentMovie extends Fragment {
 
         Log.e("onCreate", "Create");
 
+        mDataSource = new DataSourceMovie(getActivity());
+        mDataSource.open();
+
 
     }
 
@@ -72,22 +75,7 @@ public class FragmentMovie extends Fragment {
     public void onStart() {
         super.onStart();
 //        getActivity().deleteDatabase("PopularMovie.db");
-        mDataSource = new DataSourceMovie(getActivity());
-        mDataSource.open();
 
-        // Check if there is network connection
-        if (Utility.isOnline(getActivity())) {
-//            String sortOrderPref = Utility.getSortOrderPref(getActivity());
-//
-//            new SyncDatabase().execute(sortOrderPref);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        mDataSource.open();
         if (mMovies == null || mMovies.size() == 0) {
             String[] movieCategory = { Utility.getSortOrderPref(getActivity()) };
             mMovies = mDataSource.getMovies("movie_category=?", movieCategory);
@@ -98,6 +86,20 @@ public class FragmentMovie extends Fragment {
             // Set the grid view adapter
             mMovieGridView.setAdapter(mMovieAdapter);
         }
+
+        // Check if there is network connection
+        if (Utility.isOnline(getActivity())) {
+//            String sortOrderPref = Utility.getSortOrderPref(getActivity());
+//
+//            new SyncMovies().execute(sortOrderPref);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
 
     }
 
