@@ -49,7 +49,7 @@ public class ReviewJSONParser {
                 review.setAuthor(reviewJson.getString(GlobalConstant.AUTHOR));
 
                 // Set the review content
-                review.setReviewMessage(reviewJson.getString(GlobalConstant.CONTENT));
+                review.setContent(reviewJson.getString(GlobalConstant.CONTENT));
 
                 // Add the review object to an array of trailers
                 reviews.add(review);

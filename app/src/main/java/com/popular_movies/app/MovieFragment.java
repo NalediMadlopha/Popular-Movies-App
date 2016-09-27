@@ -90,7 +90,7 @@ public class MovieFragment extends Fragment {
         mDataSource.open();
         if (mMovies == null || mMovies.size() == 0) {
             String[] movieCategory = { Utility.getSortOrderPref(getActivity()) };
-            mMovies = mDataSource.getAllMovies("movie_category=?", movieCategory);
+            mMovies = mDataSource.getMovies("movie_category=?", movieCategory);
         }
         if (mMovies != null && mMovies.size() > 0) {
             // Initialize the movie adapter, passing the movie list

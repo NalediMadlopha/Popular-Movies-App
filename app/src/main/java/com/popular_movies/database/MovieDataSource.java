@@ -78,7 +78,7 @@ public class MovieDataSource {
         db.execSQL("DELETE FROM " + MovieEntry.TABLE_NAME);
     }
 
-    public ArrayList<Movie> getAllMovies(String selection, String[] selectionArgs) {
+    public ArrayList<Movie> getMovies(String selection, String[] selectionArgs) {
         ArrayList<Movie> movies = new ArrayList<>();
 
         Cursor cursor = db.query(MovieEntry.TABLE_NAME,

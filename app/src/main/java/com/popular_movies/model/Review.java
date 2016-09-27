@@ -44,8 +44,8 @@ public class Review {
         return mContent;
     }
 
-    public void setReviewMessage(String reviewMessage) {
-        this.mContent = reviewMessage;
+    public void setContent(String content) {
+        this.mContent = content;
     }
 
     @Override

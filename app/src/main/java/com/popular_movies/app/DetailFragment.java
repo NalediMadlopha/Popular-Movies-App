@@ -243,7 +243,7 @@ public class DetailFragment extends Fragment {
             // Get the movie id as a parameter
             String selection[] = { params[0] };
             // Get all the trailers
-            ArrayList<Trailer> trailerArrayList = mTrailerDataSource.getAllTrailers("movie_id=?", selection);
+            ArrayList<Trailer> trailerArrayList = mTrailerDataSource.getTrailers("movie_id=?", selection);
             // Returns a list of trailers
             return trailerArrayList;
         }

@@ -66,7 +66,7 @@ public class TrailerDataSource {
         return newTrailer;
     }
 
-    public ArrayList<Trailer> getAllTrailers(String selection, String[] selectionArgs) {
+    public ArrayList<Trailer> getTrailers(String selection, String[] selectionArgs) {
         ArrayList<Trailer> trailerArrayList = new ArrayList<>();
 
         Cursor cursor = db.query(TrailerEntry.TABLE_NAME,
