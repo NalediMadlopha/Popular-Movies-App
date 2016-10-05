@@ -36,43 +36,43 @@ public class JSONParserMovie {
             // Get a json array of movies
             JSONArray moviesJsonArray = moviesJson.getJSONArray(GlobalConstant.RESULTS);
 
-            for (int i = 0; i < moviesJsonArray.length(); i++) {
-                Movie movie = new Movie();
-                JSONObject movieJson = moviesJsonArray.getJSONObject(i);
-
-                // Set the movie's Id
-                movie.setId(movieJson.getString(GlobalConstant.ID));
-                // Set the movie's poster
-                movie.setPosterPath(movieJson.getString(GlobalConstant.POSTER_PATH));
-
-//                movie.setPosterBitmap(posterBitmap);
-
-                // Set the movie's original title
-                movie.setOriginalTitle(movieJson.getString(GlobalConstant.ORIGINAL_TITLE));
-                // Set the movie's title
-                movie.setTitle(movieJson.getString(GlobalConstant.TITLE));
-                // Set the movie's overall description
-                movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
-
-                // Get the genres
-                JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRE_IDS);
-
-                // Set the movie's genre
-                movie.setGenre(genreArray.toString());
-                // Set the movie's release date
-                movie.setReleaseDate(movieJson.getString(GlobalConstant.RELEASE_DATE));
-                // Set the movie's backdrop path
-                movie.setBackDropPath(movieJson.getString(GlobalConstant.BACKDROP_PATH));
-                // Set the movie's popularity
-                movie.setPopularity(movieJson.getString(GlobalConstant.POPULARITY));
-                // Set the movie's vote count
-                movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
-                // Set the movie's vote average
-                movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
-
-                // Add the movie object to an array of movies
-                movies.add(movie);
-            }
+//            for (int i = 0; i < moviesJsonArray.length(); i++) {
+//                Movie movie = new Movie();
+//                JSONObject movieJson = moviesJsonArray.getJSONObject(i);
+//
+//                // Set the movie's Id
+//                movie.setId(movieJson.getString(GlobalConstant.ID));
+//                // Set the movie's poster
+//                movie.setPosterPath(movieJson.getString(GlobalConstant.POSTER_PATH));
+//
+////                movie.setPosterBitmap(posterBitmap);
+//
+//                // Set the movie's original title
+//                movie.setOriginalTitle(movieJson.getString(GlobalConstant.ORIGINAL_TITLE));
+//                // Set the movie's title
+//                movie.setTitle(movieJson.getString(GlobalConstant.TITLE));
+//                // Set the movie's overall description
+//                movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
+//
+//                // Get the genres
+//                JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRE_IDS);
+//
+//                // Set the movie's genre
+////                movie.setGenre(genreArray.toString());
+//                // Set the movie's release date
+//                movie.setReleaseDate(movieJson.getString(GlobalConstant.RELEASE_DATE));
+//                // Set the movie's backdrop path
+//                movie.setBackDropPath(movieJson.getString(GlobalConstant.BACKDROP_PATH));
+//                // Set the movie's popularity
+//                movie.setPopularity(movieJson.getString(GlobalConstant.POPULARITY));
+//                // Set the movie's vote count
+//                movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
+//                // Set the movie's vote average
+//                movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
+//
+//                // Add the movie object to an array of movies
+//                movies.add(movie);
+//            }
         } catch (JSONException e) {
             e.getMessage();
         } finally {
@@ -86,45 +86,45 @@ public class JSONParserMovie {
      * @param content is a json object string
      * @return a movie object
      */
-    @Nullable
-    public static Movie parseSingleFeed(String content) {
-        Movie movie = new Movie();
-
-        try {
-            JSONObject movieJson = new JSONObject(content);
-
-            // Set the movie's Id
-            movie.setId(movieJson.getString(GlobalConstant.ID));
-            // Set the movie's poster
-            movie.setPosterPath(movieJson.getString(GlobalConstant.POSTER_PATH));
-            // Set the movie's original title
-            movie.setOriginalTitle(movieJson.getString(GlobalConstant.ORIGINAL_TITLE));
-            // Set the movie's title
-            movie.setTitle(movieJson.getString(GlobalConstant.TITLE));
-            // Set the movie's overall description
-            movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
-
-            // Get the genres
-            JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRES);
-
-            // Set the movie's genre
-            movie.setGenre(genreArray.toString());
-            // Set the movie's release date
-            movie.setReleaseDate(movieJson.getString(GlobalConstant.RELEASE_DATE));
-            // Set the movie's backdrop path
-            movie.setBackDropPath(movieJson.getString(GlobalConstant.BACKDROP_PATH));
-            // Set the movie's popularity
-            movie.setPopularity(movieJson.getString(GlobalConstant.POPULARITY));
-            // Set the movie's vote count
-            movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
-            // Set the movie's vote average
-            movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
-        } catch (JSONException e) {
-            e.getMessage();
-        } finally {
-            return movie;
-        }
-    }
+//    @Nullable
+//    public static Movie parseSingleFeed(String content) {
+//        Movie movie = new Movie();
+//
+//        try {
+//            JSONObject movieJson = new JSONObject(content);
+//
+//            // Set the movie's Id
+//            movie.setId(movieJson.getString(GlobalConstant.ID));
+//            // Set the movie's poster
+//            movie.setPosterPath(movieJson.getString(GlobalConstant.POSTER_PATH));
+//            // Set the movie's original title
+//            movie.setOriginalTitle(movieJson.getString(GlobalConstant.ORIGINAL_TITLE));
+//            // Set the movie's title
+//            movie.setTitle(movieJson.getString(GlobalConstant.TITLE));
+//            // Set the movie's overall description
+//            movie.setOverall(movieJson.getString(GlobalConstant.OVERVIEW));
+//
+//            // Get the genres
+//            JSONArray genreArray = movieJson.getJSONArray(GlobalConstant.GENRES);
+//
+//            // Set the movie's genre
+////            movie.setGenre(genreArray.toString());
+//            // Set the movie's release date
+//            movie.setReleaseDate(movieJson.getString(GlobalConstant.RELEASE_DATE));
+//            // Set the movie's backdrop path
+//            movie.setBackDropPath(movieJson.getString(GlobalConstant.BACKDROP_PATH));
+//            // Set the movie's popularity
+//            movie.setPopularity(movieJson.getString(GlobalConstant.POPULARITY));
+//            // Set the movie's vote count
+//            movie.setVoteCount(movieJson.getString(GlobalConstant.VOTE_COUNT));
+//            // Set the movie's vote average
+//            movie.setVoteAverage(movieJson.getString(GlobalConstant.VOTE_AVERAGE));
+//        } catch (JSONException e) {
+//            e.getMessage();
+//        } finally {
+//            return movie;
+//        }
+//    }
 }
 
     

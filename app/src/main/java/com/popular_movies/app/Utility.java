@@ -2,11 +2,10 @@ package com.popular_movies.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -18,11 +17,11 @@ import com.popular_movies.model.Genre;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Naledi Madlopha on 2016/08/02.
@@ -124,23 +123,21 @@ public class Utility {
     /**
      * Converts a list of genre ids to a list of genre names
      *
-     * @param genreJSONAarry an array of genre id
+     * @param genreIds a list of genre ids
      * @return a string list of genre names
      */
-    public static String getGenreNames(Context context, String genreJSONAarry) throws JSONException {
+    public static String getGenreNames(Context context, List genreIds) {
         String genreNames = "";
 
         ArrayList<Genre> genreArrayList = getGenrePref(context);
-        JSONArray jsonArray = new JSONArray(genreJSONAarry);
 
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String jsonArrayGenreId = jsonArray.getString(i);
+            for (int i = 0; i < genreIds.size(); i++) {
+                int jsonArrayGenreId = (int) genreIds.get(i);
 
                 for (int ii = 0; ii < genreArrayList.size(); ii++) {
-                    String arrayListGenreId = genreArrayList.get(ii).getId();
+                    int arrayListGenreId = Integer.parseInt(genreArrayList.get(ii).getId());
 
-                    if (jsonArrayGenreId.equals(arrayListGenreId)) {
+                    if (jsonArrayGenreId == arrayListGenreId) {
                         // Build a genre list, separated by commas
                         genreNames += genreArrayList.get(ii).getName() + ", ";
                         break;
@@ -156,11 +153,8 @@ public class Utility {
                 // Set this when the movie is not categorized
                 genreNames = "No genre listed";
             }
-        } catch (JSONException e) {
-            e.getMessage();
-        } finally {
-            return genreNames;
-        }
+
+        return genreNames;
     }
 
     /**
@@ -201,25 +195,10 @@ public class Utility {
         }
     }
 
-    /**
-     * Convert from bitmap to byte array.
-     * This code was taken from the internet. SOURCE: http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121
-     * @param bitmap image to convert
-     * @return byte[] array of the image bytes
-     */
-    public static byte[] getBytes(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
-
-    /**
-     * Convert from byte array to bitmap.
-     * This code was taken from the internet. SOURCE: http://stackoverflow.com/questions/1778485/android-listview-display-all-available-items-without-scroll-with-static-header/35955121#35955121
-     * @param image image byte array to convert
-     * @return bitmap image decoded from the byte array
-     */
-    public static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) (dpWidth / 180);
+        return noOfColumns;
     }
 }

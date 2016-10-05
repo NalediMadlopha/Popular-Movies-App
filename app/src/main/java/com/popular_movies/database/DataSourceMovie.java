@@ -51,16 +51,15 @@ public class DataSourceMovie {
 
         values.put(MovieEntry.COLUMN_MOVIE_ID, movie.getId());
         values.put(MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
-        values.put(MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackDroPath());
+        values.put(MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackDropPath());
         values.put(MovieEntry.COLUMN_ORIGINAL_TITLE, movie.getOriginalTitle());
         values.put(MovieEntry.COLUMN_TITLE, movie.getTitle());
         values.put(MovieEntry.COLUMN_OVERALL, movie.getOverall());
-        values.put(MovieEntry.COLUMN_GENRE, movie.getGenre());
+//        values.put(MovieEntry.COLUMN_GENRE, movie.getGenre());
         values.put(MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate());
         values.put(MovieEntry.COLUMN_POPULARITY, movie.getPopularity());
         values.put(MovieEntry.COLUMN_VOTE_COUNT, movie.getVoteCount());
         values.put(MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
-        values.put(MovieEntry.COLUMN_MOVIE_CATEGORY, movie.getCategory());
 
         long insertId = db.insert(MovieEntry.TABLE_NAME, null,
                 values);
@@ -99,42 +98,42 @@ public class DataSourceMovie {
     private Movie cursorToMovie(Cursor cursor) {
         Movie movie = new Movie();
 
-        movie.setId(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_MOVIE_ID))
-        );
-        movie.setPosterPath(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_POSTER_PATH))
-        );
-        movie.setBackDropPath(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_BACKDROP_PATH))
-        );
-        movie.setOriginalTitle(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_ORIGINAL_TITLE))
-        );
-        movie.setTitle(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_TITLE))
-        );
-        movie.setOverall(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_OVERALL))
-        );
-        movie.setGenre(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_GENRE))
-        );
-        movie.setReleaseDate(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_RELEASE_DATE))
-        );
-        movie.setPopularity(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_POPULARITY))
-        );
-        movie.setVoteCount(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_VOTE_COUNT))
-        );
-        movie.setVoteAverage(cursor.getString(
-                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_VOTE_AVERAGE))
-        );
-        movie.setCategory(cursor.getString(
-                cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_CATEGORY))
-        );
+//        movie.setId(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_MOVIE_ID))
+//        );
+//        movie.setPosterPath(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_POSTER_PATH))
+//        );
+//        movie.setBackDropPath(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_BACKDROP_PATH))
+//        );
+//        movie.setOriginalTitle(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_ORIGINAL_TITLE))
+//        );
+//        movie.setTitle(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_TITLE))
+//        );
+//        movie.setOverall(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_OVERALL))
+//        );
+////        movie.setGenre(cursor.getString(
+////                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_GENRE))
+////        );
+//        movie.setReleaseDate(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_RELEASE_DATE))
+//        );
+//        movie.setPopularity(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_POPULARITY))
+//        );
+//        movie.setVoteCount(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_VOTE_COUNT))
+//        );
+//        movie.setVoteAverage(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ContractMovie.MovieEntry.COLUMN_VOTE_AVERAGE))
+//        );
+//        movie.setCategory(cursor.getString(
+//                cursor.getColumnIndexOrThrow(MovieEntry.COLUMN_MOVIE_CATEGORY))
+//        );
         return movie;
     }
 }

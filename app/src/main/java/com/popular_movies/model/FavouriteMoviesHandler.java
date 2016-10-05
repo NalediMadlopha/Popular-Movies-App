@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class FavouriteMoviesHandler {
 
-    private ArrayList<Movie> mFavouriteMovieList = new ArrayList<>();
+    private ArrayList<String> mFavouriteMovieList = new ArrayList<>();
     private SharedPreferences mPrefs;
     private Gson mGson = new Gson();
 
@@ -36,12 +36,12 @@ public class FavouriteMoviesHandler {
      *
      * @return list of movie json objects
      */
-    public ArrayList<Movie> getMovieList() {
-        // -- Check if the movie list is contained in the shared preferences
+    public ArrayList<String> getMovieList() {
+        // Check if the movie list is contained in the shared preferences
         if (mPrefs.contains(GlobalConstant.FAVOURITE_MOVIE_LIST)) {
             String favouriteMovieListJson = mPrefs.getString(GlobalConstant.FAVOURITE_MOVIE_LIST, "");
 
-            // --- Check if the list in shared preferences is not null
+            // Check if the list in shared preferences is not null
             if (favouriteMovieListJson != null) {
                 mFavouriteMovieList = mGson.fromJson(favouriteMovieListJson, ArrayList.class);
             }
@@ -50,9 +50,9 @@ public class FavouriteMoviesHandler {
     }
 
     // Check if the movie has not already been added as a favourite
-    public boolean isFavourite(Movie movie) {
+    public boolean isFavourite(String movieId) {
         // if the movie ID is contained in the movie list
-        if (mFavouriteMovieList.contains(movie)) {
+        if (mFavouriteMovieList.contains(movieId)) {
             return true;
         } else {
             return false;
@@ -60,8 +60,8 @@ public class FavouriteMoviesHandler {
     }
 
     // Add the movie to the favourite movie list
-    public void addMovie(Movie movie) {
-        mFavouriteMovieList.add(movie);
+    public void addMovie(String movieId) {
+        mFavouriteMovieList.add(movieId);
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
@@ -70,8 +70,8 @@ public class FavouriteMoviesHandler {
     }
 
     // Remove the movie to the favourite movie list
-    public void removeMovie(Movie movie) {
-        mFavouriteMovieList.remove(movie);
+    public void removeMovie(String movieId) {
+        mFavouriteMovieList.remove(movieId);
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);

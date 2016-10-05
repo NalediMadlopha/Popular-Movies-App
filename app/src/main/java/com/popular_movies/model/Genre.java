@@ -3,12 +3,16 @@
  */
 package com.popular_movies.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Provides a genre object template
  */
 public class Genre {
 
+    @SerializedName("id")
     private String mId;
+    @SerializedName("name")
     private String mName;
 
     public Genre() {

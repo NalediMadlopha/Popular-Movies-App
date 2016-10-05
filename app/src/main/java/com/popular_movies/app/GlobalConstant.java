@@ -26,24 +26,24 @@ public class GlobalConstant {
     public final static String API_KEY_PARAMETER = "?api_key=" + C5CA40DED62975B80638B7357FD69E9;
     public final static String API_KEY = "api_key";
 
+    public final static String BASE_QUERY_URL = HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/";
     public final static String SINGLE_MOVIE_QUERY = "/movie/";
     public final static String MOVIE_POPULAR = "/movie/popular";
+    public final static String MOVIE_TOP_RATED = "/movie/top_rated";
 
-    public final static String QUERY_POPULAR_MOVIES = HTTPS_API_THEMOVIEDB_ORG_3 +
-            "/movie/popular" + API_KEY_PARAMETER;
-
-    public final static String QUERY_TOP_RATED_MOVIES = HTTPS_API_THEMOVIEDB_ORG_3 +
-            "/movie/top_rated" + API_KEY_PARAMETER;
+    public final static String QUERY_POPULAR_MOVIES = HTTPS_API_THEMOVIEDB_ORG_3 + MOVIE_POPULAR;
+    public final static String QUERY_TOP_RATED_MOVIES = HTTPS_API_THEMOVIEDB_ORG_3
+            + MOVIE_TOP_RATED;
 
     public final static String QUERY_SINGLE_MOVIE_QUERY = HTTPS_API_THEMOVIEDB_ORG_3 +
             "/movie/";
 
-    public final static String QUERY_GENRE = HTTPS_API_THEMOVIEDB_ORG_3 +
-            GlobalConstant.GENRE_MOVIE_LIST + API_KEY_PARAMETER;
+    public final static String QUERY_GENRE = HTTPS_API_THEMOVIEDB_ORG_3
+            + GlobalConstant.GENRE_MOVIE_LIST;
 
-    public final static String BASE_QUERY_URL = HTTPS_API_THEMOVIEDB_ORG_3 + "/movie/";
 
-    public final static String MOVIE_TOP_RATED = "/movie/top_rated";
+
+
     public final static String GENRE_MOVIE_LIST = "/genre/movie/list";
     public final static String MOVIE = "movie";
     public final static String MOVIES = "movies";
@@ -64,4 +64,12 @@ public class GlobalConstant {
     public final static String MOST_POPULAR = "Most Popular";
     public final static String TOP_RATED = "Top Rated";
     public final static String FAVOURITE = "Favourite";
+
+    // The authority for the sync adapter's content provider
+    public final static String AUTHORITY = "com.popular_movies.datasync.provider";
+    // An account type, in the form of a domain name
+    public final static String ACCOUNT_TYPE = "themoviedb.org";
+    // The account name
+    public final static String ACCOUNT = "default_account";
+
 }

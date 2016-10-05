@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,17 +26,21 @@ import android.widget.Toast;
 
 import com.popular_movies.adapter.ReviewAdapter;
 import com.popular_movies.adapter.TrailerAdapter;
+import com.popular_movies.database.DataSourceReview;
 import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Movie;
-import com.popular_movies.model.Request;
+import com.popular_movies.model.MoviesResponse;
 import com.popular_movies.model.Review;
 import com.popular_movies.model.Trailer;
-import com.popular_movies.parser.JSONParserReview;
+import com.popular_movies.rest.ApiInterface;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Provides the details fragment
@@ -45,8 +50,9 @@ public class FragmentDetail extends Fragment {
     private Movie mMovie;
     private DataSourceTrailer mDataSourceTrailer;
     private ListView mTrailersListView;
-    private LinearLayout mReviewsLinearLayout;
     private TrailerAdapter mTrailerAdapter;
+    private DataSourceReview mDataSourceReview;
+    private LinearLayout mReviewsLinearLayout;
     private ReviewAdapter mReviewAdapter;
     private FavouriteMoviesHandler mFavouriteMoviesHandler;
     private ImageButton mFavouriteMovieIcon;
@@ -71,7 +77,7 @@ public class FragmentDetail extends Fragment {
 
         // Set the poster of the movie
         ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
-        Picasso.with(getActivity()).load(mMovie.getBackDroPath()).into(movie_poster);
+        Picasso.with(getActivity()).load(mMovie.getBackDropPath()).into(movie_poster);
 
         ImageView vote_rating = (ImageView) rootView.findViewById(R.id.ic_votes_rating_average);
         vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
@@ -83,7 +89,7 @@ public class FragmentDetail extends Fragment {
         mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
         // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
+        if (mFavouriteMoviesHandler.isFavourite(mMovie.getId().toString())) {
             // Set the favourite icon tint to red
             mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
         }
@@ -97,7 +103,7 @@ public class FragmentDetail extends Fragment {
 
         // Set the genre(s) of the movie
         TextView movie_genres = (TextView) rootView.findViewById(R.id.details_movie_genres);
-        movie_genres.setText(mMovie.getGenre().toString());
+        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
 
         // Set the release date of the movie
         TextView movie_release_date = (TextView) rootView.findViewById(R.id.details_movie_release_date);
@@ -105,7 +111,7 @@ public class FragmentDetail extends Fragment {
 
         // Set the votes average
         TextView votes_average = (TextView) rootView.findViewById(R.id.details_average_votes);
-        votes_average.setText(mMovie.getVoteAverage());
+        votes_average.setText(mMovie.getVoteAverage().toString());
 
         // Set the plot synopsis of the movie
         TextView plot_synopsis = (TextView) rootView.findViewById(R.id.details_movie_plot_synopsis);
@@ -120,11 +126,11 @@ public class FragmentDetail extends Fragment {
         // Find the review linear layout
         mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
 
-        // Fetch the movie trailers using the asyncTask
-        new FetchTrailers().execute(mMovie.getId());
-
-        // Fetch the movie reviews using the asyncTask
-        new FetchReviews().execute();
+//        // Fetch the movie trailers using the asyncTask
+//        new FetchTrailers().execute(mMovie.getId());
+//
+//        // Fetch the movie reviews using the asyncTask
+//        new FetchReviews().execute(mMovie.getId());
 
         return rootView;
     }
@@ -150,29 +156,29 @@ public class FragmentDetail extends Fragment {
         @Override
         public void onClick(View view) {
 
-        // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
+            // Check if the movie is already in the favourite movie list
+            if (mFavouriteMoviesHandler.isFavourite(mMovie.getId().toString())) {
 
-            // Remove the movie from the favourite movie list
-            mFavouriteMoviesHandler.removeMovie(mMovie);
+                // Remove the movie from the favourite movie list
+                mFavouriteMoviesHandler.removeMovie(mMovie.getId().toString());
 
-            // Set the favourite icon tint to grey
-            mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
-                    .getColor(R.color.colorGrey)));
+                // Set the favourite icon tint to grey
+                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
+                        .getColor(R.color.colorGrey)));
 
-            // Notify the user with a toast
-            Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
-        } else {
+                // Notify the user with a toast
+                Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
+            } else {
 
-            // Add the movie to the favourite movie list
-            mFavouriteMoviesHandler.addMovie(mMovie);
+                // Add the movie to the favourite movie list
+                mFavouriteMoviesHandler.addMovie(mMovie.getId().toString());
 
-            // Set the favourite icon tint to red
-            mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+                // Set the favourite icon tint to red
+                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
 
-            // Notify the user with a toast
-            Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
-        }
+                // Notify the user with a toast
+                Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
+            }
         }
     };
 
@@ -192,38 +198,24 @@ public class FragmentDetail extends Fragment {
         }
     }
 
-    /** Provides a background task that fetches the movie's reviews */
-    public class FetchReviews extends AsyncTask<Void, Void, List<Review>> {
+    private void fetchTrailer(ApiInterface apiService) {
 
-        @Override
-        protected List<Review> doInBackground(Void... voids) {
-            // Convert movie id from string to integer
-            int movieId = Integer.parseInt(mMovie.getId());
-            // Fetch the movie reviews from the API
-            String reviewsJsonString = Request.fetchMovieReviews(movieId);
+        Call<MoviesResponse> call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-            // Parses the review JSON string
-            // Returns a list of reviews
-            return JSONParserReview.parseFeed(reviewsJsonString);
-        }
+        call.enqueue(new Callback<MoviesResponse>() {
+            @Override
+            public void onResponse(Call<MoviesResponse>call, Response<MoviesResponse> response) {
+                mMovies = (ArrayList) response.body().getResults();
 
-        @Override
-        protected void onPostExecute(List<Review> reviews) {
-
-            // Check if there are trailers
-            if (reviews != null) {
-                // Initialize the trailer adapter, passing the trailers list
-                mReviewAdapter = new ReviewAdapter(getActivity(), reviews);
-
-                // Loop through the item in the review adapter
-                for (int i = 0; i < mReviewAdapter.getCount(); i++) {
-                    // Get the view of the item
-                    View view = mReviewAdapter.getView(i, null, mReviewsLinearLayout);
-                    mReviewsLinearLayout.addView(view);
-                }
+                updateUI();
             }
-            super.onPostExecute(reviews);
-        }
+
+            @Override
+            public void onFailure(Call<MoviesResponse>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("Retrofit Error", t.toString());
+            }
+        });
     }
 
     /** Provides a background task that fetches the movie's trailers */
@@ -231,9 +223,6 @@ public class FragmentDetail extends Fragment {
 
         @Override
         protected ArrayList<Trailer> doInBackground(String[] params) {
-
-            // Convert movie id from string to integer
-            int movieId = Integer.parseInt(mMovie.getId());
 
             // Initialize the trailer data source
             mDataSourceTrailer = new DataSourceTrailer(getActivity());
@@ -262,6 +251,44 @@ public class FragmentDetail extends Fragment {
                 Utility.setListViewHeightBasedOnItems(mTrailersListView);
             }
             super.onPostExecute(trailers);
+        }
+    }
+
+    /** Provides a background task that fetches the movie's reviews */
+    public class FetchReviews extends AsyncTask<String, Void, ArrayList<Review>> {
+
+        @Override
+        protected ArrayList<Review> doInBackground(String[] params) {
+
+            // Initialize the review data source
+            mDataSourceReview = new DataSourceReview(getActivity());
+            // Open the connection to the data source
+            mDataSourceReview.open();
+
+            // Get the movie id as a parameter
+            String selection[] = { params[0] };
+            // Get all the trailers
+            ArrayList<Review> reviewArrayList = mDataSourceReview.getReviews("movie_id=?", selection);
+            // Returns a list of reviews
+            return reviewArrayList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Review> reviews) {
+
+            // Check if there are trailers
+            if (reviews != null) {
+                // Initialize the trailer adapter, passing the trailers list
+                mReviewAdapter = new ReviewAdapter(getActivity(), reviews);
+
+                // Loop through the item in the review adapter
+                for (int i = 0; i < mReviewAdapter.getCount(); i++) {
+                    // Get the view of the item
+                    View view = mReviewAdapter.getView(i, null, mReviewsLinearLayout);
+                    mReviewsLinearLayout.addView(view);
+                }
+            }
+            super.onPostExecute(reviews);
         }
     }
 }
