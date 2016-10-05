@@ -3,12 +3,16 @@
  */
 package com.popular_movies.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Provides a review object template
  */
 public class Review {
 
+    @SerializedName("id")
     private String mId;
+    @SerializedName("page")
     private String mMovieId;
     private String mAuthor;
     private String mContent;

@@ -45,7 +45,7 @@ public class DataSourceTrailer {
     public Trailer addTrailer(Trailer trailer) {
         ContentValues values = new ContentValues();
 
-        values.put(TrailerEntry.COLUMN_MOVIE_ID, trailer.getMovieId());
+//        values.put(TrailerEntry.COLUMN_MOVIE_ID, trailer.getMovieId());
         values.put(TrailerEntry.COLUMN_ISO_639_1, trailer.getIso_639_1());
         values.put(TrailerEntry.COLUMN_ISO_3166_1, trailer.getIso_3166_1());
         values.put(TrailerEntry.COLUMN_KEY, trailer.getKey());
@@ -94,9 +94,9 @@ public class DataSourceTrailer {
         trailer.setId(cursor.getString(
                 cursor.getColumnIndexOrThrow(TrailerEntry._ID))
         );
-        trailer.setMovieId(cursor.getString(
-                cursor.getColumnIndexOrThrow(TrailerEntry.COLUMN_MOVIE_ID))
-        );
+//        trailer.setMovieId(cursor.getString(
+//                cursor.getColumnIndexOrThrow(TrailerEntry.COLUMN_MOVIE_ID))
+//        );
         trailer.setIso_639_1(cursor.getString(
                 cursor.getColumnIndexOrThrow(TrailerEntry.COLUMN_ISO_639_1))
         );

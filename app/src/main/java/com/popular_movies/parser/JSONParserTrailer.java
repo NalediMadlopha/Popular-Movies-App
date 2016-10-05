@@ -44,8 +44,8 @@ public class JSONParserTrailer {
                 trailer.setId(trailerJson.getString(GlobalConstant.ID));
 
                 // Set the trailer movie's id
-                String movieId = String.valueOf(trailersJsonObject.getString(GlobalConstant.ID));
-                trailer.setMovieId(movieId);
+//                String movieId = String.valueOf(trailersJsonObject.getString(GlobalConstant.ID));
+//                trailer.setMovieId(movieId);
 
                 // Set the trailers's iso_639_1
                 trailer.setIso_639_1(trailerJson.getString(GlobalConstant.ISO_639_1));

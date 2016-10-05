@@ -2,6 +2,7 @@ package com.popular_movies.rest;
 
 import com.popular_movies.model.GenresResponse;
 import com.popular_movies.model.MoviesResponse;
+import com.popular_movies.model.TrailerResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -23,4 +24,7 @@ public interface ApiInterface {
 
     @GET("genre/movie/list")
     Call<GenresResponse> getGenres(@Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Call<TrailerResponse> getTrailers(@Path("id") int id, @Query("api_key") String apiKey);
 }

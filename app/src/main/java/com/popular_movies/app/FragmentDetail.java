@@ -33,6 +33,8 @@ import com.popular_movies.model.Movie;
 import com.popular_movies.model.MoviesResponse;
 import com.popular_movies.model.Review;
 import com.popular_movies.model.Trailer;
+import com.popular_movies.model.TrailerResponse;
+import com.popular_movies.rest.ApiClient;
 import com.popular_movies.rest.ApiInterface;
 import com.squareup.picasso.Picasso;
 
@@ -56,6 +58,8 @@ public class FragmentDetail extends Fragment {
     private ReviewAdapter mReviewAdapter;
     private FavouriteMoviesHandler mFavouriteMoviesHandler;
     private ImageButton mFavouriteMovieIcon;
+    private ApiInterface mApiService =
+            ApiClient.getClient().create(ApiInterface.class);
 
     public FragmentDetail() {
     }
@@ -126,7 +130,8 @@ public class FragmentDetail extends Fragment {
         // Find the review linear layout
         mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
 
-//        // Fetch the movie trailers using the asyncTask
+        // Fetch the movie trailers using the asyncTask
+        fetchTrailer(mApiService, mMovie.getId());
 //        new FetchTrailers().execute(mMovie.getId());
 //
 //        // Fetch the movie reviews using the asyncTask
@@ -198,20 +203,25 @@ public class FragmentDetail extends Fragment {
         }
     }
 
-    private void fetchTrailer(ApiInterface apiService) {
+    private void fetchTrailer(ApiInterface apiService, int movieId) {
 
-        Call<MoviesResponse> call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+        Call<TrailerResponse> call = apiService.getTrailers(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-        call.enqueue(new Callback<MoviesResponse>() {
+        call.enqueue(new Callback<TrailerResponse>() {
             @Override
-            public void onResponse(Call<MoviesResponse>call, Response<MoviesResponse> response) {
-                mMovies = (ArrayList) response.body().getResults();
+            public void onResponse(Call<TrailerResponse>call, Response<TrailerResponse> response) {
+                ArrayList<Trailer> trailers = (ArrayList) response.body().getResults();
 
-                updateUI();
+                // Initialize the trailer adapter, passing the trailers list
+                mTrailerAdapter = new TrailerAdapter(getActivity(), trailers);
+                // Set the list view adapter
+                mTrailersListView.setAdapter(mTrailerAdapter);
+                // Modify the height of the list view
+                Utility.setListViewHeightBasedOnItems(mTrailersListView);
             }
 
             @Override
-            public void onFailure(Call<MoviesResponse>call, Throwable t) {
+            public void onFailure(Call<TrailerResponse>call, Throwable t) {
                 // Log error here since request failed
                 Log.e("Retrofit Error", t.toString());
             }

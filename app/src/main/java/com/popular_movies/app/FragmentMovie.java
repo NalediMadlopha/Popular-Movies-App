@@ -40,7 +40,7 @@ public class FragmentMovie extends Fragment {
     private View mRootView;
 
     private ArrayList<Movie> mMovies;
-    ApiInterface mApiService =
+    private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
 
     public FragmentMovie() {

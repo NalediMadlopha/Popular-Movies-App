@@ -3,119 +3,108 @@
  */
 package com.popular_movies.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Provides a trailer object template
  */
 public class Trailer {
-    
-    private String mId;
-    private String mMovieId;
-    private String mIso_639_1;
-    private String mIso_3166_1;
-    private String mKey;
-    private String mName;
-    private String mSite;
-    private String mSize;
-    private String mType;
+
+    @SerializedName("id")
+    private String id;
+    @SerializedName("iso_639_1")
+    private String iso_639_1;
+    @SerializedName("iso_3166_1")
+    private String iso_3166_1;
+    @SerializedName("key")
+    private String key;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("site")
+    private String site;
+    @SerializedName("size")
+    private String size;
+    @SerializedName("type")
+    private String type;
 
     public Trailer() {
     }
 
-    public Trailer(String id, String iso_639_1, String iso_3166_1, String key, String name, String site, String size, String type) {
-        this.mId = id;
-        this.mIso_639_1 = iso_639_1;
-        this.mIso_3166_1 = iso_3166_1;
-        this.mKey = key;
-        this.mName = name;
-        this.mSite = site;
-        this.mSize = size;
-        this.mType = type;
-    }
-
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        this.mId = id;
-    }
-
-    public String getMovieId() {
-        return mMovieId;
-    }
-
-    public void setMovieId(String mMovieId) {
-        this.mMovieId = mMovieId;
+        this.id = id;
     }
 
     public String getIso_639_1() {
-        return mIso_639_1;
+        return iso_639_1;
     }
 
     public void setIso_639_1(String iso_639_1) {
-        this.mIso_639_1 = iso_639_1;
+        this.iso_639_1 = iso_639_1;
     }
 
     public String getIso_3166_1() {
-        return mIso_3166_1;
+        return iso_3166_1;
     }
 
     public void setIso_3166_1(String iso_3166_1) {
-        this.mIso_3166_1 = iso_3166_1;
+        this.iso_3166_1 = iso_3166_1;
     }
 
     public String getKey() {
-        return mKey;
+        return key;
     }
 
     public void setKey(String key) {
-        this.mKey = key;
+        this.key = key;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setName(String name) {
-        this.mName = name;
+        this.name = name;
     }
 
     public String getSite() {
-        return mSite;
+        return site;
     }
 
     public void setSite(String site) {
-        this.mSite = site;
+        this.site = site;
     }
 
     public String getSize() {
-        return mSize;
+        return size;
     }
 
     public void setSize(String size) {
-        this.mSize = size;
+        this.size = size;
     }
 
     public String getType() {
-        return mType;
+        return type;
     }
 
     public void setType(String type) {
-        this.mType = type;
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return "Trailer{" +
-                "id='" + mId + '\'' +
-                ", movie_id='" + mMovieId + '\'' +
-                ", iso_639_1='" + mIso_639_1 + '\'' +
-                ", iso_3166_1='" + mIso_3166_1 + '\'' +
-                ", key='" + mKey + '\'' +
-                ", name='" + mName + '\'' +
-                ", site='" + mSite + '\'' +
-                ", size='" + mSize + '\'' +
-                ", type='" + mType + '\'' +
+                "id='" + id + '\'' +
+                ", iso_639_1='" + iso_639_1 + '\'' +
+                ", iso_3166_1='" + iso_3166_1 + '\'' +
+                ", key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                ", site='" + site + '\'' +
+                ", size='" + size + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
