@@ -47,6 +47,8 @@ public class Movie implements Parcelable {
     private Boolean video;
     @SerializedName("vote_average")
     private Double voteAverage;
+    private ArrayList<Trailer> trailers;
+    private ArrayList<Review> reviews;
 
     public Movie() {
     }
@@ -173,6 +175,22 @@ public class Movie implements Parcelable {
         this.voteAverage = vote_average;
     }
 
+    public ArrayList<Trailer> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(ArrayList<Trailer> trailers) {
+        this.trailers = trailers;
+    }
+
+    public ArrayList<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<Review> reviews) {
+        this.reviews = reviews;
+    }
+
     @Override
     public int describeContents() { return 0; }
 
@@ -193,6 +211,7 @@ public class Movie implements Parcelable {
                 ", vote_count='" + this.voteCount + '\'' +
                 ", video='" + this.video + '\'' +
                 ", vote_average='" + this.voteAverage + '\'' +
+                ", trailers='" + this.trailers + '\'' +
                 '}';
     }
 

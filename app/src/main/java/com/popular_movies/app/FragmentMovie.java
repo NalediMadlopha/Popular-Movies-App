@@ -26,6 +26,8 @@ import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.ResponseGenres;
 import com.popular_movies.model.ResponseMovies;
+import com.popular_movies.model.Review;
+import com.popular_movies.model.Trailer;
 import com.popular_movies.rest.ApiClient;
 import com.popular_movies.rest.ApiInterface;
 
@@ -44,6 +46,8 @@ public class FragmentMovie extends Fragment {
     private View mRootView;
 
     private ArrayList<Movie> mMovies;
+    private ArrayList<Trailer> mTrailers;
+    private ArrayList<Review> mReviews;
     private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
 
@@ -178,7 +182,7 @@ public class FragmentMovie extends Fragment {
             @Override
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
                 mMovies = (ArrayList) response.body().getResults();
-
+                
                 updateUI(mMovies);
             }
 
