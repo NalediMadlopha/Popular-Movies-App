@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,16 +23,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.popular_movies.adapter.ReviewAdapter;
 import com.popular_movies.adapter.TrailerAdapter;
 import com.popular_movies.database.DataSourceReview;
 import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Movie;
-import com.popular_movies.model.MoviesResponse;
+import com.popular_movies.model.ResponseReviews;
+import com.popular_movies.model.ResponseTrailers;
 import com.popular_movies.model.Review;
 import com.popular_movies.model.Trailer;
-import com.popular_movies.model.TrailerResponse;
 import com.popular_movies.rest.ApiClient;
 import com.popular_movies.rest.ApiInterface;
 import com.squareup.picasso.Picasso;
@@ -93,7 +93,7 @@ public class FragmentDetail extends Fragment {
         mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
         // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie.getId().toString())) {
+        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
             // Set the favourite icon tint to red
             mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
         }
@@ -131,10 +131,11 @@ public class FragmentDetail extends Fragment {
         mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
 
         // Fetch the movie trailers using the asyncTask
-        fetchTrailer(mApiService, mMovie.getId());
+        fetchTrailers(mApiService, mMovie.getId());
 //        new FetchTrailers().execute(mMovie.getId());
 //
-//        // Fetch the movie reviews using the asyncTask
+        // Fetch the movie reviews using the asyncTask
+        fetchReviews(mApiService, mMovie.getId());
 //        new FetchReviews().execute(mMovie.getId());
 
         return rootView;
@@ -149,7 +150,7 @@ public class FragmentDetail extends Fragment {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
         // Get the trailer from the trailer adapter
-        Trailer trailer = (Trailer) mTrailerAdapter.getItem(position);
+        Trailer trailer = mTrailerAdapter.getItem(position);
 
         // Open the movie trailer video
         watchTrailer(trailer.getKey());
@@ -162,10 +163,10 @@ public class FragmentDetail extends Fragment {
         public void onClick(View view) {
 
             // Check if the movie is already in the favourite movie list
-            if (mFavouriteMoviesHandler.isFavourite(mMovie.getId().toString())) {
+            if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
 
                 // Remove the movie from the favourite movie list
-                mFavouriteMoviesHandler.removeMovie(mMovie.getId().toString());
+                mFavouriteMoviesHandler.removeMovie(mMovie);
 
                 // Set the favourite icon tint to grey
                 mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
@@ -176,7 +177,7 @@ public class FragmentDetail extends Fragment {
             } else {
 
                 // Add the movie to the favourite movie list
-                mFavouriteMoviesHandler.addMovie(mMovie.getId().toString());
+                mFavouriteMoviesHandler.addMovie(mMovie);
 
                 // Set the favourite icon tint to red
                 mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
@@ -184,6 +185,15 @@ public class FragmentDetail extends Fragment {
                 // Notify the user with a toast
                 Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
             }
+
+//            Gson gson = new Gson();
+//
+//            String movieJson = gson.toJson(movie);
+//            Log.d("MOVIE JSON", movieJson);
+//
+//            Movie movie1 = mGson.fromJson(movieJson, Movie.class);
+//            Log.d("MOVIE OBJECT", movie1.toString());
+            Log.d("FAVOURITE", mFavouriteMoviesHandler.getMovieList().toString());
         }
     };
 
@@ -203,13 +213,13 @@ public class FragmentDetail extends Fragment {
         }
     }
 
-    private void fetchTrailer(ApiInterface apiService, int movieId) {
+    private void fetchTrailers(ApiInterface apiService, int movieId) {
 
-        Call<TrailerResponse> call = apiService.getTrailers(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+        Call<ResponseTrailers> call = apiService.getTrailers(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-        call.enqueue(new Callback<TrailerResponse>() {
+        call.enqueue(new Callback<ResponseTrailers>() {
             @Override
-            public void onResponse(Call<TrailerResponse>call, Response<TrailerResponse> response) {
+            public void onResponse(Call<ResponseTrailers>call, Response<ResponseTrailers> response) {
                 ArrayList<Trailer> trailers = (ArrayList) response.body().getResults();
 
                 // Initialize the trailer adapter, passing the trailers list
@@ -221,73 +231,22 @@ public class FragmentDetail extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<TrailerResponse>call, Throwable t) {
+            public void onFailure(Call<ResponseTrailers>call, Throwable t) {
                 // Log error here since request failed
-                Log.e("Retrofit Error", t.toString());
+                Log.e("Trailer Error", t.toString());
             }
         });
     }
 
-    /** Provides a background task that fetches the movie's trailers */
-    public class FetchTrailers extends AsyncTask<String, Void, ArrayList<Trailer>> {
+    private void fetchReviews(ApiInterface apiService, int movieId) {
 
-        @Override
-        protected ArrayList<Trailer> doInBackground(String[] params) {
+        Call<ResponseReviews> call = apiService.getReviews(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-            // Initialize the trailer data source
-            mDataSourceTrailer = new DataSourceTrailer(getActivity());
-            // Open the connection to the data source
-            mDataSourceTrailer.open();
+        call.enqueue(new Callback<ResponseReviews>() {
+            @Override
+            public void onResponse(Call<ResponseReviews>call, Response<ResponseReviews> response) {
+                ArrayList<Review> reviews = (ArrayList) response.body().getResults();
 
-            // Get the movie id as a parameter
-            String selection[] = { params[0] };
-            // Get all the trailers
-            ArrayList<Trailer> trailerArrayList = mDataSourceTrailer.getTrailers("movie_id=?", selection);
-            // Returns a list of trailers
-            return trailerArrayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Trailer> trailers) {
-
-            // Check if there are trailers
-            if (trailers != null) {
-
-                // Initialize the trailer adapter, passing the trailers list
-                mTrailerAdapter = new TrailerAdapter(getActivity(), trailers);
-                // Set the list view adapter
-                mTrailersListView.setAdapter(mTrailerAdapter);
-                // Modify the height of the list view
-                Utility.setListViewHeightBasedOnItems(mTrailersListView);
-            }
-            super.onPostExecute(trailers);
-        }
-    }
-
-    /** Provides a background task that fetches the movie's reviews */
-    public class FetchReviews extends AsyncTask<String, Void, ArrayList<Review>> {
-
-        @Override
-        protected ArrayList<Review> doInBackground(String[] params) {
-
-            // Initialize the review data source
-            mDataSourceReview = new DataSourceReview(getActivity());
-            // Open the connection to the data source
-            mDataSourceReview.open();
-
-            // Get the movie id as a parameter
-            String selection[] = { params[0] };
-            // Get all the trailers
-            ArrayList<Review> reviewArrayList = mDataSourceReview.getReviews("movie_id=?", selection);
-            // Returns a list of reviews
-            return reviewArrayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Review> reviews) {
-
-            // Check if there are trailers
-            if (reviews != null) {
                 // Initialize the trailer adapter, passing the trailers list
                 mReviewAdapter = new ReviewAdapter(getActivity(), reviews);
 
@@ -298,7 +257,12 @@ public class FragmentDetail extends Fragment {
                     mReviewsLinearLayout.addView(view);
                 }
             }
-            super.onPostExecute(reviews);
-        }
+
+            @Override
+            public void onFailure(Call<ResponseReviews>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("Reviews Error", t.toString());
+            }
+        });
     }
 }

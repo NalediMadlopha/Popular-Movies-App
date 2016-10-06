@@ -41,7 +41,7 @@ public class JSONParserTrailer {
                 JSONObject trailerJson = trailersJsonArray.getJSONObject(i);
 
                 // Set the trailer's Id
-                trailer.setId(trailerJson.getString(GlobalConstant.ID));
+//                trailer.setId(trailerJson.getString(GlobalConstant.ID));
 
                 // Set the trailer movie's id
 //                String movieId = String.valueOf(trailersJsonObject.getString(GlobalConstant.ID));

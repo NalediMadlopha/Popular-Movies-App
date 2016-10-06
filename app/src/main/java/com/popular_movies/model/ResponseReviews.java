@@ -8,16 +8,16 @@ import java.util.List;
  * Created by root on 2016/10/04.
  */
 
-public class TrailerResponse {
+public class ResponseReviews {
 
     @SerializedName("results")
-    private List<Trailer> results;
+    private List<Review> results;
 
-    public List<Trailer> getResults() {
+    public List<Review> getResults() {
         return results;
     }
 
-    public void setResults(List<Trailer> results) {
+    public void setResults(List<Review> results) {
         this.results = results;
     }
 }

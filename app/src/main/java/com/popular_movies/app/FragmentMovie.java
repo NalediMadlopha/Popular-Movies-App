@@ -17,10 +17,11 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.popular_movies.adapter.MoviesAdapter;
+import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Genre;
-import com.popular_movies.model.GenresResponse;
 import com.popular_movies.model.Movie;
-import com.popular_movies.model.MoviesResponse;
+import com.popular_movies.model.ResponseGenres;
+import com.popular_movies.model.ResponseMovies;
 import com.popular_movies.rest.ApiClient;
 import com.popular_movies.rest.ApiInterface;
 
@@ -57,7 +58,12 @@ public class FragmentMovie extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        if (Utility.isOnline(getActivity())) {
+            mRootView = inflater.inflate(R.layout.fragment_main, container, false);
+        } else {
+            mRootView = inflater.inflate(R.layout.activity_error_no_network, container, false);
+        }
 
         return mRootView;
     }
@@ -98,12 +104,12 @@ public class FragmentMovie extends Fragment {
 
     private void fetchGenres(ApiInterface apiService) {
 
-        Call<GenresResponse> call
+        Call<ResponseGenres> call
                 = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-        call.enqueue(new Callback<GenresResponse>() {
+        call.enqueue(new Callback<ResponseGenres>() {
             @Override
-            public void onResponse(Call<GenresResponse>call, Response<GenresResponse> response) {
+            public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
                 List<Genre> genres = response.body().getGenres();
 
                 Gson gson = new Gson();
@@ -123,7 +129,7 @@ public class FragmentMovie extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<GenresResponse>call, Throwable t) {
+            public void onFailure(Call<ResponseGenres>call, Throwable t) {
                 // Log error here since request failed
                 Log.e("Retrofit Error", t.toString());
             }
@@ -132,7 +138,7 @@ public class FragmentMovie extends Fragment {
 
     private void fetchMovies(ApiInterface apiService) {
 
-        Call<MoviesResponse> call = null;
+        Call<ResponseMovies> call = null;
 
         switch (Utility.getSortOrderPref(getActivity())) {
             case GlobalConstant.MOST_POPULAR:
@@ -141,18 +147,35 @@ public class FragmentMovie extends Fragment {
             case GlobalConstant.TOP_RATED:
                 call = apiService.getTopRatedMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
                 break;
+            case GlobalConstant.FAVOURITE:
+                // Instantiate the favourite movies handler
+                FavouriteMoviesHandler mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
+
+                ArrayList<String> movieList =  mFavouriteMoviesHandler.getMovieList();
+
+                mMovies = new ArrayList<>();
+
+                for (int i = 0; i < movieList.size(); i++) {
+                    Gson gson = new Gson();
+                    Movie movie = gson.fromJson(movieList.get(i), Movie.class);
+
+                    mMovies.add(movie);
+                }
+
+                updateUI();
+                return;
         }
 
-        call.enqueue(new Callback<MoviesResponse>() {
+        call.enqueue(new Callback<ResponseMovies>() {
             @Override
-            public void onResponse(Call<MoviesResponse>call, Response<MoviesResponse> response) {
+            public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
                 mMovies = (ArrayList) response.body().getResults();
 
                 updateUI();
             }
 
             @Override
-            public void onFailure(Call<MoviesResponse>call, Throwable t) {
+            public void onFailure(Call<ResponseMovies>call, Throwable t) {
                 // Log error here since request failed
                 Log.e("Retrofit Error", t.toString());
             }

@@ -91,9 +91,9 @@ public class DataSourceTrailer {
     private Trailer cursorToTrailer(Cursor cursor) {
         Trailer trailer = new Trailer();
 
-        trailer.setId(cursor.getString(
-                cursor.getColumnIndexOrThrow(TrailerEntry._ID))
-        );
+//        trailer.setId(cursor.getString(
+//                cursor.getColumnIndexOrThrow(TrailerEntry._ID))
+//        );
 //        trailer.setMovieId(cursor.getString(
 //                cursor.getColumnIndexOrThrow(TrailerEntry.COLUMN_MOVIE_ID))
 //        );

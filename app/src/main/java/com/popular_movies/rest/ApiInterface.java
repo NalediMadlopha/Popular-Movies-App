@@ -1,30 +1,40 @@
 package com.popular_movies.rest;
 
-import com.popular_movies.model.GenresResponse;
-import com.popular_movies.model.MoviesResponse;
-import com.popular_movies.model.TrailerResponse;
+import com.popular_movies.model.ResponseGenres;
+import com.popular_movies.model.ResponseMovies;
+import com.popular_movies.model.ResponseReviews;
+import com.popular_movies.model.ResponseTrailers;
+
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by root on 2016/10/04.
  */
 public interface ApiInterface {
     @GET("movie/popular")
-    Call<MoviesResponse> getMostPopularMovies(@Query("api_key") String apiKey);
+    Call<ResponseMovies> getMostPopularMovies(@Query("api_key") String apiKey);
 
     @GET("movie/top_rated")
-    Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+    Call<ResponseMovies> getTopRatedMovies(@Query("api_key") String apiKey);
 
     @GET("movie/{id}")
-    Call<MoviesResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
+    Call<ResponseMovies> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie")
+    Call<ResponseMovies> getSelectedMovies(@QueryMap Map<String, String> titles, @Query("api_key") String apiKey);
 
     @GET("genre/movie/list")
-    Call<GenresResponse> getGenres(@Query("api_key") String apiKey);
+    Call<ResponseGenres> getGenres(@Query("api_key") String apiKey);
 
     @GET("movie/{id}/videos")
-    Call<TrailerResponse> getTrailers(@Path("id") int id, @Query("api_key") String apiKey);
+    Call<ResponseTrailers> getTrailers(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<ResponseReviews> getReviews(@Path("id") int id, @Query("api_key") String apiKey);
 }

@@ -266,7 +266,7 @@ public class Request {
                 String movieIdString = String.valueOf(movieId);
 
                 // Set the review's movie id
-                reviewArrayList.get(i).setMovieId(movieIdString);
+//                reviewArrayList.get(i).setMovieId(movieIdString);
 
                 // Add the review to the local SQLite database
                 dataSourceReview.addReview(reviewArrayList.get(i));

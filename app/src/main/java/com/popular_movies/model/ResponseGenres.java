@@ -8,7 +8,7 @@ import java.util.List;
  * Created by root on 2016/10/04.
  */
 
-public class GenresResponse {
+public class ResponseGenres {
 
     @SerializedName("genres")
     private List<Genre> genres;

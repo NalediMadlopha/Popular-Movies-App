@@ -42,7 +42,7 @@ public class JSONParserReview {
                 JSONObject reviewJson = reviewsJsonArray.getJSONObject(i);
 
                 // Set the review Id
-                review.setId(reviewJson.getString(GlobalConstant.ID));
+//                review.setId(reviewJson.getString(GlobalConstant.ID));
 
                 // Set the author
                 review.setAuthor(reviewJson.getString(GlobalConstant.AUTHOR));

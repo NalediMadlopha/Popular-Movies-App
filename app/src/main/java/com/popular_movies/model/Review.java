@@ -11,54 +11,67 @@ import com.google.gson.annotations.SerializedName;
 public class Review {
 
     @SerializedName("id")
-    private String mId;
+    private String id;
     @SerializedName("page")
-    private String mMovieId;
-    private String mAuthor;
-    private String mContent;
+    private int page;
+    @SerializedName("author")
+    private String author;
+    @SerializedName("content")
+    private String content;
+    @SerializedName("url")
+    private String url;
 
     public Review() {
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        this.mId = id;
+        this.id = id;
     }
 
-    public String getMovieId() {
-        return mMovieId;
+    public int getPage() {
+        return page;
     }
 
-    public void setMovieId(String mMovieId) {
-        this.mMovieId = mMovieId;
+    public void setPage(int page) {
+        this.page = page;
     }
 
     public String getAuthor() {
-        return mAuthor;
+        return author;
     }
 
-    public void setAuthor(String reviewer) {
-        this.mAuthor = reviewer;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getContent() {
-        return mContent;
+        return content;
     }
 
     public void setContent(String content) {
-        this.mContent = content;
+        this.content = content;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
     public String toString() {
         return "Review{" +
-                "id=" + mId + '\'' +
-                ", movie id=" + mMovieId + '\'' +
-                ", author='" + mAuthor + '\'' +
-                ", content='" + mContent + '\'' +
+                "id=" + id +
+                ", page=" + page +
+                ", author='" + author + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

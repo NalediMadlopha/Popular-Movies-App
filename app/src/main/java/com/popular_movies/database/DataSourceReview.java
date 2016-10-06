@@ -40,7 +40,7 @@ public class DataSourceReview {
     public Review addReview(Review review) {
         ContentValues values = new ContentValues();
 
-        values.put(ReviewEntry.COLUMN_MOVIE_ID, review.getMovieId());
+//        values.put(ReviewEntry.COLUMN_MOVIE_ID, review.getMovieId());
         values.put(ReviewEntry.COLUMN_AUTHOR, review.getAuthor());
         values.put(ReviewEntry.COLUMN_CONTENT, review.getContent());
 
@@ -81,12 +81,12 @@ public class DataSourceReview {
     private Review cursorToReview(Cursor cursor) {
         Review review = new Review();
 
-        review.setId(cursor.getString(
-                cursor.getColumnIndexOrThrow(ReviewEntry._ID))
-        );
-        review.setMovieId(cursor.getString(
-                cursor.getColumnIndexOrThrow(ReviewEntry.COLUMN_MOVIE_ID))
-        );
+//        review.setId(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ReviewEntry._ID))
+//        );
+//        review.setMovieId(cursor.getString(
+//                cursor.getColumnIndexOrThrow(ReviewEntry.COLUMN_MOVIE_ID))
+//        );
         review.setAuthor(cursor.getString(
                 cursor.getColumnIndexOrThrow(ReviewEntry.COLUMN_AUTHOR))
         );
