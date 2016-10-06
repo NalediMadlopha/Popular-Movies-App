@@ -14,6 +14,7 @@ public class GlobalConstant {
     public final static String MOVIE = "movie";
     public final static String MOVIES = "movies";
     public final static String LOCAL_MOVIES = "LOCAL_MOVIES";
+    public final static String LOCAL_MOVIES_CATEGORY = "LOCAL_MOVIES_CATEGORY";
     public final static String VND_YOUTUBE = "vnd.youtube:";
     public final static String HTTP_WWW_YOUTUBE_COM_WATCH_V = "http://www.youtube.com/watch?v=";
     public final static String FAVOURITE_MOVIE_LIST = "FavouriteMovieList";

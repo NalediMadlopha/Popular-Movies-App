@@ -109,6 +109,8 @@ public class FragmentMovie extends Fragment {
     }
 
     public void updateUI(ArrayList<Movie> movies) {
+        mLinearLayout.setVisibility(View.INVISIBLE);
+
         GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(getActivity(), 200);
 
         final RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_view);
@@ -167,6 +169,10 @@ public class FragmentMovie extends Fragment {
                     mMovies.add(movie);
                 }
 
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getSortOrderPref(getActivity()));
+                prefsEditor.commit();
+
                 updateUI(mMovies);
                 return;
         }
@@ -188,6 +194,7 @@ public class FragmentMovie extends Fragment {
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 String localMovieStoreJson = mGson.toJson(localMovieStore);
                 prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getSortOrderPref(getActivity()));
                 prefsEditor.commit();
 
                 updateUI(mMovies);
@@ -205,24 +212,27 @@ public class FragmentMovie extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utility.isOnline(context)) {
-                mLinearLayout.setVisibility(View.INVISIBLE);
                 fetchGenres(mApiService);
                 fetchMovies(mApiService);
             } else {
 
-                if (mPrefs.contains(GlobalConstant.LOCAL_MOVIES)) {
+                if (mPrefs.contains(GlobalConstant.LOCAL_MOVIES) && mPrefs.contains(GlobalConstant.LOCAL_MOVIES_CATEGORY)) {
                     String localMovieStoreJson = mPrefs.getString(GlobalConstant.LOCAL_MOVIES, "");
+                    String localMovieStoreCategory = mPrefs.getString(GlobalConstant.LOCAL_MOVIES_CATEGORY, "");
 
-                    ArrayList<String> localMovieStore = mGson.fromJson(localMovieStoreJson, ArrayList.class);
-                    mMovies = new ArrayList<>();
+                    if (localMovieStoreCategory.equals(Utility.getSortOrderPref(getActivity()))) {
+                        ArrayList<String> localMovieStore = mGson.fromJson(localMovieStoreJson, ArrayList.class);
+                        mMovies = new ArrayList<>();
 
-                    for (int i = 0; i < localMovieStore.size(); i++) {
-                        Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
-                        mMovies.add(movie);
+                        for (int i = 0; i < localMovieStore.size(); i++) {
+                            Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
+                            mMovies.add(movie);
+                        }
+
+                        updateUI(mMovies);
+                    } else {
+                        mLinearLayout.setVisibility(View.VISIBLE);
                     }
-
-                    updateUI(mMovies);
-
                 } else {
                     mLinearLayout.setVisibility(View.VISIBLE);
                 }
