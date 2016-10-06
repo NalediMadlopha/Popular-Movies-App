@@ -132,11 +132,9 @@ public class FragmentDetail extends Fragment {
 
         // Fetch the movie trailers using the asyncTask
         fetchTrailers(mApiService, mMovie.getId());
-//        new FetchTrailers().execute(mMovie.getId());
-//
+
         // Fetch the movie reviews using the asyncTask
         fetchReviews(mApiService, mMovie.getId());
-//        new FetchReviews().execute(mMovie.getId());
 
         return rootView;
     }
@@ -185,15 +183,6 @@ public class FragmentDetail extends Fragment {
                 // Notify the user with a toast
                 Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
             }
-
-//            Gson gson = new Gson();
-//
-//            String movieJson = gson.toJson(movie);
-//            Log.d("MOVIE JSON", movieJson);
-//
-//            Movie movie1 = mGson.fromJson(movieJson, Movie.class);
-//            Log.d("MOVIE OBJECT", movie1.toString());
-            Log.d("FAVOURITE", mFavouriteMoviesHandler.getMovieList().toString());
         }
     };
 

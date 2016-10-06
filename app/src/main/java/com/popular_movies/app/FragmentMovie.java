@@ -3,7 +3,10 @@
  */
 package com.popular_movies.app;
 
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.popular_movies.adapter.MoviesAdapter;
@@ -37,7 +41,6 @@ import retrofit2.Response;
  */
 public class FragmentMovie extends Fragment {
 
-    ProgressDialog mProgressDialog;
     private View mRootView;
 
     private ArrayList<Movie> mMovies;
@@ -50,8 +53,6 @@ public class FragmentMovie extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        fetchGenres(mApiService);
     }
 
     @Nullable
@@ -59,10 +60,15 @@ public class FragmentMovie extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        if (Utility.isOnline(getActivity())) {
-            mRootView = inflater.inflate(R.layout.fragment_main, container, false);
-        } else {
-            mRootView = inflater.inflate(R.layout.activity_error_no_network, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+//            mRootView = inflater.inflate(R.layout.activity_error_no_network, container, false);
+
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+
+        if (savedInstanceState != null) {
+            mMovies = savedInstanceState.getParcelableArrayList(GlobalConstant.MOVIES);
+            updateUI(mMovies);
         }
 
         return mRootView;
@@ -71,8 +77,6 @@ public class FragmentMovie extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        fetchMovies(mApiService);
     }
 
     @Override
@@ -86,24 +90,28 @@ public class FragmentMovie extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(GlobalConstant.MOVIE, mMovies);
+        outState.putParcelableArrayList(GlobalConstant.MOVIES, mMovies);
         super.onSaveInstanceState(outState);
     }
 
-    public void updateUI() {
-
+    public void updateUI(ArrayList<Movie> movies) {
         GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(getActivity(), 200);
 
         final RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_view);
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerView.Adapter adapterViewAdapter = new MoviesAdapter(getActivity(), mMovies);
+        RecyclerView.Adapter adapterViewAdapter = new MoviesAdapter(getActivity(), movies);
         recyclerView.setAdapter(adapterViewAdapter);
     }
 
     private void fetchGenres(ApiInterface apiService) {
-
         Call<ResponseGenres> call
                 = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
@@ -162,7 +170,7 @@ public class FragmentMovie extends Fragment {
                     mMovies.add(movie);
                 }
 
-                updateUI();
+                updateUI(mMovies);
                 return;
         }
 
@@ -171,7 +179,7 @@ public class FragmentMovie extends Fragment {
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
                 mMovies = (ArrayList) response.body().getResults();
 
-                updateUI();
+                updateUI(mMovies);
             }
 
             @Override
@@ -181,4 +189,22 @@ public class FragmentMovie extends Fragment {
             }
         });
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utility.isOnline(context)) {
+                fetchGenres(mApiService);
+                fetchMovies(mApiService);
+            } else {
+
+                if (mMovies != null && !mMovies.isEmpty()) {
+                    updateUI(mMovies);
+                } else {
+                    Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+
 }
