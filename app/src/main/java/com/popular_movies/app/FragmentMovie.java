@@ -182,7 +182,7 @@ public class FragmentMovie extends Fragment {
             @Override
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
                 mMovies = (ArrayList) response.body().getResults();
-                
+
                 updateUI(mMovies);
             }
 
