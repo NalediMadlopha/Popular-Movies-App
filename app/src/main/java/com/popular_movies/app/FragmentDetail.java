@@ -26,8 +26,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.popular_movies.adapter.ReviewAdapter;
 import com.popular_movies.adapter.TrailerAdapter;
-import com.popular_movies.database.DataSourceReview;
-import com.popular_movies.database.DataSourceTrailer;
 import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.ResponseReviews;
@@ -50,10 +48,8 @@ import retrofit2.Response;
 public class FragmentDetail extends Fragment {
 
     private Movie mMovie;
-    private DataSourceTrailer mDataSourceTrailer;
     private ListView mTrailersListView;
     private TrailerAdapter mTrailerAdapter;
-    private DataSourceReview mDataSourceReview;
     private LinearLayout mReviewsLinearLayout;
     private ReviewAdapter mReviewAdapter;
     private FavouriteMoviesHandler mFavouriteMoviesHandler;

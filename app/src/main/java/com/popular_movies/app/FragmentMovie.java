@@ -17,7 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.popular_movies.adapter.MoviesAdapter;
@@ -26,8 +26,6 @@ import com.popular_movies.model.Genre;
 import com.popular_movies.model.Movie;
 import com.popular_movies.model.ResponseGenres;
 import com.popular_movies.model.ResponseMovies;
-import com.popular_movies.model.Review;
-import com.popular_movies.model.Trailer;
 import com.popular_movies.rest.ApiClient;
 import com.popular_movies.rest.ApiInterface;
 
@@ -44,12 +42,14 @@ import retrofit2.Response;
 public class FragmentMovie extends Fragment {
 
     private View mRootView;
-
+    private LinearLayout mLinearLayout;
     private ArrayList<Movie> mMovies;
-    private ArrayList<Trailer> mTrailers;
-    private ArrayList<Review> mReviews;
+
     private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
+
+    private SharedPreferences mPrefs;
+    Gson mGson = new Gson();
 
     public FragmentMovie() {
     }
@@ -57,6 +57,7 @@ public class FragmentMovie extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     @Nullable
@@ -65,15 +66,8 @@ public class FragmentMovie extends Fragment {
                              Bundle savedInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-//            mRootView = inflater.inflate(R.layout.activity_error_no_network, container, false);
-
-        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-
-        if (savedInstanceState != null) {
-            mMovies = savedInstanceState.getParcelableArrayList(GlobalConstant.MOVIES);
-            updateUI(mMovies);
-        }
+        mLinearLayout = (LinearLayout) mRootView.findViewById(R.id.no_connection);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         return mRootView;
     }
@@ -105,6 +99,15 @@ public class FragmentMovie extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mMovies = savedInstanceState.getParcelableArrayList(GlobalConstant.MOVIES);
+        }
+    }
+
     public void updateUI(ArrayList<Movie> movies) {
         GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(getActivity(), 200);
 
@@ -124,18 +127,9 @@ public class FragmentMovie extends Fragment {
             public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
                 List<Genre> genres = response.body().getGenres();
 
-                Gson gson = new Gson();
 
-                // Initialize the shared preference object
-                SharedPreferences prefs = PreferenceManager.
-                        getDefaultSharedPreferences(getActivity());
-
-                /**
-                 * This code persists the names of the movie genres onto a shared preference.
-                 * The genre preference is always overwritten, in case a new genre is added
-                 **/
-                SharedPreferences.Editor prefsEditor = prefs.edit();
-                String genreJson = gson.toJson(genres);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                String genreJson = mGson.toJson(genres);
                 prefsEditor.putString(GlobalConstant.GENRES, genreJson);
                 prefsEditor.commit();
             }
@@ -168,8 +162,7 @@ public class FragmentMovie extends Fragment {
                 mMovies = new ArrayList<>();
 
                 for (int i = 0; i < movieList.size(); i++) {
-                    Gson gson = new Gson();
-                    Movie movie = gson.fromJson(movieList.get(i), Movie.class);
+                    Movie movie = mGson.fromJson(movieList.get(i), Movie.class);
 
                     mMovies.add(movie);
                 }
@@ -181,7 +174,21 @@ public class FragmentMovie extends Fragment {
         call.enqueue(new Callback<ResponseMovies>() {
             @Override
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
+
+
+                ArrayList<String> localMovieStore = new ArrayList<>();
+
                 mMovies = (ArrayList) response.body().getResults();
+                for (int i = 0; i < mMovies.size(); i++) {
+                    String movieJson = mGson.toJson(mMovies.get(i));
+
+                    localMovieStore.add(movieJson);
+                }
+
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                String localMovieStoreJson = mGson.toJson(localMovieStore);
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
+                prefsEditor.commit();
 
                 updateUI(mMovies);
             }
@@ -198,14 +205,26 @@ public class FragmentMovie extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utility.isOnline(context)) {
+                mLinearLayout.setVisibility(View.INVISIBLE);
                 fetchGenres(mApiService);
                 fetchMovies(mApiService);
             } else {
 
-                if (mMovies != null && !mMovies.isEmpty()) {
+                if (mPrefs.contains(GlobalConstant.LOCAL_MOVIES)) {
+                    String localMovieStoreJson = mPrefs.getString(GlobalConstant.LOCAL_MOVIES, "");
+
+                    ArrayList<String> localMovieStore = mGson.fromJson(localMovieStoreJson, ArrayList.class);
+                    mMovies = new ArrayList<>();
+
+                    for (int i = 0; i < localMovieStore.size(); i++) {
+                        Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
+                        mMovies.add(movie);
+                    }
+
                     updateUI(mMovies);
+
                 } else {
-                    Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    mLinearLayout.setVisibility(View.VISIBLE);
                 }
             }
         }
