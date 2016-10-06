@@ -61,7 +61,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, final int position) {
-        Picasso.with(this.context).load(movies.get(position).getPosterPath()).into(holder.poster);
+        Picasso.with(this.context)
+                .load(movies.get(position).getPosterPath())
+                .placeholder(R.drawable.movie_icon)
+                .into(holder.poster);
         holder.title.setText(movies.get(position).getTitle());
         holder.genre.setText(Utility.getGenreNames(this.context, movies.get(position).getGenreIds()));
         holder.releaseDate.setText(movies.get(position).getReleaseDate());
@@ -76,11 +79,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 Bundle args = new Bundle();
                 args.putParcelable(GlobalConstant.MOVIE, movies.get(position));
                 fragmentDetail.setArguments(args);
-
-                // Replace the movie details container framelayout with the details fragment
-//                context.getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.movie_detail_container, fragmentDetail, GlobalConstant.MOVIE)
-//                        .commit();
 
                 // Start the details activity and pass the movie to it
                 Intent intent = new Intent(context, ActivityDetail.class);
