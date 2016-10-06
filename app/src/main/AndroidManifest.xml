@@ -37,11 +37,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ActivityMain" />
         </activity>
-        <receiver android:name=".NetworkChangeReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
+
         <provider
             android:name="com.popular_movies.datasync.provider.StubProvider"
             android:authorities="com.popular_movies.datasync.provider"
