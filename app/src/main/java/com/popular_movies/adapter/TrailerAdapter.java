@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.popular_movies.app.R;
@@ -20,7 +19,6 @@ import java.util.List;
  * Created by Naledi Madlopha on 2016/08/14.
  */
 public class TrailerAdapter extends ArrayAdapter<Trailer> {
-    private static final String LOG_TAG = TrailerAdapter.class.getSimpleName();
 
     /**
      * This is our own custom constructor (it doesn't mirror a superclass constructor).
@@ -49,9 +47,6 @@ public class TrailerAdapter extends ArrayAdapter<Trailer> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Gets the Trailer object from the ArrayAdapter at the appropriate position
-        Trailer trailer = getItem(position);
-
         // Adapters recycle views to AdapterViews.
         // If this is a new View object we're getting, then inflate the layout.
         // If not, this view already has the layout inflated from a previous call to getView,
@@ -61,11 +56,8 @@ public class TrailerAdapter extends ArrayAdapter<Trailer> {
                     R.layout.trailer_item, parent, false);
         }
 
-        ImageView trailerImage = (ImageView) convertView.findViewById(R.id.trailer_image);
-
         TextView trailerName = (TextView) convertView.findViewById(R.id.trailer_name);
-        trailerName.setText("Trailer " + (position + 1)
-        );
+        trailerName.setText("Trailer " + (position + 1));
 
         return convertView;
     }
