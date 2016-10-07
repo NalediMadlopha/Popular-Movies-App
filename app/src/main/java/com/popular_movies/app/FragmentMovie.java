@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.popular_movies.adapter.MoviesAdapter;
@@ -129,7 +130,6 @@ public class FragmentMovie extends Fragment {
             public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
                 List<Genre> genres = response.body().getGenres();
 
-
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 String genreJson = mGson.toJson(genres);
                 prefsEditor.putString(GlobalConstant.GENRES, genreJson);
@@ -215,6 +215,8 @@ public class FragmentMovie extends Fragment {
                 fetchGenres(mApiService);
                 fetchMovies(mApiService);
             } else {
+
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
 
                 if (mPrefs.contains(GlobalConstant.LOCAL_MOVIES) && mPrefs.contains(GlobalConstant.LOCAL_MOVIES_CATEGORY)) {
                     String localMovieStoreJson = mPrefs.getString(GlobalConstant.LOCAL_MOVIES, "");
