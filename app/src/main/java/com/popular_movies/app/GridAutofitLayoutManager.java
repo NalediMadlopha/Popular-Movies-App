@@ -1,7 +1,8 @@
 package com.popular_movies.app;
 
 /**
- * Created by root on 2016/10/05.
+ * Code from the Internet
+ * Source: https://codentrick.com/part-4-android-recyclerview-grid/
  */
 
 import android.content.Context;

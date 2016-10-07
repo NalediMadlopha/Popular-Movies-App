@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 /**
- * Created by root on 2016/10/04.
+ * Provides an api interface for the application
  */
 public interface ApiInterface {
     @GET("movie/popular")

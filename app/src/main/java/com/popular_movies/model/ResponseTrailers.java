@@ -1,3 +1,6 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.model;
 
 import com.google.gson.annotations.SerializedName;
@@ -5,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by root on 2016/10/04.
+ * Provides trailer api response
  */
 
 public class ResponseTrailers {

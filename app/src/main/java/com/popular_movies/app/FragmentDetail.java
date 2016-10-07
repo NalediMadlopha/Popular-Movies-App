@@ -105,6 +105,7 @@ public class FragmentDetail extends Fragment {
                 .placeholder(R.drawable.movie_icon)
                 .into(movie_poster);
 
+        // Set the favourite icon color
         vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
         // Set the title of the movie
         movie_title.setText(mMovie.getOriginalTitle());
@@ -201,13 +202,21 @@ public class FragmentDetail extends Fragment {
         }
     }
 
+    /**
+     * Fetches the movie trailers from the api
+     *
+     * @param apiService is the api service interface
+     * @param movieId the id of the movie
+     */
     private void fetchTrailers(ApiInterface apiService, int movieId) {
 
+        // Call the api service to get the trailers
         Call<ResponseTrailers> call = apiService.getTrailers(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
         call.enqueue(new Callback<ResponseTrailers>() {
             @Override
             public void onResponse(Call<ResponseTrailers>call, Response<ResponseTrailers> response) {
+                // Get the response's results
                 ArrayList<Trailer> trailers = (ArrayList) response.body().getResults();
 
                 // Initialize the trailer adapter, passing the trailers list
@@ -226,13 +235,21 @@ public class FragmentDetail extends Fragment {
         });
     }
 
+    /**
+     * Fetches the movie reviews from the api
+     *
+     * @param apiService is the api service interface
+     * @param movieId the id of the movie
+     */
     private void fetchReviews(ApiInterface apiService, int movieId) {
 
+        // Call the api service to get the reviews
         Call<ResponseReviews> call = apiService.getReviews(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
         call.enqueue(new Callback<ResponseReviews>() {
             @Override
             public void onResponse(Call<ResponseReviews>call, Response<ResponseReviews> response) {
+                // Get the response's results
                 ArrayList<Review> reviews = (ArrayList) response.body().getResults();
 
                 // Initialize the trailer adapter, passing the trailers list
@@ -254,6 +271,7 @@ public class FragmentDetail extends Fragment {
         });
     }
 
+    // Initialize a connection state broadcast receiver
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

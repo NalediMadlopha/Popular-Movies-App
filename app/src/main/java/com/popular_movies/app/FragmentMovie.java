@@ -109,9 +109,15 @@ public class FragmentMovie extends Fragment {
         }
     }
 
+    /**
+     * Updates the UI
+     *
+     * @param movies is an array list of movie objects to be displayed on the UI
+     */
     public void updateUI(ArrayList<Movie> movies) {
         mLinearLayout.setVisibility(View.INVISIBLE);
 
+        // Auto fits the movie item on the grid based on the screen space
         GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(getActivity(), 200);
 
         final RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.recycle_view);
@@ -121,6 +127,11 @@ public class FragmentMovie extends Fragment {
         recyclerView.setAdapter(adapterViewAdapter);
     }
 
+    /**
+     * Fetches the genres from the api and saves them on a shared service
+     *
+     * @param apiService is an api interface
+     */
     private void fetchGenres(ApiInterface apiService) {
         Call<ResponseGenres> call
                 = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
@@ -130,6 +141,7 @@ public class FragmentMovie extends Fragment {
             public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
                 List<Genre> genres = response.body().getGenres();
 
+                // Shared preference to store the genres locally
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 String genreJson = mGson.toJson(genres);
                 prefsEditor.putString(GlobalConstant.GENRES, genreJson);
@@ -144,21 +156,28 @@ public class FragmentMovie extends Fragment {
         });
     }
 
+    /**
+     * Fetches the movies from the api and saves them on a shared service
+     *
+     * @param apiService is an api interface
+     */
     private void fetchMovies(final ApiInterface apiService) {
 
         Call<ResponseMovies> call = null;
 
+        // Get the movies based on the sort order preference
         switch (Utility.getSortOrderPref(getActivity())) {
-            case GlobalConstant.MOST_POPULAR:
+            case GlobalConstant.MOST_POPULAR: // Get most popular movies
                 call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
                 break;
-            case GlobalConstant.TOP_RATED:
+            case GlobalConstant.TOP_RATED: // Get top rated movies
                 call = apiService.getTopRatedMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
                 break;
-            case GlobalConstant.FAVOURITE:
+            case GlobalConstant.FAVOURITE: // Get favourite movies
                 // Instantiate the favourite movies handler
                 FavouriteMoviesHandler mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
+                // Get the favourite movies
                 ArrayList<String> movieList =  mFavouriteMoviesHandler.getMovieList();
 
                 mMovies = new ArrayList<>();
@@ -169,10 +188,12 @@ public class FragmentMovie extends Fragment {
                     mMovies.add(movie);
                 }
 
+                // Store the movie category on a shared preference for offline usage
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getSortOrderPref(getActivity()));
                 prefsEditor.commit();
 
+                // Update the UI
                 updateUI(mMovies);
                 return;
         }
@@ -180,10 +201,9 @@ public class FragmentMovie extends Fragment {
         call.enqueue(new Callback<ResponseMovies>() {
             @Override
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
-
+                // Used to store the movies for offline usage
                 ArrayList<String> localMovieStore = new ArrayList<>();
-
-                mMovies = (ArrayList) response.body().getResults();
+                mMovies = (ArrayList) response.body().getResults(); // Get the response result
 
                 for (int i = 0; i < mMovies.size(); i++) {
                     String movieJson = mGson.toJson(mMovies.get(i));
@@ -191,12 +211,14 @@ public class FragmentMovie extends Fragment {
                     localMovieStore.add(movieJson);
                 }
 
+                // Store the movies locally on a shared preference for offline usage
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 String localMovieStoreJson = mGson.toJson(localMovieStore);
                 prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
                 prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getSortOrderPref(getActivity()));
                 prefsEditor.commit();
 
+                // Update the UI
                 updateUI(mMovies);
             }
 
@@ -208,21 +230,26 @@ public class FragmentMovie extends Fragment {
         });
     }
 
+    // Initialize a broadcast receiver
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            // Check if the connection state is connected
             if (Utility.isOnline(context)) {
-                fetchGenres(mApiService);
-                fetchMovies(mApiService);
+                fetchGenres(mApiService); // Fetch genres from the api
+                fetchMovies(mApiService); // Fetch movies from the api
             } else {
 
+                // Notify the user about the lose of internet connection
                 Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
 
+                // Check if there are movies stored locally
                 if (mPrefs.contains(GlobalConstant.LOCAL_MOVIES) && mPrefs.contains(GlobalConstant.LOCAL_MOVIES_CATEGORY)) {
                     String localMovieStoreJson = mPrefs.getString(GlobalConstant.LOCAL_MOVIES, "");
                     String localMovieStoreCategory = mPrefs.getString(GlobalConstant.LOCAL_MOVIES_CATEGORY, "");
 
                     if (localMovieStoreCategory.equals(Utility.getSortOrderPref(getActivity()))) {
+                        // Get the local movies
                         ArrayList<String> localMovieStore = mGson.fromJson(localMovieStoreJson, ArrayList.class);
                         mMovies = new ArrayList<>();
 
@@ -231,11 +258,14 @@ public class FragmentMovie extends Fragment {
                             mMovies.add(movie);
                         }
 
+                        // Update the UI
                         updateUI(mMovies);
                     } else {
+                        // Display the no internet connection view
                         mLinearLayout.setVisibility(View.VISIBLE);
                     }
                 } else {
+                    // Display the no internet connection view
                     mLinearLayout.setVisibility(View.VISIBLE);
                 }
             }

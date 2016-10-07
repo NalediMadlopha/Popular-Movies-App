@@ -1,3 +1,6 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.app;
 
 import android.content.Context;
@@ -5,7 +8,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -24,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Naledi Madlopha on 2016/08/02.
+ * Provides general methods
  */
 public class Utility {
 
@@ -76,7 +78,7 @@ public class Utility {
      * @return string of the sort order value
      */
     public static String getSortOrderPref(Context context) {
-        String sortOrder = null;
+        String sortOrder;
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (sharedPrefs.contains("sort_order")) {
@@ -189,16 +191,8 @@ public class Utility {
             listView.requestLayout();
 
             return true;
-
         } else {
             return false;
         }
-    }
-
-    public static int calculateNoOfColumns(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = (int) (dpWidth / 180);
-        return noOfColumns;
     }
 }

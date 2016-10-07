@@ -1,10 +1,13 @@
+/*
+ * Copy (C) 2016 Popular Movies Udacity Project 1
+ */
 package com.popular_movies.rest;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by root on 2016/10/04.
+ * Provides an api retrofit connection
  */
 public class ApiClient {
 
