@@ -4,7 +4,10 @@
 package com.popular_movies.app;
 
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,6 +80,7 @@ public class FragmentDetail extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     @Nullable
@@ -129,11 +133,6 @@ public class FragmentDetail extends Fragment {
         // Set the trailer on item click listener
         trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
 
-        // Fetch the movie trailers using the asyncTask
-        fetchTrailers(mApiService, mMovie.getId());
-        // Fetch the movie reviews using the asyncTask
-        fetchReviews(mApiService, mMovie.getId());
-
         return view;
     }
 
@@ -141,6 +140,7 @@ public class FragmentDetail extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     /**
@@ -253,4 +253,16 @@ public class FragmentDetail extends Fragment {
             }
         });
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utility.isOnline(context)) {
+                fetchTrailers(mApiService, mMovie.getId());
+                fetchReviews(mApiService, mMovie.getId());
+            } else {
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }
