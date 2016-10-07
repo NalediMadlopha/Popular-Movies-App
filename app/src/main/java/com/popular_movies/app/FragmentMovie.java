@@ -43,7 +43,8 @@ import retrofit2.Response;
 public class FragmentMovie extends Fragment {
 
     private View mRootView;
-    private LinearLayout mLinearLayout;
+    private LinearLayout mNoConnectionLinearLayout;
+    private LinearLayout mLoadMoviesLinearLayout;
     private ArrayList<Movie> mMovies;
 
     private ApiInterface mApiService =
@@ -67,7 +68,8 @@ public class FragmentMovie extends Fragment {
                              Bundle savedInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mLinearLayout = (LinearLayout) mRootView.findViewById(R.id.no_connection);
+        mNoConnectionLinearLayout = (LinearLayout) mRootView.findViewById(R.id.no_connection);
+        mLoadMoviesLinearLayout = (LinearLayout) mRootView.findViewById(R.id.load_movies_progress_indicator);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         return mRootView;
@@ -115,7 +117,8 @@ public class FragmentMovie extends Fragment {
      * @param movies is an array list of movie objects to be displayed on the UI
      */
     public void updateUI(ArrayList<Movie> movies) {
-        mLinearLayout.setVisibility(View.INVISIBLE);
+        mNoConnectionLinearLayout.setVisibility(View.INVISIBLE);
+        mLoadMoviesLinearLayout.setVisibility(View.INVISIBLE);
 
         // Auto fits the movie item on the grid based on the screen space
         GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(getActivity(), 200);
@@ -236,6 +239,7 @@ public class FragmentMovie extends Fragment {
         public void onReceive(Context context, Intent intent) {
             // Check if the connection state is connected
             if (Utility.isOnline(context)) {
+                mLoadMoviesLinearLayout.setVisibility(View.VISIBLE);
                 fetchGenres(mApiService); // Fetch genres from the api
                 fetchMovies(mApiService); // Fetch movies from the api
             } else {
@@ -262,11 +266,11 @@ public class FragmentMovie extends Fragment {
                         updateUI(mMovies);
                     } else {
                         // Display the no internet connection view
-                        mLinearLayout.setVisibility(View.VISIBLE);
+                        mNoConnectionLinearLayout.setVisibility(View.VISIBLE);
                     }
                 } else {
                     // Display the no internet connection view
-                    mLinearLayout.setVisibility(View.VISIBLE);
+                    mNoConnectionLinearLayout.setVisibility(View.VISIBLE);
                 }
             }
         }
