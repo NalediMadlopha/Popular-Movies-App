@@ -139,12 +139,12 @@ public class FragmentMovie extends Fragment {
             @Override
             public void onFailure(Call<ResponseGenres>call, Throwable t) {
                 // Log error here since request failed
-                Log.e("Retrofit Error", t.toString());
+                Log.e("Retrofit Error [Genre]", t.toString());
             }
         });
     }
 
-    private void fetchMovies(ApiInterface apiService) {
+    private void fetchMovies(final ApiInterface apiService) {
 
         Call<ResponseMovies> call = null;
 
@@ -181,10 +181,10 @@ public class FragmentMovie extends Fragment {
             @Override
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
 
-
                 ArrayList<String> localMovieStore = new ArrayList<>();
 
                 mMovies = (ArrayList) response.body().getResults();
+
                 for (int i = 0; i < mMovies.size(); i++) {
                     String movieJson = mGson.toJson(mMovies.get(i));
 
@@ -203,7 +203,7 @@ public class FragmentMovie extends Fragment {
             @Override
             public void onFailure(Call<ResponseMovies>call, Throwable t) {
                 // Log error here since request failed
-                Log.e("Retrofit Error", t.toString());
+                Log.e("Retrofit Error [Movie]", t.toString());
             }
         });
     }

@@ -38,6 +38,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,17 +51,32 @@ import retrofit2.Response;
  */
 public class FragmentDetail extends Fragment {
 
+    @BindView(R.id.details_movie_poster) ImageView movie_poster;
+    @BindView(R.id.ic_votes_rating_average) ImageView vote_rating;
+    @BindView(R.id.details_favourite_movie) ImageButton favouriteMovieIcon;
+    @BindView(R.id.details_movie_title) TextView movie_title;
+    @BindView(R.id.details_movie_genres) TextView movie_genres;
+    @BindView(R.id.details_movie_release_date) TextView movie_release_date;
+    @BindView(R.id.details_average_votes) TextView votes_average;
+    @BindView(R.id.details_movie_plot_synopsis) TextView plot_synopsis;
+    @BindView(R.id.trailer_list_view) ListView trailersListView;
+    @BindView(R.id.reviews_linear_layout) LinearLayout reviewsLinearLayout;
+    private Unbinder unbinder;
+
     private Movie mMovie;
-    private ListView mTrailersListView;
     private TrailerAdapter mTrailerAdapter;
-    private LinearLayout mReviewsLinearLayout;
     private ReviewAdapter mReviewAdapter;
     private FavouriteMoviesHandler mFavouriteMoviesHandler;
-    private ImageButton mFavouriteMovieIcon;
+
     private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
 
     public FragmentDetail() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -66,7 +85,8 @@ public class FragmentDetail extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the details fragment
-        final View rootView = inflater.inflate(R.layout.fragment_details, null);
+        final View view = inflater.inflate(R.layout.fragment_details, null);
+        unbinder = ButterKnife.bind(this, view);
 
         // Get the arguments
         Bundle arguments = getArguments();
@@ -76,63 +96,51 @@ public class FragmentDetail extends Fragment {
         }
 
         // Set the poster of the movie
-        ImageView movie_poster = (ImageView) rootView.findViewById(R.id.details_movie_poster);
-        Picasso.with(getActivity()).load(mMovie.getBackDropPath()).into(movie_poster);
+        Picasso.with(getActivity())
+                .load(mMovie.getBackDropPath())
+                .placeholder(R.drawable.movie_icon)
+                .into(movie_poster);
 
-        ImageView vote_rating = (ImageView) rootView.findViewById(R.id.ic_votes_rating_average);
         vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
+        // Set the title of the movie
+        movie_title.setText(mMovie.getOriginalTitle());
+        // Set the genre(s) of the movie
+        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
+        // Set the release date of the movie
+        movie_release_date.setText(mMovie.getReleaseDate());
+        // Set the votes average
+        votes_average.setText(mMovie.getVoteAverage().toString());
+        // Set the plot synopsis of the movie
+        plot_synopsis.setText(mMovie.getOverall());
 
         // Set the favourite movie icon
-        mFavouriteMovieIcon = (ImageButton) rootView.findViewById(R.id.details_favourite_movie);
-
+        favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
         // Instantiate the favourite movies handler
         mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
         // Check if the movie is already in the favourite movie list
         if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
             // Set the favourite icon tint to red
-            mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+            favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
         }
 
         // Set favourite button on click listener
-        mFavouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
-
-        // Set the title of the movie
-        TextView movie_title = (TextView) rootView.findViewById(R.id.details_movie_title);
-        movie_title.setText(mMovie.getOriginalTitle());
-
-        // Set the genre(s) of the movie
-        TextView movie_genres = (TextView) rootView.findViewById(R.id.details_movie_genres);
-        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
-
-        // Set the release date of the movie
-        TextView movie_release_date = (TextView) rootView.findViewById(R.id.details_movie_release_date);
-        movie_release_date.setText(mMovie.getReleaseDate());
-
-        // Set the votes average
-        TextView votes_average = (TextView) rootView.findViewById(R.id.details_average_votes);
-        votes_average.setText(mMovie.getVoteAverage().toString());
-
-        // Set the plot synopsis of the movie
-        TextView plot_synopsis = (TextView) rootView.findViewById(R.id.details_movie_plot_synopsis);
-        plot_synopsis.setText(mMovie.getOverall());
-
-        // Find the trailer list view
-        mTrailersListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
-
+        favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
         // Set the trailer on item click listener
-        mTrailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
-
-        // Find the review linear layout
-        mReviewsLinearLayout = (LinearLayout) rootView.findViewById(R.id.reviews_linear_layout);
+        trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
 
         // Fetch the movie trailers using the asyncTask
         fetchTrailers(mApiService, mMovie.getId());
-
         // Fetch the movie reviews using the asyncTask
         fetchReviews(mApiService, mMovie.getId());
 
-        return rootView;
+        return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     /**
@@ -143,11 +151,10 @@ public class FragmentDetail extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-        // Get the trailer from the trailer adapter
-        Trailer trailer = mTrailerAdapter.getItem(position);
-
-        // Open the movie trailer video
-        watchTrailer(trailer.getKey());
+            // Get the trailer from the trailer adapter
+            Trailer trailer = mTrailerAdapter.getItem(position);
+            // Open the movie trailer video
+            watchTrailer(trailer.getKey());
         }
     };
 
@@ -161,21 +168,17 @@ public class FragmentDetail extends Fragment {
 
                 // Remove the movie from the favourite movie list
                 mFavouriteMoviesHandler.removeMovie(mMovie);
-
                 // Set the favourite icon tint to grey
-                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
+                favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
                         .getColor(R.color.colorGrey)));
-
                 // Notify the user with a toast
                 Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
             } else {
 
                 // Add the movie to the favourite movie list
                 mFavouriteMoviesHandler.addMovie(mMovie);
-
                 // Set the favourite icon tint to red
-                mFavouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
-
+                favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
                 // Notify the user with a toast
                 Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
             }
@@ -210,15 +213,15 @@ public class FragmentDetail extends Fragment {
                 // Initialize the trailer adapter, passing the trailers list
                 mTrailerAdapter = new TrailerAdapter(getActivity(), trailers);
                 // Set the list view adapter
-                mTrailersListView.setAdapter(mTrailerAdapter);
+                trailersListView.setAdapter(mTrailerAdapter);
                 // Modify the height of the list view
-                Utility.setListViewHeightBasedOnItems(mTrailersListView);
+                Utility.setListViewHeightBasedOnItems(trailersListView);
             }
 
             @Override
             public void onFailure(Call<ResponseTrailers>call, Throwable t) {
                 // Log error here since request failed
-                Log.e("Trailer Error", t.toString());
+                Log.e("Retrofit Error[Trailer]", t.toString());
             }
         });
     }
@@ -238,15 +241,15 @@ public class FragmentDetail extends Fragment {
                 // Loop through the item in the review adapter
                 for (int i = 0; i < mReviewAdapter.getCount(); i++) {
                     // Get the view of the item
-                    View view = mReviewAdapter.getView(i, null, mReviewsLinearLayout);
-                    mReviewsLinearLayout.addView(view);
+                    View view = mReviewAdapter.getView(i, null, reviewsLinearLayout);
+                    reviewsLinearLayout.addView(view);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseReviews>call, Throwable t) {
                 // Log error here since request failed
-                Log.e("Reviews Error", t.toString());
+                Log.e("Retrofit Error[Review]", t.toString());
             }
         });
     }
