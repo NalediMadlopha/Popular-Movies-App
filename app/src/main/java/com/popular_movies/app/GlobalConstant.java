@@ -8,7 +8,7 @@ package com.popular_movies.app;
  */
 public class GlobalConstant {
     // Replace the value of this variable with an API KEY
-    public final static String C5CA40DED62975B80638B7357FD69E9 = "";
+    public final static String C5CA40DED62975B80638B7357FD69E9 = "9c5ca40ded62975b80638b7357fd69e9";
 
     public final static String GENRES = "genres";
     public final static String MOVIE = "movie";

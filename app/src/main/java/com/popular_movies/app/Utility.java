@@ -77,7 +77,7 @@ public class Utility {
      * @param context which the method is called from
      * @return string of the sort order value
      */
-    public static String getSortOrderPref(Context context) {
+    public static String getMoviePref(Context context) {
         String sortOrder;
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);

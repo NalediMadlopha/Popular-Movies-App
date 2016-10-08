@@ -64,8 +64,8 @@ public class FragmentDetail extends Fragment {
     @BindView(R.id.details_movie_plot_synopsis) TextView plot_synopsis;
     @BindView(R.id.trailer_list_view) ListView trailersListView;
     @BindView(R.id.reviews_linear_layout) LinearLayout reviewsLinearLayout;
-    private Unbinder unbinder;
 
+    private Unbinder unbinder;
     private Movie mMovie;
     private TrailerAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;

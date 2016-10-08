@@ -20,8 +20,6 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Set the action bar
-        setupActionBar();
 
         // Check if the details container is not null
         if (findViewById(R.id.movie_detail_container) != null) {
@@ -44,7 +42,7 @@ public class ActivityMain extends AppCompatActivity {
         if (actionBar != null) {
             // Resize the action bar title
             actionBar.setTitle(Html.fromHtml("<small>Popular Movies</small>"));
-            actionBar.setSubtitle(Html.fromHtml("<small>" + Utility.getSortOrderPref(this) + "</small>"));
+            actionBar.setSubtitle(Html.fromHtml("<small>" + Utility.getMoviePref(this) + "</small>"));
         }
     }
 
