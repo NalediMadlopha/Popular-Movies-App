@@ -97,6 +97,8 @@ public class FragmentDetail extends Fragment {
         if (arguments != null) {
             // Get the parcelable movie argument
             mMovie = arguments.getParcelable(GlobalConstant.MOVIE);
+        } else {
+            mMovie = new Movie();
         }
 
         // Set the poster of the movie
