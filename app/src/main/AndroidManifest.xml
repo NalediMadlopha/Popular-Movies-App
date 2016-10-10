@@ -20,14 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivitySettings"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".ActivityMain">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ActivityMain" />
-        </activity>
-        <activity
             android:name=".ActivityDetail"
             android:label="Movie Details"
             android:parentActivityName=".ActivityMain">

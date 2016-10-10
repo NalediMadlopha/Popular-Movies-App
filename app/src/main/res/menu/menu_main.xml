@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ActivityMain">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:id="@+id/action_sort_order"
+        android:orderInCategory="1"
+        android:title="@string/pref_title_order_by"
         app:showAsAction="never" />
 </menu>

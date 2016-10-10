@@ -1,8 +1,8 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_movies"
-    android:name="com.popular_movies.app.FragmentMovie"
+    android:id="@+id/fragment_movie"
+    android:name="com.popular_movies.app.MovieFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentMovie"
-    tools:layout="@layout/fragment_main" />
+    tools:context=".MovieFragment"
+    tools:layout="@layout/fragment_list" />

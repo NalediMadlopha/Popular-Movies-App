@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.popular_movies.adapter.ReviewAdapter;
 import com.popular_movies.adapter.TrailerAdapter;
 import com.popular_movies.model.FavouriteMoviesHandler;
@@ -43,7 +42,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,7 +50,7 @@ import retrofit2.Response;
 /**
  * Provides the details fragment
  */
-public class FragmentDetail extends Fragment {
+public class DetailFragment extends Fragment {
 
     @BindView(R.id.details_movie_poster) ImageView movie_poster;
     @BindView(R.id.ic_votes_rating_average) ImageView vote_rating;
@@ -71,15 +69,59 @@ public class FragmentDetail extends Fragment {
     private ReviewAdapter mReviewAdapter;
     private FavouriteMoviesHandler mFavouriteMoviesHandler;
 
+    private int mMovieId;
+
     private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
 
-    public FragmentDetail() {
+    public DetailFragment() {
+    }
+
+    public static DetailFragment newInstance(int movieId) {
+        DetailFragment detailFragment = new DetailFragment();
+
+        Bundle args = new Bundle();
+        args.putInt("movieId", movieId);
+        detailFragment.setArguments(args);
+
+        return detailFragment;
+    }
+
+    public int getShownMovieId() {
+        return getArguments().getInt("movieId", 0);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mMovieId = savedInstanceState.getInt(GlobalConstant.MOVIE_ID);
+        }
+
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.hasExtra(GlobalConstant.MOVIE_ID)) {
+            // Get loader (init loader)
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the arguments
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            // Get the parcelable movie argument
+            mMovie = arguments.getParcelable(GlobalConstant.MOVIE);
+        } else {
+            Intent intent = getActivity().getIntent();
+            if (intent != null) {
+                mMovie = (Movie) intent.getParcelableExtra(GlobalConstant.MOVIE);
+            } else {
+
+            }
+        }
+
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
@@ -89,54 +131,55 @@ public class FragmentDetail extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the details fragment
-        final View view = inflater.inflate(R.layout.fragment_details, null);
-        unbinder = ButterKnife.bind(this, view);
-
-        // Get the arguments
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            // Get the parcelable movie argument
-            mMovie = arguments.getParcelable(GlobalConstant.MOVIE);
-        } else {
-            mMovie = new Movie();
-        }
-
-        // Set the poster of the movie
-        Picasso.with(getActivity())
-                .load(mMovie.getBackDropPath())
-                .placeholder(R.drawable.movie_icon)
-                .into(movie_poster);
-
-        // Set the favourite icon color
-        vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
-        // Set the title of the movie
-        movie_title.setText(mMovie.getOriginalTitle());
-        // Set the genre(s) of the movie
-        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
-        // Set the release date of the movie
-        movie_release_date.setText(mMovie.getReleaseDate());
-        // Set the votes average
-        votes_average.setText(mMovie.getVoteAverage().toString());
-        // Set the plot synopsis of the movie
-        plot_synopsis.setText(mMovie.getOverall());
-
-        // Set the favourite movie icon
-        favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
-        // Instantiate the favourite movies handler
-        mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
-
-        // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
-            // Set the favourite icon tint to red
-            favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
-        }
-
-        // Set favourite button on click listener
-        favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
-        // Set the trailer on item click listener
-        trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
+        final View view = inflater.inflate(R.layout.fragment_detail, null);
+//        unbinder = ButterKnife.bind(this, view);
+//
+//        // Set the poster of the movie
+//        Picasso.with(getActivity())
+//                .load(mMovie.getBackDropPath())
+//                .placeholder(R.drawable.movie_icon)
+//                .into(movie_poster);
+//
+//        // Set the favourite icon color
+//        vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
+//        // Set the title of the movie
+//        movie_title.setText(mMovie.getOriginalTitle());
+//        // Set the genre(s) of the movie
+//        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
+//        // Set the release date of the movie
+//        movie_release_date.setText(mMovie.getReleaseDate());
+//        // Set the votes average
+//        votes_average.setText(mMovie.getVoteAverage().toString());
+//        // Set the plot synopsis of the movie
+//        plot_synopsis.setText(mMovie.getOverall());
+//
+//        // Set the favourite movie icon
+//        favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
+//        // Instantiate the favourite movies handler
+//        mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
+//
+//        // Check if the movie is already in the favourite movie list
+//        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
+//            // Set the favourite icon tint to red
+//            favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+//        }
+//
+//        // Set favourite button on click listener
+//        favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
+//        // Set the trailer on item click listener
+//        trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.hasExtra(GlobalConstant.MOVIE_ID)) {
+            // Get loader (restart loader)
+        }
     }
 
     @Override
@@ -277,12 +320,12 @@ public class FragmentDetail extends Fragment {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Utility.isOnline(context)) {
-                fetchTrailers(mApiService, mMovie.getId());
-                fetchReviews(mApiService, mMovie.getId());
-            } else {
-                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
-            }
+//            if (Utility.isOnline(context)) {
+//                fetchTrailers(mApiService, mMovie.getId());
+//                fetchReviews(mApiService, mMovie.getId());
+//            } else {
+//                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
+//            }
         }
     };
 }

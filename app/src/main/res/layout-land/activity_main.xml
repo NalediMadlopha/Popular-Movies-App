@@ -8,17 +8,17 @@
     tools:context=".ActivityMain">
 
     <fragment
-        android:id="@+id/fragment_forecast"
-        android:name="com.popular_movies.app.FragmentMovie"
+        android:id="@+id/fragment_movie"
+        android:name="com.popular_movies.app.MovieFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@layout/fragment_main" />
+        android:layout_weight="2"
+        tools:layout="@layout/fragment_list" />
 
     <FrameLayout
-        android:id="@+id/movie_detail_container"
+        android:id="@+id/detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2" />
+        android:layout_weight="4" />
 
 </LinearLayout>

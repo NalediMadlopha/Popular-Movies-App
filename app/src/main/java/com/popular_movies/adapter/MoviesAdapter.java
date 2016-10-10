@@ -6,6 +6,8 @@ package com.popular_movies.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.popular_movies.app.ActivityDetail;
-import com.popular_movies.app.FragmentDetail;
+import com.popular_movies.app.DetailFragment;
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.app.R;
 import com.popular_movies.app.Utility;
@@ -72,24 +74,42 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             @Override
             public void onClick(View view) {
 
-                FragmentDetail fragmentDetail = new FragmentDetail();
+                boolean isTablet = context.getResources().getBoolean(R.bool.isTablet);
 
-                // Supply index input as an argument.
-                Bundle args = new Bundle();
-                args.putParcelable(GlobalConstant.MOVIE, movies.get(position));
-                fragmentDetail.setArguments(args);
+                if (isTablet) {
+                    FragmentManager fragmentManager =
+                            ((AppCompatActivity) context).getSupportFragmentManager();
 
-                // Start the details activity and pass the movie to it
-                Intent intent = new Intent(context, ActivityDetail.class);
-                intent.putExtra(GlobalConstant.MOVIE, movies.get(position));
+                    DetailFragment detailFragment = new DetailFragment();
 
-                context.startActivity(intent);
+                    // Supply index input as an argument.
+                    Bundle args = new Bundle();
+                    args.putParcelable(GlobalConstant.MOVIE, movies.get(position));
+                    detailFragment.setArguments(args);
+
+                    // Add the fragment to the movie details container (Framelayout)
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.detailContainer, detailFragment)
+                            .commit();
+                } else {
+
+                    // Start the details activity and pass the movie to it
+                    Intent detailIntent = new Intent(context, ActivityDetail.class);
+                    detailIntent.putExtra(GlobalConstant.MOVIE, movies.get(position));
+
+                    context.startActivity(detailIntent);
+                }
             }
         });
     }
 
+
     @Override
     public int getItemCount() {
         return movies.size();
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
     }
 }

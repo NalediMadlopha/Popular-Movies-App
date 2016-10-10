@@ -5,6 +5,7 @@ package com.popular_movies.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -13,11 +14,15 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -46,7 +51,7 @@ import retrofit2.Response;
 /**
  * Provides the movie fragment
  */
-public class FragmentMovie extends Fragment {
+public class MovieFragment extends Fragment {
     @BindView(R.id.recycle_view) RecyclerView recyclerView;
     @BindView(R.id.load_movies_progress_indicator) LinearLayout progressView; 
     @BindView(R.id.no_connection) LinearLayout noConnectionView;
@@ -62,12 +67,15 @@ public class FragmentMovie extends Fragment {
     private SharedPreferences mPrefs;
     Gson mGson = new Gson();
 
-    public FragmentMovie() {
+    public MovieFragment() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Add this line in order for this fragment to handle menu events
+        setHasOptionsMenu(true);
+
         mContext = getActivity();
         mContext.registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
@@ -77,12 +85,71 @@ public class FragmentMovie extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_main, container, false);
+        view = inflater.inflate(R.layout.fragment_list, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_sort_order) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle(R.string.app_name)
+                    .setItems(R.array.pref_order_by_titles, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+
+                            String order = Utility.getOrderByPref(mContext);
+
+                            switch (which) {
+                                case 1:
+                                    if (!Utility.getOrderByPref(mContext).equals(GlobalConstant.TOP_RATED)) {
+                                        order = GlobalConstant.TOP_RATED;
+                                    }
+
+                                    break;
+                                case 2:
+                                    if (!Utility.getOrderByPref(mContext).equals(GlobalConstant.FAVOURITE)) {
+                                        order = GlobalConstant.FAVOURITE;
+                                    }
+
+                                    break;
+                                default:
+                                    if (!Utility.getOrderByPref(mContext).equals(GlobalConstant.MOST_POPULAR)) {
+                                        order = GlobalConstant.MOST_POPULAR;
+                                    }
+
+                            }
+
+                            prefsEditor.putString(GlobalConstant.SORT_ORDER, order);
+                            prefsEditor.commit();
+                        }
+                    });
+
+            builder.create()
+                    .show();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -126,6 +193,10 @@ public class FragmentMovie extends Fragment {
         }
     }
 
+    public interface Callback {
+        public void onItemSelected();
+    }
+
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -135,7 +206,7 @@ public class FragmentMovie extends Fragment {
         if (actionBar != null) {
             // Resize the action bar title
             actionBar.setTitle(Html.fromHtml("<small>Popular Movies</small>"));
-            actionBar.setSubtitle(Html.fromHtml("<small>" + Utility.getMoviePref(getActivity()) + "</small>"));
+            actionBar.setSubtitle(Html.fromHtml("<small>" + Utility.getOrderByPref(getActivity()) + "</small>"));
         }
     }
 
@@ -148,7 +219,7 @@ public class FragmentMovie extends Fragment {
             String localMovieStoreCategory = mPrefs.getString(GlobalConstant.LOCAL_MOVIES_CATEGORY, "");
 
             // Gheck if the movie preference has changed
-            if (localMovieStoreCategory.equals(Utility.getMoviePref(getActivity()))) {
+            if (localMovieStoreCategory.equals(Utility.getOrderByPref(getActivity()))) {
                 // Get the local movies
                 ArrayList<String> localMovieStore = mGson.fromJson(localMovieStoreJson, ArrayList.class);
                 mMovies = new ArrayList<>();
@@ -221,7 +292,7 @@ public class FragmentMovie extends Fragment {
         Call<ResponseGenres> call
                 = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-        call.enqueue(new Callback<ResponseGenres>() {
+        call.enqueue(new  retrofit2.Callback<ResponseGenres>() {
             @Override
             public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
                 List<Genre> genres = response.body().getGenres();
@@ -251,7 +322,7 @@ public class FragmentMovie extends Fragment {
         Call<ResponseMovies> call = null;
 
         // Get the movies based on the sort order preference
-        switch (Utility.getMoviePref(mContext)) {
+        switch (Utility.getOrderByPref(mContext)) {
             case GlobalConstant.MOST_POPULAR: // Get most popular movies
                 call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
                 break;
@@ -277,7 +348,7 @@ public class FragmentMovie extends Fragment {
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 String localMovieStoreJson = mGson.toJson(localMovieStore);
                 prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
-                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getMoviePref(mContext));
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getOrderByPref(mContext));
                 prefsEditor.commit();
 
                 // Update the UI
@@ -285,7 +356,7 @@ public class FragmentMovie extends Fragment {
                 return;
         }
 
-        call.enqueue(new Callback<ResponseMovies>() {
+        call.enqueue(new retrofit2.Callback<ResponseMovies>() {
             @Override
             public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
                 // Used to store the movies for offline usage
@@ -302,7 +373,7 @@ public class FragmentMovie extends Fragment {
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 String localMovieStoreJson = mGson.toJson(localMovieStore);
                 prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
-                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getMoviePref(getActivity()));
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getOrderByPref(getActivity()));
                 prefsEditor.commit();
 
                 // Update the UI

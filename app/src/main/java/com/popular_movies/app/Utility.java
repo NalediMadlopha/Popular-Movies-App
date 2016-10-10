@@ -77,18 +77,18 @@ public class Utility {
      * @param context which the method is called from
      * @return string of the sort order value
      */
-    public static String getMoviePref(Context context) {
+    public static String getOrderByPref(Context context) {
         String sortOrder;
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPrefs.contains("sort_order")) {
-            sortOrder = sharedPrefs.getString("sort_order", "");
+        if (sharedPrefs.contains(GlobalConstant.SORT_ORDER)) {
+            sortOrder = sharedPrefs.getString(GlobalConstant.SORT_ORDER, "");
         } else {
             SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
-            prefsEditor.putString("sort_order", "Most Popular");
+            prefsEditor.putString(GlobalConstant.SORT_ORDER, "Most Popular");
             prefsEditor.commit();
 
-            sortOrder = sharedPrefs.getString("sort_order", "");
+            sortOrder = sharedPrefs.getString(GlobalConstant.SORT_ORDER, "");
         }
 
         return sortOrder;
