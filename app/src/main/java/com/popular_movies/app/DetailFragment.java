@@ -132,42 +132,42 @@ public class DetailFragment extends Fragment {
 
         // Inflate the details fragment
         final View view = inflater.inflate(R.layout.fragment_detail, null);
-//        unbinder = ButterKnife.bind(this, view);
-//
-//        // Set the poster of the movie
-//        Picasso.with(getActivity())
-//                .load(mMovie.getBackDropPath())
-//                .placeholder(R.drawable.movie_icon)
-//                .into(movie_poster);
-//
-//        // Set the favourite icon color
-//        vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
-//        // Set the title of the movie
-//        movie_title.setText(mMovie.getOriginalTitle());
-//        // Set the genre(s) of the movie
-//        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
-//        // Set the release date of the movie
-//        movie_release_date.setText(mMovie.getReleaseDate());
-//        // Set the votes average
-//        votes_average.setText(mMovie.getVoteAverage().toString());
-//        // Set the plot synopsis of the movie
-//        plot_synopsis.setText(mMovie.getOverall());
-//
-//        // Set the favourite movie icon
-//        favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
-//        // Instantiate the favourite movies handler
-//        mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
-//
-//        // Check if the movie is already in the favourite movie list
-//        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
-//            // Set the favourite icon tint to red
-//            favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
-//        }
-//
-//        // Set favourite button on click listener
-//        favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
-//        // Set the trailer on item click listener
-//        trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
+        unbinder = ButterKnife.bind(this, view);
+
+        // Set the poster of the movie
+        Picasso.with(getActivity())
+                .load(mMovie.getBackDropPath())
+                .placeholder(R.drawable.movie_icon)
+                .into(movie_poster);
+
+        // Set the favourite icon color
+        vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
+        // Set the title of the movie
+        movie_title.setText(mMovie.getOriginalTitle());
+        // Set the genre(s) of the movie
+        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
+        // Set the release date of the movie
+        movie_release_date.setText(mMovie.getReleaseDate());
+        // Set the votes average
+        votes_average.setText(mMovie.getVoteAverage().toString());
+        // Set the plot synopsis of the movie
+        plot_synopsis.setText(mMovie.getOverall());
+
+        // Set the favourite movie icon
+        favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
+        // Instantiate the favourite movies handler
+        mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
+
+        // Check if the movie is already in the favourite movie list
+        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
+            // Set the favourite icon tint to red
+            favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+        }
+
+        // Set favourite button on click listener
+        favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
+        // Set the trailer on item click listener
+        trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
 
         return view;
     }
