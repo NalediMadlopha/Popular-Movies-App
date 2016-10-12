@@ -8,13 +8,20 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.popular_movies.model.FavouriteMoviesHandler;
 import com.popular_movies.model.Genre;
+import com.popular_movies.model.Movie;
+import com.popular_movies.model.ResponseGenres;
+import com.popular_movies.model.ResponseMovies;
+import com.popular_movies.rest.ApiClient;
+import com.popular_movies.rest.ApiInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Provides general methods
@@ -77,18 +88,18 @@ public class Utility {
      * @param context which the method is called from
      * @return string of the sort order value
      */
-    public static String getOrderByPref(Context context) {
+    public static String getMovieCategoryPref(Context context) {
         String sortOrder;
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPrefs.contains(GlobalConstant.SORT_ORDER)) {
-            sortOrder = sharedPrefs.getString(GlobalConstant.SORT_ORDER, "");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.contains(GlobalConstant.MOVIE_CATEGORY)) {
+            sortOrder = sharedPreferences.getString(GlobalConstant.MOVIE_CATEGORY, "");
         } else {
-            SharedPreferences.Editor prefsEditor = sharedPrefs.edit();
-            prefsEditor.putString(GlobalConstant.SORT_ORDER, "Most Popular");
+            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+            prefsEditor.putString(GlobalConstant.MOVIE_CATEGORY, GlobalConstant.MOST_POPULAR);
             prefsEditor.commit();
 
-            sortOrder = sharedPrefs.getString(GlobalConstant.SORT_ORDER, "");
+            sortOrder = sharedPreferences.getString(GlobalConstant.MOVIE_CATEGORY, "");
         }
 
         return sortOrder;
@@ -195,4 +206,107 @@ public class Utility {
             return false;
         }
     }
+
+    /**
+     * Fetches the genres from the api and saves them on a shared service
+     */
+    public static void fetchGenres(final Context context) {
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ResponseGenres> call
+                = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+
+        call.enqueue(new Callback<ResponseGenres>() {
+            @Override
+            public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
+                List<Genre> genres = response.body().getGenres();
+                Gson gson = new Gson();
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+                // Shared preference to store the genres locally
+                SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                String genreJson = gson.toJson(genres);
+                prefsEditor.putString(GlobalConstant.GENRES, genreJson);
+                prefsEditor.commit();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseGenres>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("Retrofit Error [Genre]", t.toString());
+            }
+        });
+    }
+
+    /**
+     * Fetches the movies from the api and saves them on a shared service
+     * @param context is the context that calls the method
+     */
+    public static void fetchMovies(final Context context) {
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ResponseMovies> call;
+
+        // Get the movies based on the sort order preference
+        switch (Utility.getMovieCategoryPref(context)) {
+            case GlobalConstant.TOP_RATED: // Get top rated movies
+                call = apiService.getTopRatedMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                break;
+            case GlobalConstant.FAVOURITE: // Get favourite movies
+                // Used to store the movies for offline usage
+                ArrayList<Movie> movies = FavouriteMoviesHandler.getMovieList(context);
+                Gson gson = new Gson();
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+                // Store the movie category on a shared preference for offline usage
+                SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                String localMovieStoreJson = gson.toJson(movies);
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getMovieCategoryPref(context));
+                prefsEditor.commit();
+
+                return;
+            default:
+                // Get most popular movies
+                call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                break;
+
+        }
+
+        call.enqueue(new Callback<ResponseMovies>() {
+            @Override
+            public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
+                // Used to store the movies for offline usage
+                ArrayList<String> localMovieStore = new ArrayList<>();
+                ArrayList<Movie> movies = (ArrayList) response.body().getResults(); // Get the response result
+                Gson gson = new Gson();
+
+                for (int i = 0; i < movies.size(); i++) {
+                    String movieJson = gson.toJson(movies.get(i));
+
+                    localMovieStore.add(movieJson);
+                }
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+                // Store the movies locally on a shared preference for offline usage
+                SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+                String localMovieStoreJson = gson.toJson(localMovieStore);
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
+                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getMovieCategoryPref(context));
+                prefsEditor.commit();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseMovies>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("Retrofit Error [Movie]", t.toString());
+            }
+        });
+    }
+
 }

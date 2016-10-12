@@ -23,6 +23,7 @@ import com.popular_movies.app.Utility;
 import com.popular_movies.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,12 +34,12 @@ import butterknife.ButterKnife;
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
-    private List<Movie> movies;
-    private Context context;
+    private List<Movie> mMovies;
+    private Context mContext;
 
     public MoviesAdapter(Context context, List<Movie> movies) {
-        this.movies = movies;
-        this.context = context;
+        this.mMovies = movies;
+        this.mContext = context;
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -56,60 +57,69 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public MoviesAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent,
                                                             int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.movie_item, parent, false);
+        View view = LayoutInflater.from(this.mContext).inflate(R.layout.movie_item, parent, false);
         return new MovieViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, final int position) {
-        Picasso.with(this.context)
-                .load(movies.get(position).getPosterPath())
+        Picasso.with(this.mContext)
+                .load(mMovies.get(position).getPosterPath())
                 .placeholder(R.drawable.movie_icon)
                 .into(holder.poster);
-        holder.title.setText(movies.get(position).getTitle());
-        holder.genre.setText(Utility.getGenreNames(this.context, movies.get(position).getGenreIds()));
-        holder.releaseDate.setText(movies.get(position).getReleaseDate());
+        holder.title.setText(mMovies.get(position).getTitle());
+        holder.genre.setText(Utility.getGenreNames(this.mContext, mMovies.get(position).getGenreIds()));
+        holder.releaseDate.setText(mMovies.get(position).getReleaseDate());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                boolean isTablet = context.getResources().getBoolean(R.bool.isTablet);
+                boolean isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
 
                 if (isTablet) {
                     FragmentManager fragmentManager =
-                            ((AppCompatActivity) context).getSupportFragmentManager();
+                            ((AppCompatActivity) mContext).getSupportFragmentManager();
 
                     DetailFragment detailFragment = new DetailFragment();
 
                     // Supply index input as an argument.
                     Bundle args = new Bundle();
-                    args.putParcelable(GlobalConstant.MOVIE, movies.get(position));
+                    args.putParcelable(GlobalConstant.MOVIE, mMovies.get(position));
                     detailFragment.setArguments(args);
 
                     // Add the fragment to the movie details container (Framelayout)
                     fragmentManager.beginTransaction()
-                            .replace(R.id.detailContainer, detailFragment)
+                            .replace(R.id.detail_container, detailFragment)
                             .commit();
                 } else {
 
                     // Start the details activity and pass the movie to it
-                    Intent detailIntent = new Intent(context, ActivityDetail.class);
-                    detailIntent.putExtra(GlobalConstant.MOVIE, movies.get(position));
+                    Intent detailIntent = new Intent(mContext, ActivityDetail.class);
+                    detailIntent.putExtra(GlobalConstant.MOVIE, mMovies.get(position));
 
-                    context.startActivity(detailIntent);
+                    mContext.startActivity(detailIntent);
                 }
             }
         });
     }
 
-
     @Override
     public int getItemCount() {
-        return movies.size();
+        return mMovies.size();
     }
 
     public List<Movie> getMovies() {
-        return movies;
+        return mMovies;
+    }
+
+    public void swap (ArrayList<Movie> movies) {
+        if (mMovies != null) {
+            mMovies.clear();
+            mMovies.addAll(movies);
+        } else {
+            mMovies = movies;
+        }
+        notifyDataSetChanged();
     }
 }

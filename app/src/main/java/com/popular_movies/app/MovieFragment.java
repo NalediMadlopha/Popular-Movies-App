@@ -3,6 +3,7 @@
  */
 package com.popular_movies.app;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +15,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -58,13 +58,10 @@ public class MovieFragment extends Fragment {
 
     private Unbinder unbinder;
     private View view;
-    private ArrayList<Movie> mMovies;
-    private Context mContext;
-
-    private ApiInterface mApiService =
-            ApiClient.getClient().create(ApiInterface.class);
-
-    private SharedPreferences mPrefs;
+    private ArrayList<Movie> mMovies = new ArrayList<>();
+    private Context mActivity;
+    private MoviesAdapter mAdapter;
+    private SharedPreferences mSharedPreferences;
     Gson mGson = new Gson();
 
     public MovieFragment() {
@@ -76,106 +73,60 @@ public class MovieFragment extends Fragment {
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
 
-        mContext = getActivity();
-        mContext.registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+        mActivity = getActivity();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.fragment_list, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
 
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(mActivity, 200);
+        recyclerView.setLayoutManager(layoutManager);
 
         return view;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_main, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_sort_order) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle(R.string.app_name)
-                    .setItems(R.array.pref_order_by_titles, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-                            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-
-                            String order = Utility.getOrderByPref(mContext);
-
-                            switch (which) {
-                                case 1:
-                                    if (!Utility.getOrderByPref(mContext).equals(GlobalConstant.TOP_RATED)) {
-                                        order = GlobalConstant.TOP_RATED;
-                                    }
-
-                                    break;
-                                case 2:
-                                    if (!Utility.getOrderByPref(mContext).equals(GlobalConstant.FAVOURITE)) {
-                                        order = GlobalConstant.FAVOURITE;
-                                    }
-
-                                    break;
-                                default:
-                                    if (!Utility.getOrderByPref(mContext).equals(GlobalConstant.MOST_POPULAR)) {
-                                        order = GlobalConstant.MOST_POPULAR;
-                                    }
-
-                            }
-
-                            prefsEditor.putString(GlobalConstant.SORT_ORDER, order);
-                            prefsEditor.commit();
-                        }
-                    });
-
-            builder.create()
-                    .show();
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-        // Set the action bar
-        setupActionBar();
 
-        loadMovies();
+//        if (Utility.isOnline(mActivity)) {
+//            requestMovies();
+//        } else {
+//            mMovies = retreiveLocalMovies();
+//
+//            if (mMovies != null) {
+//                updateUI(mMovies);
+//            }
+//        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mActivity.registerReceiver(broadcastReceiver,
+                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        mActivity.unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        mContext.unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -193,67 +144,72 @@ public class MovieFragment extends Fragment {
         }
     }
 
-    public interface Callback {
-        public void onItemSelected();
-    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+        if (id == R.id.action_sort_order) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle(R.string.app_name)
+                    .setItems(R.array.pref_order_by_titles, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            String moviecategory = Utility.getMovieCategoryPref(mActivity);
+
+                            switch (which) {
+                                case 1:
+                                    if (!moviecategory.equals(GlobalConstant.TOP_RATED)) {
+                                        moviecategory = GlobalConstant.TOP_RATED;
+                                    }
+                                    break;
+                                case 2:
+                                    if (!moviecategory.equals(GlobalConstant.FAVOURITE)) {
+                                        moviecategory = GlobalConstant.FAVOURITE;
+                                    }
+                                    break;
+                                default:
+                                    if (!moviecategory.equals(GlobalConstant.MOST_POPULAR)) {
+                                        moviecategory = GlobalConstant.MOST_POPULAR;
+                                    }
+                            }
+
+                            SharedPreferences.Editor prefsEditor = mSharedPreferences.edit();
+                            prefsEditor.putString(GlobalConstant.MOVIE_CATEGORY, moviecategory);
+                            prefsEditor.commit();
+
+                            if (Utility.isOnline(mActivity)) {
+                                requestMovies();
+                            } else {
+                                mMovies = retreiveLocalMovies();
+
+                                if (mMovies != null) {
+                                    updateUI(mMovies);
+                                }
+                            }
+                        }
+                    });
+
+            builder.create().show();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
     private void setupActionBar() {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) mActivity).getSupportActionBar();
         if (actionBar != null) {
             // Resize the action bar title
             actionBar.setTitle(Html.fromHtml("<small>Popular Movies</small>"));
-            actionBar.setSubtitle(Html.fromHtml("<small>" + Utility.getOrderByPref(getActivity()) + "</small>"));
-        }
-    }
-
-    // Loads the movie from the api service if there is internet connection
-    // Loads the movies from the shared preferences if there is not internet connection
-    private void loadMovies() {
-        // Check if there are movies stored locally
-        if (mPrefs.contains(GlobalConstant.LOCAL_MOVIES) && mPrefs.contains(GlobalConstant.LOCAL_MOVIES_CATEGORY)) {
-            String localMovieStoreJson = mPrefs.getString(GlobalConstant.LOCAL_MOVIES, "");
-            String localMovieStoreCategory = mPrefs.getString(GlobalConstant.LOCAL_MOVIES_CATEGORY, "");
-
-            // Gheck if the movie preference has changed
-            if (localMovieStoreCategory.equals(Utility.getOrderByPref(getActivity()))) {
-                // Get the local movies
-                ArrayList<String> localMovieStore = mGson.fromJson(localMovieStoreJson, ArrayList.class);
-                mMovies = new ArrayList<>();
-
-                for (int i = 0; i < localMovieStore.size(); i++) {
-                    Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
-                    mMovies.add(movie);
-                }
-
-                // Update the UI
-                updateUI(mMovies);
-            } else {
-                // Check if there is internet connection
-                if (Utility.isOnline(mContext)) {
-                    noConnectionView.setVisibility(View.INVISIBLE);
-                    progressView.setVisibility(View.VISIBLE);
-
-                    fetchGenres(mApiService); // Fetch genres from the api
-                    fetchMovies(mApiService); // Fetch movies from the api
-                } else {
-                    recyclerView.setVisibility(View.INVISIBLE);
-                    // Display the no internet connection view
-                    noConnectionView.setVisibility(View.VISIBLE);
-                }
-            }
-        } else {
-            if (Utility.isOnline(mContext)) {
-                fetchGenres(mApiService); // Fetch genres from the api
-                fetchMovies(mApiService); // Fetch movies from the api
-            } else {
-                recyclerView.setVisibility(View.INVISIBLE);
-                // Display the no internet connection view
-                noConnectionView.setVisibility(View.VISIBLE);
-            }
+            actionBar.setSubtitle(Html.fromHtml("<small>" + Utility.getMovieCategoryPref(mActivity) + "</small>"));
         }
     }
 
@@ -262,43 +218,75 @@ public class MovieFragment extends Fragment {
      *
      * @param movies is an array list of movie objects to be displayed on the UI
      */
-    public void updateUI(ArrayList<Movie> movies) {
-        noConnectionView.setVisibility(View.INVISIBLE);
-        progressView.setVisibility(View.INVISIBLE);
+    private void updateUI(ArrayList<Movie> movies) {
+        setupActionBar();
 
-        if (movies != null || !movies.isEmpty()) {
-            // Auto fits the movie item on the grid based on the screen space
-            GridAutofitLayoutManager layoutManager = new GridAutofitLayoutManager(mContext, 200);
+        MoviesAdapter adapter = new MoviesAdapter(mActivity, movies);
+        recyclerView.setAdapter(adapter);
+    }
 
-            final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
-            recyclerView.setLayoutManager(layoutManager);
+    /**
+     * Requests the movies from the api and saves them on a shared service
+     */
+    public void requestMovies() {
 
-            RecyclerView.Adapter adapterViewAdapter = new MoviesAdapter(mContext, movies);
-            recyclerView.setAdapter(adapterViewAdapter);
-            recyclerView.setVisibility(View.VISIBLE);
-        } else {
-            recyclerView.setVisibility(View.INVISIBLE);
-            // Display the no internet connection view
-            Toast.makeText(mContext, "No movies found", Toast.LENGTH_LONG).show();
+        fetchGenres();
+
+        Call<ResponseMovies> call;
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        String movieCategory = Utility.getMovieCategoryPref(mActivity);
+
+        switch (movieCategory) {
+            case GlobalConstant.TOP_RATED: // Get top rated movies
+                call = apiService.getTopRatedMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                break;
+            case GlobalConstant.FAVOURITE: // Get favourite movies
+                mMovies = FavouriteMoviesHandler.getMovieList(getActivity());
+                storeLocalMovies(mMovies);
+                updateUI(mMovies);
+                return;
+            default:
+                // Get most popular movies
+                call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                break;
         }
+
+        call.enqueue(new Callback<ResponseMovies>() {
+            @Override
+            public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
+                mMovies = (ArrayList) response.body().getResults(); // Get the response result
+                storeLocalMovies(mMovies);
+                updateUI(mMovies);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseMovies>call, Throwable t) {
+                // Log error here since request failed
+                Log.e("Retrofit Error [Movie]", t.toString());
+            }
+        });
     }
 
     /**
      * Fetches the genres from the api and saves them on a shared service
-     *
-     * @param apiService is an api interface
      */
-    private void fetchGenres(ApiInterface apiService) {
+    private void fetchGenres() {
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
         Call<ResponseGenres> call
                 = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
 
-        call.enqueue(new  retrofit2.Callback<ResponseGenres>() {
+        call.enqueue(new Callback<ResponseGenres>() {
             @Override
             public void onResponse(Call<ResponseGenres>call, Response<ResponseGenres> response) {
                 List<Genre> genres = response.body().getGenres();
 
                 // Shared preference to store the genres locally
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                SharedPreferences.Editor prefsEditor = mSharedPreferences.edit();
                 String genreJson = mGson.toJson(genres);
                 prefsEditor.putString(GlobalConstant.GENRES, genreJson);
                 prefsEditor.commit();
@@ -312,87 +300,52 @@ public class MovieFragment extends Fragment {
         });
     }
 
-    /**
-     * Fetches the movies from the api and saves them on a shared service
-     *
-     * @param apiService is an api interface
-     */
-    private void fetchMovies(final ApiInterface apiService) {
+    private void storeLocalMovies(ArrayList<Movie> movies) {
 
-        Call<ResponseMovies> call = null;
+        ArrayList<String> localMovieStore = new ArrayList<>();
 
-        // Get the movies based on the sort order preference
-        switch (Utility.getOrderByPref(mContext)) {
-            case GlobalConstant.MOST_POPULAR: // Get most popular movies
-                call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
-                break;
-            case GlobalConstant.TOP_RATED: // Get top rated movies
-                call = apiService.getTopRatedMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
-                break;
-            case GlobalConstant.FAVOURITE: // Get favourite movies
-                // Instantiate the favourite movies handler
-                FavouriteMoviesHandler mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
+        for (int i = 0; i < movies.size(); i++) {
+            String movieJson = mGson.toJson(movies.get(i));
 
-                // Used to store the movies for offline usage
-                ArrayList<String> localMovieStore = mFavouriteMoviesHandler.getMovieList();;
-
-                mMovies = new ArrayList<>();
-
-                for (int i = 0; i < localMovieStore.size(); i++) {
-                    Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
-
-                    mMovies.add(movie);
-                }
-
-                // Store the movie category on a shared preference for offline usage
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                String localMovieStoreJson = mGson.toJson(localMovieStore);
-                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
-                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getOrderByPref(mContext));
-                prefsEditor.commit();
-
-                // Update the UI
-                updateUI(mMovies);
-                return;
+            localMovieStore.add(movieJson);
         }
 
-        call.enqueue(new retrofit2.Callback<ResponseMovies>() {
-            @Override
-            public void onResponse(Call<ResponseMovies>call, Response<ResponseMovies> response) {
-                // Used to store the movies for offline usage
-                ArrayList<String> localMovieStore = new ArrayList<>();
-                mMovies = (ArrayList) response.body().getResults(); // Get the response result
+        // Store the movies locally on a shared preference for offline usage
+        SharedPreferences.Editor prefsEditor = mSharedPreferences.edit();
+        String localMovieStoreJson = mGson.toJson(localMovieStore);
+        prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
+        prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getMovieCategoryPref(mActivity));
+        prefsEditor.commit();
+    }
 
-                for (int i = 0; i < mMovies.size(); i++) {
-                    String movieJson = mGson.toJson(mMovies.get(i));
+    private ArrayList<Movie> retreiveLocalMovies() {
 
-                    localMovieStore.add(movieJson);
-                }
+        ArrayList<Movie> movies = new ArrayList<>();
+        String movieCategory = Utility.getMovieCategoryPref(mActivity);
 
-                // Store the movies locally on a shared preference for offline usage
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                String localMovieStoreJson = mGson.toJson(localMovieStore);
-                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
-                prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getOrderByPref(getActivity()));
-                prefsEditor.commit();
+        if (mSharedPreferences.contains(GlobalConstant.LOCAL_MOVIES)) {
+            String movieJson = mSharedPreferences.getString(GlobalConstant.LOCAL_MOVIES, "");
+            ArrayList<String> localMovieStore = mGson.fromJson(movieJson, ArrayList.class);
 
-                // Update the UI
-                updateUI(mMovies);
+            for (int i = 0; i < localMovieStore.size(); i++) {
+                Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
+                movies.add(movie);
             }
-
-            @Override
-            public void onFailure(Call<ResponseMovies>call, Throwable t) {
-                // Log error here since request failed
-                Log.e("Retrofit Error [Movie]", t.toString());
-            }
-        });
+        }
+        return movies;
     }
 
     // Initialize a broadcast receiver
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            loadMovies();
+            if (Utility.isOnline(mActivity)) {
+                requestMovies();
+            } else {
+                Toast.makeText(context, "No Internet Connection!", Toast.LENGTH_SHORT).show();
+                mMovies = retreiveLocalMovies();
+                updateUI(mMovies);
+            }
         }
     };
 

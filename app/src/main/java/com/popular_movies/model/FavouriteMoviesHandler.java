@@ -17,71 +17,77 @@ import java.util.ArrayList;
  */
 public class FavouriteMoviesHandler {
 
-    private ArrayList<String> mFavouriteMovieList = new ArrayList<>();
-    private SharedPreferences mPrefs;
-    private Gson mGson = new Gson();
+    private static Gson sGson = new Gson();
 
-    /**
-     * Constructor, gets the default shared preferences and gets the movie list
-     *
-     * @param context which the method is called from
-     */
-    public FavouriteMoviesHandler(Context context) {
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        mFavouriteMovieList = getMovieList();
-    }
+    public static ArrayList<Movie> getMovieList(Context context) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        ArrayList<String> localMovies = getLocalMovies(context);
 
-    /**
-     * Gets a list of movie json objects
-     *
-     * @return list of movie json objects
-     */
-    public ArrayList<String> getMovieList() {
-        // Check if the movie list is contained in the shared preferences
-        if (mPrefs.contains(GlobalConstant.FAVOURITE_MOVIE_LIST)) {
-            String favouriteMovieListJson = mPrefs.getString(GlobalConstant.FAVOURITE_MOVIE_LIST, "");
-
-            // Check if the list in shared preferences is not null
-            if (favouriteMovieListJson != null) {
-                mFavouriteMovieList = mGson.fromJson(favouriteMovieListJson, ArrayList.class);
+        if (localMovies != null) {
+            for (String movieJson : localMovies) {
+                Movie movie = sGson.fromJson(movieJson, Movie.class);
+                movies.add(movie);
             }
         }
-        return mFavouriteMovieList;
+
+        return movies;
+    }
+
+    private static ArrayList<String> getLocalMovies(Context context) {
+        ArrayList<String> movieJsonObjects = null;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Check if the movie list is contained in the shared preferences
+        if (sharedPreferences.contains(GlobalConstant.FAVOURITE_MOVIES)) {
+            String favouriteMovies = sharedPreferences.getString(GlobalConstant.FAVOURITE_MOVIES, "");
+            movieJsonObjects = sGson.fromJson(favouriteMovies, ArrayList.class);
+        }
+
+        return movieJsonObjects;
     }
 
     // Check if the movie has not already been added as a favourite
-    public boolean isFavourite(Movie movie) {
-        String movieJson = mGson.toJson(movie);
+    public static boolean isFavourite(Context context, Movie movie) {
+        ArrayList<String> favouriteMovies = getLocalMovies(context);
+        String movieJson = sGson.toJson(movie);
 
-        // if the movie ID is contained in the movie list
-        if (mFavouriteMovieList.contains(movieJson)) {
-            return true;
+        if (favouriteMovies != null) {
+            if (favouriteMovies.contains(movieJson)) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
     }
 
     // Add the movie to the favourite movie list
-    public void addMovie(Movie movie) {
-        String movieJson = mGson.toJson(movie);
+    public static void addMovie(Context context, Movie movie) {
+        ArrayList<String> favouriteMovies = getLocalMovies(context);
+        String movieJson = sGson.toJson(movie);
+        favouriteMovies.add(movieJson);
 
-        mFavouriteMovieList.add(movieJson);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
-        prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        String favouriteMoviesJson = sGson.toJson(favouriteMovies);
+        prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIES, favouriteMoviesJson);
         prefsEditor.commit();
     }
 
     // Remove the movie to the favourite movie list
-    public void removeMovie(Movie movie) {
-        String movieJson = mGson.toJson(movie);
+    public static void removeMovie(Context context, Movie movie) {
 
-        mFavouriteMovieList.remove(movieJson);
+        ArrayList<String> favouriteMovies = getLocalMovies(context);
+        String movieJson = sGson.toJson(movie);
+        favouriteMovies.remove(movieJson);
 
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        String favouriteMovieListJson = mGson.toJson(mFavouriteMovieList);
-        prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIE_LIST, favouriteMovieListJson);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        String favouriteMoviesJson = sGson.toJson(favouriteMovies);
+        prefsEditor.putString(GlobalConstant.FAVOURITE_MOVIES, favouriteMoviesJson);
         prefsEditor.commit();
     }
 }

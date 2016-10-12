@@ -67,7 +67,6 @@ public class DetailFragment extends Fragment {
     private Movie mMovie;
     private TrailerAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
-    private FavouriteMoviesHandler mFavouriteMoviesHandler;
 
     private int mMovieId;
 
@@ -95,31 +94,32 @@ public class DetailFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            mMovieId = savedInstanceState.getInt(GlobalConstant.MOVIE_ID);
+            mMovieId = savedInstanceState.getInt(GlobalConstant.MOVIE);
         }
+    }
 
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(GlobalConstant.MOVIE_ID)) {
-            // Get loader (init loader)
-        }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(GlobalConstant.MOVIE, mMovie);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Get the arguments
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            // Get the parcelable movie argument
-            mMovie = arguments.getParcelable(GlobalConstant.MOVIE);
-        } else {
-            Intent intent = getActivity().getIntent();
-            if (intent != null) {
-                mMovie = (Movie) intent.getParcelableExtra(GlobalConstant.MOVIE);
-            } else {
+        Bundle args = getArguments();
+        Intent intent = getActivity().getIntent();
 
-            }
+        if (savedInstanceState != null) {
+            mMovie = savedInstanceState.getParcelable(GlobalConstant.MOVIE);
+        } else if (args != null) {
+            // Get the parcelable movie argument
+            mMovie = args.getParcelable(GlobalConstant.MOVIE);
+        } else if (intent != null) {
+            mMovie = intent.getParcelableExtra(GlobalConstant.MOVIE);
+        } else {
+
         }
 
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
@@ -137,7 +137,7 @@ public class DetailFragment extends Fragment {
         // Set the poster of the movie
         Picasso.with(getActivity())
                 .load(mMovie.getBackDropPath())
-                .placeholder(R.drawable.movie_icon)
+//                .placeholder(R.drawable.movie_icon)
                 .into(movie_poster);
 
         // Set the favourite icon color
@@ -155,11 +155,9 @@ public class DetailFragment extends Fragment {
 
         // Set the favourite movie icon
         favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
-        // Instantiate the favourite movies handler
-        mFavouriteMoviesHandler = new FavouriteMoviesHandler(getActivity());
 
         // Check if the movie is already in the favourite movie list
-        if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
+        if (FavouriteMoviesHandler.isFavourite(getActivity(), mMovie)) {
             // Set the favourite icon tint to red
             favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
         }
@@ -175,11 +173,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(GlobalConstant.MOVIE_ID)) {
-            // Get loader (restart loader)
-        }
     }
 
     @Override
@@ -210,10 +203,10 @@ public class DetailFragment extends Fragment {
         public void onClick(View view) {
 
             // Check if the movie is already in the favourite movie list
-            if (mFavouriteMoviesHandler.isFavourite(mMovie)) {
+            if (FavouriteMoviesHandler.isFavourite(getActivity(), mMovie)) {
 
                 // Remove the movie from the favourite movie list
-                mFavouriteMoviesHandler.removeMovie(mMovie);
+                FavouriteMoviesHandler.removeMovie(getActivity(), mMovie);
                 // Set the favourite icon tint to grey
                 favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
                         .getColor(R.color.colorGrey)));
@@ -222,7 +215,7 @@ public class DetailFragment extends Fragment {
             } else {
 
                 // Add the movie to the favourite movie list
-                mFavouriteMoviesHandler.addMovie(mMovie);
+                FavouriteMoviesHandler.addMovie(getActivity(), mMovie);
                 // Set the favourite icon tint to red
                 favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
                 // Notify the user with a toast
@@ -320,12 +313,12 @@ public class DetailFragment extends Fragment {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            if (Utility.isOnline(context)) {
-//                fetchTrailers(mApiService, mMovie.getId());
-//                fetchReviews(mApiService, mMovie.getId());
-//            } else {
-//                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
-//            }
+            if (Utility.isOnline(context)) {
+                fetchTrailers(mApiService, mMovie.getId());
+                fetchReviews(mApiService, mMovie.getId());
+            } else {
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
+            }
         }
     };
 }

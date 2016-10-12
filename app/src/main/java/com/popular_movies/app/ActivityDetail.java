@@ -20,16 +20,6 @@ public class ActivityDetail extends AppCompatActivity {
         setupActionBar();
 
         if (savedInstanceState == null) {
-//            Bundle arguments = new Bundle();
-//            // Get the parcelable movie and put it in a bundle
-//            arguments.putParcelable(GlobalConstant.MOVIE,
-//                    getIntent().getParcelableExtra(GlobalConstant.MOVIE));
-//
-//            // Create a new details fragment
-//            DetailFragment detailFragment = new DetailFragment();
-//            // Set the fragment arguments
-//            detailFragment.setArguments(arguments);
-
             // Add the fragment to the movie details container (Framelayout)
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detail_container, new DetailFragment())
