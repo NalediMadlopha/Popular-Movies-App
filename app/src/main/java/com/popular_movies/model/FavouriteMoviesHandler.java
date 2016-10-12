@@ -66,7 +66,13 @@ public class FavouriteMoviesHandler {
     public static void addMovie(Context context, Movie movie) {
         ArrayList<String> favouriteMovies = getLocalMovies(context);
         String movieJson = sGson.toJson(movie);
-        favouriteMovies.add(movieJson);
+
+        if (favouriteMovies != null) {
+            favouriteMovies.add(movieJson);
+        } else {
+            favouriteMovies = new ArrayList<>();
+            favouriteMovies.add(movieJson);
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 

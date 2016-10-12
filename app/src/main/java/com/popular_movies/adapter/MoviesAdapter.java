@@ -36,10 +36,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     private List<Movie> mMovies;
     private Context mContext;
+    private static Movie lastSelection;
 
     public MoviesAdapter(Context context, List<Movie> movies) {
         this.mMovies = movies;
         this.mContext = context;
+        this.lastSelection = movies.get(0);
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -76,8 +78,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             public void onClick(View view) {
 
                 boolean isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
+                lastSelection = mMovies.get(position);
 
                 if (isTablet) {
+
                     FragmentManager fragmentManager =
                             ((AppCompatActivity) mContext).getSupportFragmentManager();
 
@@ -113,13 +117,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         return mMovies;
     }
 
-    public void swap (ArrayList<Movie> movies) {
-        if (mMovies != null) {
-            mMovies.clear();
-            mMovies.addAll(movies);
-        } else {
-            mMovies = movies;
-        }
-        notifyDataSetChanged();
+    public static Movie getLastSelection() {
+        return lastSelection;
     }
 }

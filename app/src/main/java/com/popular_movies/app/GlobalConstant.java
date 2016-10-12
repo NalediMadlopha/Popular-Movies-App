@@ -13,8 +13,9 @@ public class GlobalConstant {
     public final static String MOVIE_CATEGORY = "MOVIE_CATEGORY";
     public final static String GENRES = "genres";
     public final static String MOVIE_ID = "MOVIE_ID";
-    public final static String MOVIE = "movie";
-    public final static String MOVIES = "movies";
+    public final static String MOVIE = "MOVIE";
+    public final static String MOVIES = "MOVIES";
+    public final static String LAST_SELECTED_MOVIE = "LAST_SELECTED_MOVIE";
     public final static String LOCAL_MOVIES = "LOCAL_MOVIES";
     public final static String LOCAL_MOVIES_CATEGORY = "LOCAL_MOVIES_CATEGORY";
     public final static String VND_YOUTUBE = "vnd.youtube:";

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -59,10 +60,10 @@ public class MovieFragment extends Fragment {
     private Unbinder unbinder;
     private View view;
     private ArrayList<Movie> mMovies = new ArrayList<>();
+    private Movie selectedMovie;
     private Context mActivity;
-    private MoviesAdapter mAdapter;
     private SharedPreferences mSharedPreferences;
-    Gson mGson = new Gson();
+    private final static Gson sGson = new Gson();
 
     public MovieFragment() {
     }
@@ -72,7 +73,6 @@ public class MovieFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events
         setHasOptionsMenu(true);
-
         mActivity = getActivity();
     }
 
@@ -98,16 +98,6 @@ public class MovieFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-//        if (Utility.isOnline(mActivity)) {
-//            requestMovies();
-//        } else {
-//            mMovies = retreiveLocalMovies();
-//
-//            if (mMovies != null) {
-//                updateUI(mMovies);
-//            }
-//        }
     }
 
     @Override
@@ -201,6 +191,11 @@ public class MovieFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void setRetainInstance(boolean retain) {
+        super.setRetainInstance(retain);
+    }
+
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
@@ -223,6 +218,37 @@ public class MovieFragment extends Fragment {
 
         MoviesAdapter adapter = new MoviesAdapter(mActivity, movies);
         recyclerView.setAdapter(adapter);
+
+        boolean isTablet = mActivity.getResources().getBoolean(R.bool.isTablet);
+
+        FragmentManager fragmentManager =
+                ((AppCompatActivity) mActivity).getSupportFragmentManager();
+
+        if (isTablet) {
+            if (movies != null && !movies.isEmpty()) {
+
+                DetailFragment detailFragment = new DetailFragment();
+                Movie lastSelectedMovie = adapter.getLastSelection();
+
+                // Supply index input as an argument.
+                Bundle args = new Bundle();
+                args.putParcelable(GlobalConstant.MOVIE, lastSelectedMovie);
+                detailFragment.setArguments(args);
+
+                // Add the fragment to the movie details container (Framelayout)
+                fragmentManager.beginTransaction()
+                        .replace(R.id.detail_container, detailFragment)
+                        .commit();
+
+            } else {
+                Toast.makeText(mActivity, "No " + Utility.getMovieCategoryPref(mActivity) + " Movies", Toast.LENGTH_SHORT).show();
+                // Add the fragment to the movie details container (Framelayout)
+                fragmentManager.beginTransaction()
+                        .replace(R.id.detail_container, new DetailFragment())
+                        .commit();
+            }
+
+        }
     }
 
     /**
@@ -287,7 +313,7 @@ public class MovieFragment extends Fragment {
 
                 // Shared preference to store the genres locally
                 SharedPreferences.Editor prefsEditor = mSharedPreferences.edit();
-                String genreJson = mGson.toJson(genres);
+                String genreJson = sGson.toJson(genres);
                 prefsEditor.putString(GlobalConstant.GENRES, genreJson);
                 prefsEditor.commit();
             }
@@ -305,14 +331,14 @@ public class MovieFragment extends Fragment {
         ArrayList<String> localMovieStore = new ArrayList<>();
 
         for (int i = 0; i < movies.size(); i++) {
-            String movieJson = mGson.toJson(movies.get(i));
+            String movieJson = sGson.toJson(movies.get(i));
 
             localMovieStore.add(movieJson);
         }
 
         // Store the movies locally on a shared preference for offline usage
         SharedPreferences.Editor prefsEditor = mSharedPreferences.edit();
-        String localMovieStoreJson = mGson.toJson(localMovieStore);
+        String localMovieStoreJson = sGson.toJson(localMovieStore);
         prefsEditor.putString(GlobalConstant.LOCAL_MOVIES, localMovieStoreJson);
         prefsEditor.putString(GlobalConstant.LOCAL_MOVIES_CATEGORY, Utility.getMovieCategoryPref(mActivity));
         prefsEditor.commit();
@@ -325,10 +351,10 @@ public class MovieFragment extends Fragment {
 
         if (mSharedPreferences.contains(GlobalConstant.LOCAL_MOVIES)) {
             String movieJson = mSharedPreferences.getString(GlobalConstant.LOCAL_MOVIES, "");
-            ArrayList<String> localMovieStore = mGson.fromJson(movieJson, ArrayList.class);
+            ArrayList<String> localMovieStore = sGson.fromJson(movieJson, ArrayList.class);
 
             for (int i = 0; i < localMovieStore.size(); i++) {
-                Movie movie = mGson.fromJson(localMovieStore.get(i), Movie.class);
+                Movie movie = sGson.fromJson(localMovieStore.get(i), Movie.class);
                 movies.add(movie);
             }
         }

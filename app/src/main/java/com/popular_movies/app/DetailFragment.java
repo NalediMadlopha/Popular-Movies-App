@@ -68,33 +68,17 @@ public class DetailFragment extends Fragment {
     private TrailerAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
 
-    private int mMovieId;
-
     private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
 
     public DetailFragment() {
     }
 
-    public static DetailFragment newInstance(int movieId) {
-        DetailFragment detailFragment = new DetailFragment();
-
-        Bundle args = new Bundle();
-        args.putInt("movieId", movieId);
-        detailFragment.setArguments(args);
-
-        return detailFragment;
-    }
-
-    public int getShownMovieId() {
-        return getArguments().getInt("movieId", 0);
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            mMovieId = savedInstanceState.getInt(GlobalConstant.MOVIE);
+            mMovie = savedInstanceState.getParcelable(GlobalConstant.MOVIE);
         }
     }
 
@@ -119,10 +103,8 @@ public class DetailFragment extends Fragment {
         } else if (intent != null) {
             mMovie = intent.getParcelableExtra(GlobalConstant.MOVIE);
         } else {
-
+            mMovie = null;
         }
-
-        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     @Nullable
@@ -134,38 +116,42 @@ public class DetailFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_detail, null);
         unbinder = ButterKnife.bind(this, view);
 
-        // Set the poster of the movie
-        Picasso.with(getActivity())
-                .load(mMovie.getBackDropPath())
-//                .placeholder(R.drawable.movie_icon)
-                .into(movie_poster);
+        if (mMovie != null) {
+            // Set the poster of the movie
+            Picasso.with(getActivity())
+                    .load(mMovie.getBackDropPath())
+                    .placeholder(R.drawable.movie_icon)
+                    .into(movie_poster);
 
-        // Set the favourite icon color
-        vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
-        // Set the title of the movie
-        movie_title.setText(mMovie.getOriginalTitle());
-        // Set the genre(s) of the movie
-        movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
-        // Set the release date of the movie
-        movie_release_date.setText(mMovie.getReleaseDate());
-        // Set the votes average
-        votes_average.setText(mMovie.getVoteAverage().toString());
-        // Set the plot synopsis of the movie
-        plot_synopsis.setText(mMovie.getOverall());
+            // Set the favourite icon color
+            vote_rating.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorYellowOrange)));
+            // Set the title of the movie
+            movie_title.setText(mMovie.getOriginalTitle());
+            // Set the genre(s) of the movie
+            movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
+            // Set the release date of the movie
+            movie_release_date.setText(mMovie.getReleaseDate());
+            // Set the votes average
+            votes_average.setText(mMovie.getVoteAverage().toString());
+            // Set the plot synopsis of the movie
+            plot_synopsis.setText(mMovie.getOverall());
 
-        // Set the favourite movie icon
-        favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
+            // Set the favourite movie icon
+            favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
 
-        // Check if the movie is already in the favourite movie list
-        if (FavouriteMoviesHandler.isFavourite(getActivity(), mMovie)) {
-            // Set the favourite icon tint to red
-            favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+            // Check if the movie is already in the favourite movie list
+            if (FavouriteMoviesHandler.isFavourite(getActivity(), mMovie)) {
+                // Set the favourite icon tint to red
+                favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
+            }
+
+            // Set favourite button on click listener
+            favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
+            // Set the trailer on item click listener
+            trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
+        } else {
+            return null;
         }
-
-        // Set favourite button on click listener
-        favouriteMovieIcon.setOnClickListener(favouriteMovieButtonOnClickListener);
-        // Set the trailer on item click listener
-        trailersListView.setOnItemClickListener(mTrailerOnItemClickListener);
 
         return view;
     }
@@ -173,13 +159,19 @@ public class DetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     /**
@@ -314,8 +306,11 @@ public class DetailFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utility.isOnline(context)) {
-                fetchTrailers(mApiService, mMovie.getId());
-                fetchReviews(mApiService, mMovie.getId());
+                if (mMovie != null) {
+                    fetchTrailers(mApiService, mMovie.getId());
+                    fetchReviews(mApiService, mMovie.getId());
+                }
+
             } else {
                 Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
             }
