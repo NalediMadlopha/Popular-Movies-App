@@ -102,6 +102,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        // Register a connectivity broadcast receiver
         mActivity.registerReceiver(broadcastReceiver,
                 new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
@@ -227,6 +228,7 @@ public class MovieFragment extends Fragment {
             if (movies != null && !movies.isEmpty()) {
 
                 DetailFragment detailFragment = new DetailFragment();
+                // Get the last selected movie
                 Movie lastSelectedMovie = adapter.getLastSelection();
 
                 // Supply index input as an argument.
@@ -240,7 +242,8 @@ public class MovieFragment extends Fragment {
                         .commit();
 
             } else {
-                Toast.makeText(mActivity, "No " + Utility.getMovieCategoryPref(mActivity) + " Movies", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, "No " + Utility.getMovieCategoryPref(mActivity) +
+                        " Movies", Toast.LENGTH_SHORT).show();
                 // Add the fragment to the movie details container (Framelayout)
                 fragmentManager.beginTransaction()
                         .replace(R.id.detail_container, new DetailFragment())
@@ -266,7 +269,7 @@ public class MovieFragment extends Fragment {
 
         switch (movieCategory) {
             case GlobalConstant.TOP_RATED: // Get top rated movies
-                call = apiService.getTopRatedMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                call = apiService.getTopRatedMovies(GlobalConstant.TMDB_API_KEY);
                 break;
             case GlobalConstant.FAVOURITE: // Get favourite movies
                 mMovies = FavouriteMoviesHandler.getMovieList(getActivity());
@@ -275,7 +278,7 @@ public class MovieFragment extends Fragment {
                 return;
             default:
                 // Get most popular movies
-                call = apiService.getMostPopularMovies(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                call = apiService.getMostPopularMovies(GlobalConstant.TMDB_API_KEY);
                 break;
         }
 
@@ -303,7 +306,7 @@ public class MovieFragment extends Fragment {
                 ApiClient.getClient().create(ApiInterface.class);
 
         Call<ResponseGenres> call
-                = apiService.getGenres(GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+                = apiService.getGenres(GlobalConstant.TMDB_API_KEY);
 
         call.enqueue(new Callback<ResponseGenres>() {
             @Override

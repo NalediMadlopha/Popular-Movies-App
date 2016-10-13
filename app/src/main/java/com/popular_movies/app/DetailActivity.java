@@ -11,7 +11,7 @@ import android.text.Html;
 /**
  * Provides the details activity
  */
-public class ActivityDetail extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -3,6 +3,7 @@
  */
 package com.popular_movies.app;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -67,6 +68,7 @@ public class DetailFragment extends Fragment {
     private Movie mMovie;
     private TrailerAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
+    private Activity mActivity;
 
     private ApiInterface mApiService =
             ApiClient.getClient().create(ApiInterface.class);
@@ -91,9 +93,12 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mActivity = getActivity();
+
         // Get the arguments
         Bundle args = getArguments();
-        Intent intent = getActivity().getIntent();
+        Intent intent = mActivity.getIntent();
 
         if (savedInstanceState != null) {
             mMovie = savedInstanceState.getParcelable(GlobalConstant.MOVIE);
@@ -118,7 +123,7 @@ public class DetailFragment extends Fragment {
 
         if (mMovie != null) {
             // Set the poster of the movie
-            Picasso.with(getActivity())
+            Picasso.with(mActivity)
                     .load(mMovie.getBackDropPath())
                     .placeholder(R.drawable.movie_icon)
                     .into(movie_poster);
@@ -128,7 +133,7 @@ public class DetailFragment extends Fragment {
             // Set the title of the movie
             movie_title.setText(mMovie.getOriginalTitle());
             // Set the genre(s) of the movie
-            movie_genres.setText(Utility.getGenreNames(getActivity(), mMovie.getGenreIds()));
+            movie_genres.setText(Utility.getGenreNames(mActivity, mMovie.getGenreIds()));
             // Set the release date of the movie
             movie_release_date.setText(mMovie.getReleaseDate());
             // Set the votes average
@@ -140,7 +145,7 @@ public class DetailFragment extends Fragment {
             favouriteMovieIcon = (ImageButton) view.findViewById(R.id.details_favourite_movie);
 
             // Check if the movie is already in the favourite movie list
-            if (FavouriteMoviesHandler.isFavourite(getActivity(), mMovie)) {
+            if (FavouriteMoviesHandler.isFavourite(mActivity, mMovie)) {
                 // Set the favourite icon tint to red
                 favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
             }
@@ -159,13 +164,13 @@ public class DetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+        mActivity.registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(broadcastReceiver);
+        mActivity.unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -195,23 +200,23 @@ public class DetailFragment extends Fragment {
         public void onClick(View view) {
 
             // Check if the movie is already in the favourite movie list
-            if (FavouriteMoviesHandler.isFavourite(getActivity(), mMovie)) {
+            if (FavouriteMoviesHandler.isFavourite(mActivity, mMovie)) {
 
                 // Remove the movie from the favourite movie list
-                FavouriteMoviesHandler.removeMovie(getActivity(), mMovie);
+                FavouriteMoviesHandler.removeMovie(mActivity, mMovie);
                 // Set the favourite icon tint to grey
                 favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources()
                         .getColor(R.color.colorGrey)));
                 // Notify the user with a toast
-                Toast.makeText(getActivity(), "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Removed from the favourite movies collection.", Toast.LENGTH_LONG).show();
             } else {
 
                 // Add the movie to the favourite movie list
-                FavouriteMoviesHandler.addMovie(getActivity(), mMovie);
+                FavouriteMoviesHandler.addMovie(mActivity, mMovie);
                 // Set the favourite icon tint to red
                 favouriteMovieIcon.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorRed)));
                 // Notify the user with a toast
-                Toast.makeText(getActivity(), "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Added to the favourite movies collection.", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -226,9 +231,14 @@ public class DetailFragment extends Fragment {
             intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(GlobalConstant.HTTP_WWW_YOUTUBE_COM_WATCH_V + trailerKey));
         } finally {
-            // Start the activity that will open the YouTube app
-            // or the YouTube website
-            startActivity(intent);
+            if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
+                // Start the activity that will open the YouTube app
+                // or the YouTube website
+                startActivity(intent);
+            } else {
+                Toast.makeText(mActivity, "No application on your phone can open the trailers, " +
+                        "download a browser.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -241,7 +251,7 @@ public class DetailFragment extends Fragment {
     private void fetchTrailers(ApiInterface apiService, int movieId) {
 
         // Call the api service to get the trailers
-        Call<ResponseTrailers> call = apiService.getTrailers(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+        Call<ResponseTrailers> call = apiService.getTrailers(movieId, GlobalConstant.TMDB_API_KEY);
 
         call.enqueue(new Callback<ResponseTrailers>() {
             @Override
@@ -250,7 +260,7 @@ public class DetailFragment extends Fragment {
                 ArrayList<Trailer> trailers = (ArrayList) response.body().getResults();
 
                 // Initialize the trailer adapter, passing the trailers list
-                mTrailerAdapter = new TrailerAdapter(getActivity(), trailers);
+                mTrailerAdapter = new TrailerAdapter(mActivity, trailers);
                 // Set the list view adapter
                 trailersListView.setAdapter(mTrailerAdapter);
                 // Modify the height of the list view
@@ -274,7 +284,7 @@ public class DetailFragment extends Fragment {
     private void fetchReviews(ApiInterface apiService, int movieId) {
 
         // Call the api service to get the reviews
-        Call<ResponseReviews> call = apiService.getReviews(movieId, GlobalConstant.C5CA40DED62975B80638B7357FD69E9);
+        Call<ResponseReviews> call = apiService.getReviews(movieId, GlobalConstant.TMDB_API_KEY);
 
         call.enqueue(new Callback<ResponseReviews>() {
             @Override
@@ -283,7 +293,7 @@ public class DetailFragment extends Fragment {
                 ArrayList<Review> reviews = (ArrayList) response.body().getResults();
 
                 // Initialize the trailer adapter, passing the trailers list
-                mReviewAdapter = new ReviewAdapter(getActivity(), reviews);
+                mReviewAdapter = new ReviewAdapter(mActivity, reviews);
 
                 // Loop through the item in the review adapter
                 for (int i = 0; i < mReviewAdapter.getCount(); i++) {

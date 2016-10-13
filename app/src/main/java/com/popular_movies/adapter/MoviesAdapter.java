@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.popular_movies.app.ActivityDetail;
+import com.popular_movies.app.DetailActivity;
 import com.popular_movies.app.DetailFragment;
 import com.popular_movies.app.GlobalConstant;
 import com.popular_movies.app.R;
@@ -23,7 +23,6 @@ import com.popular_movies.app.Utility;
 import com.popular_movies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,7 +40,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public MoviesAdapter(Context context, List<Movie> movies) {
         this.mMovies = movies;
         this.mContext = context;
-        this.lastSelection = movies.get(0);
+
+        if (movies != null && !movies.isEmpty()) {
+            this.lastSelection = movies.get(0); // Get the first movie
+        }
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -78,7 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             public void onClick(View view) {
 
                 boolean isTablet = mContext.getResources().getBoolean(R.bool.isTablet);
-                lastSelection = mMovies.get(position);
+                lastSelection = mMovies.get(position); // Mark the movie as last selected
 
                 if (isTablet) {
 
@@ -99,7 +101,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 } else {
 
                     // Start the details activity and pass the movie to it
-                    Intent detailIntent = new Intent(mContext, ActivityDetail.class);
+                    Intent detailIntent = new Intent(mContext, DetailActivity.class);
                     detailIntent.putExtra(GlobalConstant.MOVIE, mMovies.get(position));
 
                     mContext.startActivity(detailIntent);
