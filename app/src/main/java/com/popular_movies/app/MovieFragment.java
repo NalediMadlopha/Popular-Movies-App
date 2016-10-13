@@ -60,7 +60,6 @@ public class MovieFragment extends Fragment {
     private Unbinder unbinder;
     private View view;
     private ArrayList<Movie> mMovies = new ArrayList<>();
-    private Movie selectedMovie;
     private Context mActivity;
     private SharedPreferences mSharedPreferences;
     private final static Gson sGson = new Gson();
