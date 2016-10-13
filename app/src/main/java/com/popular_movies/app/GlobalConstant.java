@@ -8,9 +8,9 @@ package com.popular_movies.app;
  */
 public class GlobalConstant {
     // Replace the value of this variable with an API KEY
-    public final static String TMDB_API_KEY = "9c5ca40ded62975b80638b7357fd69e9";
+    public final static String TMDB_API_KEY = "";
     public final static String MOVIE_CATEGORY = "MOVIE_CATEGORY";
-    public final static String GENRES = "genres";
+    public final static String GENRES = "GENRES";
     public final static String MOVIE = "MOVIE";
     public final static String MOVIES = "MOVIES";
     public final static String LOCAL_MOVIES = "LOCAL_MOVIES";

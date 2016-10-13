@@ -144,7 +144,7 @@ public class MovieFragment extends Fragment {
         if (id == R.id.action_sort_order) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-            builder.setTitle(R.string.app_name)
+            builder.setTitle(R.string.pref_title_order_by)
                     .setItems(R.array.pref_order_by_titles, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
